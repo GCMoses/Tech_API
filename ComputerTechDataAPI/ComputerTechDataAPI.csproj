@@ -6,6 +6,10 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 	</PropertyGroup>
 
+	<ItemGroup>	
+	  <None Include="..\.editorconfig" Link=".editorconfig" />
+	</ItemGroup>
+
 	<ItemGroup>
 		<PackageReference Include="NLog" Version="4.7.11" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.11" />
@@ -16,9 +20,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\ComputerTech_Contracts\ComputerTechAPI_Contracts.csproj" />
-		<ProjectReference Include="..\ComputerTech_LoggingServices\ComputerTechAPI_LoggingServices.csproj" />
-		<ProjectReference Include="..\ComputerTech_Repository\ComputerTech_Repository.csproj" />
+		<ProjectReference Include="..\ComputerTechAPI_LoggingServices\ComputerTechAPI_LoggingServices.csproj" />
+		<ProjectReference Include="..\ComputerTechAPI_Repository\ComputerTechAPI_Repository.csproj" />
+		<ProjectReference Include="..\ComputerTechAPI_Services\ComputerTechAPI_Services.csproj" />
+		<ProjectReference Include="..\ComputerTechAPI_RequestActions\ComputerTechAPI_RequestActions.csproj" />
+		
 	</ItemGroup>
 
 </Project>

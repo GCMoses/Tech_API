@@ -3,15 +3,28 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32929.385
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComputerTechDataAPI", "ComputerTechDataAPI\ComputerTechDataAPI.csproj", "{9FEA838B-42BC-4695-9573-80384E9C771A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComputerTechDataAPI", "ComputerTechDataAPI\ComputerTechDataAPI.csproj", "{9FEA838B-42BC-4695-9573-80384E9C771A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComputerTechAPI_Entities", "ComputerTechAPI_Entities\ComputerTechAPI_Entities.csproj", "{9542E3AD-1BA9-4334-B212-82F89BC87B10}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComputerTechAPI_Entities", "ComputerTechAPI_Entities\ComputerTechAPI_Entities.csproj", "{9542E3AD-1BA9-4334-B212-82F89BC87B10}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComputerTechAPI_Contracts", "ComputerTech_Contracts\ComputerTechAPI_Contracts.csproj", "{65B07D9C-81B1-46C9-8ECA-02974ADFC1D5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComputerTechAPI_Contracts", "ComputerTechAPI_Contracts\ComputerTechAPI_Contracts.csproj", "{65B07D9C-81B1-46C9-8ECA-02974ADFC1D5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComputerTechAPI_LoggingServices", "ComputerTech_LoggingServices\ComputerTechAPI_LoggingServices.csproj", "{7C2F2176-02BA-40C1-B69C-515AE3A79C5D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComputerTechAPI_LoggingServices", "ComputerTechAPI_LoggingServices\ComputerTechAPI_LoggingServices.csproj", "{7C2F2176-02BA-40C1-B69C-515AE3A79C5D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComputerTech_Repository", "ComputerTech_Repository\ComputerTech_Repository.csproj", "{5F657CA2-72D5-4B02-973A-35A19E0BBB9B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComputerTechAPI_Repository", "ComputerTechAPI_Repository\ComputerTechAPI_Repository.csproj", "{5F657CA2-72D5-4B02-973A-35A19E0BBB9B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComputerTechAPI_TechService.Contracts", "ComputerTechAPI_TechService.Contacts\ComputerTechAPI_TechService.Contracts.csproj", "{6B7969AE-3F33-4194-9733-A369FC2E6EF5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComputerTechAPI_Services", "ComputerTechAPI_Services\ComputerTechAPI_Services.csproj", "{D48888BD-E775-4F27-9ED3-F61BAA801C2B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComputerTechAPI_RequestActions", "ComputerTechAPI_RequestActions\ComputerTechAPI_RequestActions.csproj", "{DF0203C7-66A0-4D11-9130-53F3B9FD5EE9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComputerTechAPI_DtoAndFeatures", "ComputerTechAPI_DtoAndFeatures\ComputerTechAPI_DtoAndFeatures.csproj", "{E5DAEE4B-4E49-486C-8D78-65F08BAB8B7E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0717E41B-4843-427B-8490-BB08AF5053D9}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +52,22 @@ Global
 		{5F657CA2-72D5-4B02-973A-35A19E0BBB9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5F657CA2-72D5-4B02-973A-35A19E0BBB9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5F657CA2-72D5-4B02-973A-35A19E0BBB9B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6B7969AE-3F33-4194-9733-A369FC2E6EF5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B7969AE-3F33-4194-9733-A369FC2E6EF5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B7969AE-3F33-4194-9733-A369FC2E6EF5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B7969AE-3F33-4194-9733-A369FC2E6EF5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D48888BD-E775-4F27-9ED3-F61BAA801C2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D48888BD-E775-4F27-9ED3-F61BAA801C2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D48888BD-E775-4F27-9ED3-F61BAA801C2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D48888BD-E775-4F27-9ED3-F61BAA801C2B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DF0203C7-66A0-4D11-9130-53F3B9FD5EE9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF0203C7-66A0-4D11-9130-53F3B9FD5EE9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF0203C7-66A0-4D11-9130-53F3B9FD5EE9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF0203C7-66A0-4D11-9130-53F3B9FD5EE9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E5DAEE4B-4E49-486C-8D78-65F08BAB8B7E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E5DAEE4B-4E49-486C-8D78-65F08BAB8B7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E5DAEE4B-4E49-486C-8D78-65F08BAB8B7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E5DAEE4B-4E49-486C-8D78-65F08BAB8B7E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

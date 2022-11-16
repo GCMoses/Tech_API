@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.EntityFrameworkCore;
-using ComputerTech_Repository;
+using ComputerTechAPI_Repository;
 
 namespace ComputerTechDataAPI.ContextFactory;
 
