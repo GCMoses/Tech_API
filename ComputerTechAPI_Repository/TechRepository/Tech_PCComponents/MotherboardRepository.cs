@@ -9,4 +9,13 @@ public class MotherboardRepository : RepositoryBase<Motherboard>, IMotherboardRe
     : base(repositoryContext)
     {
     }
+    public IEnumerable<Motherboard> GetMotherboards(Guid productId, bool trackChanges) =>
+       FindByCondition(c => c.ProductId.Equals(productId), trackChanges)
+      .OrderBy(c => c.Name)
+      .ToList();
+
+
+    public Motherboard GetMotherboard(Guid productId, Guid id, bool trackChanges) =>
+        FindByCondition(c => c.ProductId.Equals(productId) && c.Id.Equals(id), trackChanges)
+        .SingleOrDefault();
 }

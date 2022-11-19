@@ -9,4 +9,14 @@ public class GamingMouseRepository : RepositoryBase<GamingMouse>, IGamingMouseRe
     : base(repositoryContext)
     {
     }
+
+    public IEnumerable<GamingMouse> GetGamingMouses(Guid productId, bool trackChanges) =>
+        FindByCondition(g => g.ProductId.Equals(productId), trackChanges)
+       .OrderBy(g => g.Name)
+       .ToList();
+
+
+    public GamingMouse GetGamingMouse(Guid productId, Guid id, bool trackChanges) =>
+        FindByCondition(g => g.ProductId.Equals(productId) && g.Id.Equals(id), trackChanges)
+        .SingleOrDefault();
 }

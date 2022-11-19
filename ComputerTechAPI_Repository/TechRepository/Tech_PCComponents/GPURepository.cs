@@ -8,4 +8,14 @@ public class GPURepository : RepositoryBase<GPU>, IGPURepository
     : base(repositoryContext)
     {
     }
+
+    public IEnumerable<GPU> GetGPUs(Guid productId, bool trackChanges) =>
+       FindByCondition(c => c.ProductId.Equals(productId), trackChanges)
+      .OrderBy(c => c.Name)
+      .ToList();
+
+
+    public GPU GetGPU(Guid productId, Guid id, bool trackChanges) =>
+        FindByCondition(c => c.ProductId.Equals(productId) && c.Id.Equals(id), trackChanges)
+        .SingleOrDefault();
 }

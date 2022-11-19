@@ -15,7 +15,7 @@ public class CPUDataConfiguration : IEntityTypeConfiguration<CPU>
             Name = "AMD Ryzen 5 5600",
             BaseClock = "3.7GHz",
             BoostClock = "4.6GHz",
-            HyperThreading = "Yes",
+            HyperThreading = "Yes", //Yes sound much better than true therefore I don't use bool
             CPUCore = "6/12",
             CpuTDP = "65W",
             Cache = "32MB of L3 cache",

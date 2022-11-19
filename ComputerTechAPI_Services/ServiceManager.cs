@@ -1,10 +1,5 @@
-﻿using ComputerTechAPI_Contracts;
-using ComputerTechAPI_Contracts.ITech.ITech_Accessories;
-using ComputerTechAPI_Contracts.ITech.ITech_Gaming;
-using ComputerTechAPI_Contracts.ITech.ITech_Networking;
-using ComputerTechAPI_Contracts.ITech.ITech_PC;
-using ComputerTechAPI_Contracts.ITech.ITech_PCComponents;
-using ComputerTechAPI_Contracts.ITech.ITech_SmartDevices;
+﻿using AutoMapper;
+using ComputerTechAPI_Contracts;
 using ComputerTechAPI_Services.AccessoriesService;
 using ComputerTechAPI_Services.GamingService;
 using ComputerTechAPI_Services.NetworkingService;
@@ -55,56 +50,57 @@ public sealed class ServiceManager : IServiceManager
     private readonly Lazy<IDroneService> _droneService;
     private readonly Lazy<ISmartPhoneService> _smartPhoneService;
 
-    public ServiceManager(IRepositoryManager repositoryManager, ILogsManager logger)
+    public ServiceManager(IRepositoryManager repositoryManager, ILogsManager logger, IMapper mapper)
+
     {
         _productService = new Lazy<IProductService>(() => new
-        ProductService(repositoryManager, logger));
+        ProductService(repositoryManager, logger, mapper));
         //Accessories
         _gamingHeadphonesAndHeadsetService = new Lazy<IGamingHeadphonesAndHeadsetService>(() => new
-      GamingHeadphonesAndHeadsetService(repositoryManager, logger));
+      GamingHeadphonesAndHeadsetService(repositoryManager, logger, mapper));
         _gamingKeyboardService = new Lazy<IGamingKeyboardService>(() => new
-       GamingKeyboardService(repositoryManager, logger));
+       GamingKeyboardService(repositoryManager, logger, mapper));
         _gamingMouseService = new Lazy<IGamingMouseService>(() => new
-       GamingMouseService(repositoryManager, logger));
+       GamingMouseService(repositoryManager, logger, mapper));
         //Gaming
         _gamingConsoleService = new Lazy<IGamingConsoleService>(() => new
-      GamingConsoleService(repositoryManager, logger));
+      GamingConsoleService(repositoryManager, logger, mapper));
         _gamingDesktopService = new Lazy<IGamingDesktopService>(() => new
-      GamingDesktopService(repositoryManager, logger));
+      GamingDesktopService(repositoryManager, logger, mapper));
         _gamingLaptopService = new Lazy<IGamingLaptopService>(() => new
-      GamingLaptopService(repositoryManager, logger));
+      GamingLaptopService(repositoryManager, logger, mapper));
         //Networking
         _routerService = new Lazy<IRouterService>(() => new
-      RouterService(repositoryManager, logger));
+      RouterService(repositoryManager, logger, mapper));
         //PC
         _desktopService = new Lazy<IDesktopService>(() => new
-      DesktopService(repositoryManager, logger));
+      DesktopService(repositoryManager, logger, mapper));
         _laptopService = new Lazy<ILaptopService>(() => new
-      LaptopService(repositoryManager, logger));
+      LaptopService(repositoryManager, logger, mapper));
         //PC Components
         _caseService = new Lazy<ICaseService>(() => new
-     CaseService(repositoryManager, logger));
+     CaseService(repositoryManager, logger, mapper));
         _cpuCoolerService = new Lazy<ICPUCoolerService>(() => new
-     CPUCoolerService(repositoryManager, logger));
+     CPUCoolerService(repositoryManager, logger, mapper));
         _cpuService = new Lazy<ICPUService>(() => new
-     CPUService(repositoryManager, logger));
+     CPUService(repositoryManager, logger, mapper));
         _gpuService = new Lazy<IGPUService>(() => new
-     GPUService(repositoryManager, logger));
+     GPUService(repositoryManager, logger, mapper));
         _hddService = new Lazy<IHDDService>(() => new
-     HDDService(repositoryManager, logger));
+     HDDService(repositoryManager, logger, mapper));
         _motherboardService = new Lazy<IMotherboardService>(() => new
-     MotherboardService(repositoryManager, logger));
+     MotherboardService(repositoryManager, logger, mapper));
         _ramService = new Lazy<IRAMService>(() => new
-     RAMService(repositoryManager, logger));
+     RAMService(repositoryManager, logger, mapper));
         _psuService = new Lazy<IPSUService>(() => new
-     PSUService(repositoryManager, logger));
+     PSUService(repositoryManager, logger, mapper));
         _ssdService = new Lazy<ISSDService>(() => new
-     SSDService(repositoryManager, logger));
+     SSDService(repositoryManager, logger, mapper));
         //Smart Devices
         _droneService = new Lazy<IDroneService>(() => new
-     DroneService(repositoryManager, logger));
+     DroneService(repositoryManager, logger, mapper));
         _smartPhoneService = new Lazy<ISmartPhoneService>(() => new
-     SmartPhoneService(repositoryManager, logger));
+     SmartPhoneService(repositoryManager, logger, mapper));
     }
 
     public IProductService ProductService => _productService.Value;

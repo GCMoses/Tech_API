@@ -9,4 +9,13 @@ public class HDDRepository : RepositoryBase<HDD>, IHDDRepository
     : base(repositoryContext)
     {
     }
+    public IEnumerable<HDD> GetHDDs(Guid productId, bool trackChanges) =>
+       FindByCondition(c => c.ProductId.Equals(productId), trackChanges)
+      .OrderBy(c => c.Name)
+      .ToList();
+
+
+    public HDD GetHDD(Guid productId, Guid id, bool trackChanges) =>
+        FindByCondition(c => c.ProductId.Equals(productId) && c.Id.Equals(id), trackChanges)
+        .SingleOrDefault();
 }

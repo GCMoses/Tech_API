@@ -16,7 +16,7 @@ public class RouterDataConfiguration : IEntityTypeConfiguration<Router>
             RAM = "128MB RAM",
             TransferRate = "Wireless speeds of up to 2183Mbps",
             WiFiPorts = "4 & a WAN port",
-            MU_MIMO = "Supported",
+            MU_MIMO = "Supported",     //I'm not a fan of bool... I'll rather print out a sting with the value  
             Price = "R3200,00 up to R3800,00",
             Rating = 8.8,
             ProductId = new Guid("86a3510e-bf98-434e-9685-809b0e5dd36f"),

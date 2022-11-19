@@ -9,4 +9,13 @@ public class PSURepository : RepositoryBase<PSU>, IPSURepository
     : base(repositoryContext)
     {
     }
+    public IEnumerable<PSU> GetPSUs(Guid productId, bool trackChanges) =>
+       FindByCondition(c => c.ProductId.Equals(productId), trackChanges)
+      .OrderBy(c => c.Name)
+      .ToList();
+
+
+    public PSU GetPSU(Guid productId, Guid id, bool trackChanges) =>
+        FindByCondition(c => c.ProductId.Equals(productId) && c.Id.Equals(id), trackChanges)
+        .SingleOrDefault();
 }

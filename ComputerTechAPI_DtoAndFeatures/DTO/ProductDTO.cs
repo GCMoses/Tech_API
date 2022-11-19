@@ -1,5 +1,10 @@
 ﻿namespace ComputerTechAPI_DtoAndFeatures.DTO;
 
 
-public record ProductDTO(Guid Id, string Category);
+[Serializable]
+public record ProductDTO
+{
+    public Guid Id { get; init; }
+    public string? Category { get; init; }
+}
 

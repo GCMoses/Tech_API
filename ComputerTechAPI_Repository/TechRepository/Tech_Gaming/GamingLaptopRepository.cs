@@ -9,4 +9,14 @@ public class GamingLaptopRepository : RepositoryBase<GamingLaptop>, IGamingLapto
     : base(repositoryContext)
     {
     }
+
+    public IEnumerable<GamingLaptop> GetGamingLaptops(Guid productId, bool trackChanges) =>
+          FindByCondition(g => g.ProductId.Equals(productId), trackChanges)
+         .OrderBy(g => g.Name)
+         .ToList();
+
+
+    public GamingLaptop GetGamingLaptop(Guid productId, Guid id, bool trackChanges) =>
+        FindByCondition(g => g.ProductId.Equals(productId) && g.Id.Equals(id), trackChanges)
+        .SingleOrDefault();
 }

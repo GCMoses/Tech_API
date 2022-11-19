@@ -9,4 +9,14 @@ public class GamingDesktopRepository : RepositoryBase<GamingDesktop>, IGamingDes
     : base(repositoryContext)
     {
     }
+
+    public IEnumerable<GamingDesktop> GetGamingDesktops(Guid productId, bool trackChanges) =>
+          FindByCondition(g => g.ProductId.Equals(productId), trackChanges)
+         .OrderBy(g => g.Name)
+         .ToList();
+
+
+    public GamingDesktop GetGamingDesktop(Guid productId, Guid id, bool trackChanges) =>
+        FindByCondition(g => g.ProductId.Equals(productId) && g.Id.Equals(id), trackChanges)
+        .SingleOrDefault();
 }

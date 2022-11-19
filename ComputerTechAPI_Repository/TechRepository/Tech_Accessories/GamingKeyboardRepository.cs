@@ -9,4 +9,14 @@ public class GamingKeyboardRepository : RepositoryBase<GamingKeyboard>, IGamingK
     : base(repositoryContext)
     {
     }
+
+    public IEnumerable<GamingKeyboard> GetGamingKeyboards(Guid productId, bool trackChanges) =>
+         FindByCondition(g => g.ProductId.Equals(productId), trackChanges)
+        .OrderBy(g => g.Name)
+        .ToList();
+
+
+    public GamingKeyboard GetGamingKeyboard(Guid productId, Guid id, bool trackChanges) =>
+        FindByCondition(g => g.ProductId.Equals(productId) && g.Id.Equals(id), trackChanges)
+        .SingleOrDefault();
 }

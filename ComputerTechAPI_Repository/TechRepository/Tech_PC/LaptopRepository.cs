@@ -9,4 +9,14 @@ public class LaptopRepository : RepositoryBase<Laptop>, ILaptopRepository
     : base(repositoryContext)
     {
     }
+
+    public IEnumerable<Laptop> GetLaptops(Guid productId, bool trackChanges) =>
+        FindByCondition(p => p.ProductId.Equals(productId), trackChanges)
+       .OrderBy(p => p.Name)
+       .ToList();
+
+
+    public Laptop GetLaptop(Guid productId, Guid id, bool trackChanges) =>
+        FindByCondition(p => p.ProductId.Equals(productId) && p.Id.Equals(id), trackChanges)
+        .SingleOrDefault();
 }

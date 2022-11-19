@@ -12,16 +12,17 @@ public class ProductsController : ControllerBase
     [HttpGet]
     public IActionResult GetProducts()
     {
-        try
-        {
             var products =
             _service.ProductService.GetAllProducts(trackChanges: false);
             return Ok(products);
-        }
-        catch
-        {
-            return StatusCode(500, "Internal server error");
-        }
+    }
+
+
+    [HttpGet("{id:guid}", Name = "ProductById")]
+    public IActionResult GetProduct(Guid id)
+    {
+        var product = _service.ProductService.GetProduct(id, trackChanges: false);
+        return Ok(product);
     }
 }
 

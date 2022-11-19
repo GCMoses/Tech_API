@@ -9,4 +9,14 @@ public class CPURepository : RepositoryBase<CPU>, ICPURepository
     : base(repositoryContext)
     {
     }
+
+    public IEnumerable<CPU> GetCPUs(Guid productId, bool trackChanges) =>
+       FindByCondition(c => c.ProductId.Equals(productId), trackChanges)
+      .OrderBy(c => c.Name)
+      .ToList();
+
+
+    public CPU GetCPU(Guid productId, Guid id, bool trackChanges) =>
+        FindByCondition(c => c.ProductId.Equals(productId) && c.Id.Equals(id), trackChanges)
+        .SingleOrDefault();
 }

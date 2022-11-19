@@ -9,4 +9,14 @@ public class GamingConsoleRepository : RepositoryBase<GamingConsole>, IGamingCon
     : base(repositoryContext)
     {
     }
+
+    public IEnumerable<GamingConsole> GetGamingConsoles(Guid productId, bool trackChanges) =>
+          FindByCondition(g => g.ProductId.Equals(productId), trackChanges)
+         .OrderBy(g => g.Name)
+         .ToList();
+
+
+    public GamingConsole GetGamingConsole(Guid productId, Guid id, bool trackChanges) =>
+        FindByCondition(g => g.ProductId.Equals(productId) && g.Id.Equals(id), trackChanges)
+        .SingleOrDefault();
 }
