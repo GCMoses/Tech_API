@@ -31,16 +31,16 @@ public class CSVOutputFormatter : TextOutputFormatter
         {
             foreach (var product in (IEnumerable<ProductDTO>)context.Object)
             {
-                FormatCsv(buffer, product);
+                FormatCSV(buffer, product);
             }
         }
         else
         {
-            FormatCsv(buffer, (ProductDTO)context.Object);
+            FormatCSV(buffer, (ProductDTO)context.Object);
         }
         await response.WriteAsync(buffer.ToString());
     }
-    private static void FormatCsv(StringBuilder buffer, ProductDTO product)
+    private static void FormatCSV(StringBuilder buffer, ProductDTO product)
     {
         buffer.AppendLine($"{product.Id},\"{product.Category}");
     }

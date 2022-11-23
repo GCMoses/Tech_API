@@ -18,4 +18,13 @@ public class HDDRepository : RepositoryBase<HDD>, IHDDRepository
     public HDD GetHDD(Guid productId, Guid id, bool trackChanges) =>
         FindByCondition(c => c.ProductId.Equals(productId) && c.Id.Equals(id), trackChanges)
         .SingleOrDefault();
+
+    public void CreateHDDForProduct(Guid productId, HDD hdd)
+    {
+        hdd.ProductId = productId;
+        Create(hdd);
+    }
+
+
+    public void DeleteHDD(HDD hdd) => Delete(hdd);
 }

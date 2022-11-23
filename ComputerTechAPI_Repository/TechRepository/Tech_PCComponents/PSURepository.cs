@@ -18,4 +18,13 @@ public class PSURepository : RepositoryBase<PSU>, IPSURepository
     public PSU GetPSU(Guid productId, Guid id, bool trackChanges) =>
         FindByCondition(c => c.ProductId.Equals(productId) && c.Id.Equals(id), trackChanges)
         .SingleOrDefault();
+
+    public void CreatePSUForProduct(Guid productId, PSU psu)
+    {
+        psu.ProductId = productId;
+        Create(psu);
+    }
+
+
+    public void DeletePSU(PSU psu) => Delete(psu);
 }

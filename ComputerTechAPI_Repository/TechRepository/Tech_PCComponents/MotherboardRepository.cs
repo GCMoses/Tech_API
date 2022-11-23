@@ -18,4 +18,12 @@ public class MotherboardRepository : RepositoryBase<Motherboard>, IMotherboardRe
     public Motherboard GetMotherboard(Guid productId, Guid id, bool trackChanges) =>
         FindByCondition(c => c.ProductId.Equals(productId) && c.Id.Equals(id), trackChanges)
         .SingleOrDefault();
+
+    public void CreateMotherboardForProduct(Guid productId, Motherboard motherboard)
+    {
+        motherboard.ProductId = productId;
+        Create(motherboard);
+    }
+
+    public void DeleteMotherboard(Motherboard motherboard) => Delete(motherboard);
 }

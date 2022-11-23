@@ -19,4 +19,13 @@ public class GamingKeyboardRepository : RepositoryBase<GamingKeyboard>, IGamingK
     public GamingKeyboard GetGamingKeyboard(Guid productId, Guid id, bool trackChanges) =>
         FindByCondition(g => g.ProductId.Equals(productId) && g.Id.Equals(id), trackChanges)
         .SingleOrDefault();
+
+
+    public void CreateGamingKeyboardForProduct(Guid productId, GamingKeyboard gamingKeyboard)
+    {
+        gamingKeyboard.ProductId = productId;
+        Create(gamingKeyboard);
+    }
+
+    public void DeleteGamingKeyboard(GamingKeyboard gamingKeyboard) => Delete(gamingKeyboard);
 }

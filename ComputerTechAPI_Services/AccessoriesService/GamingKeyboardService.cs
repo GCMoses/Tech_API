@@ -48,4 +48,47 @@ public class GamingKeyboardService : IGamingKeyboardService
         var gamingKeyboard = _mapper.Map<GamingKeyboardDTO>(gamingKeyboardDb);
         return gamingKeyboard;
     }
+
+
+   
+
+    public GamingKeyboardDTO CreateGamingKeyboardForProduct(Guid productId, GamingKeyboardCreateDTO gamingKeyboardCreate, bool trackChanges)
+    {
+        var product = _repository.Product.GetProduct(productId, trackChanges);
+        if (product is null)
+            throw new ProductNotFoundException(productId);
+        var gamingKeyboardEntity = _mapper.Map<GamingKeyboard>(gamingKeyboardCreate);
+        _repository.GamingKeyboard.CreateGamingKeyboardForProduct(productId, gamingKeyboardEntity);
+        _repository.Save();
+        var gamingKeyboardToReturn = _mapper.Map<GamingKeyboardDTO>(gamingKeyboardEntity);
+        return gamingKeyboardToReturn;
+    }
+
+
+    public void DeleteGamingKeyboardForProduct(Guid productId, Guid id, bool trackChanges)
+    {
+        var product = _repository.Product.GetProduct(productId, trackChanges);
+        if (product is null)
+            throw new ProductNotFoundException(productId);
+        var gamingKeyboardForProduct = _repository.GamingKeyboard.GetGamingKeyboard(productId, id, trackChanges);
+        if (gamingKeyboardForProduct is null)
+            throw new GamingKeyboardNotFoundException(id);
+        _repository.GamingKeyboard.DeleteGamingKeyboard(gamingKeyboardForProduct);
+        _repository.Save();
+    }
+
+
+    public void UpdateGamingKeyboardForProduct(Guid productId, Guid id, GamingKeyboardUpdateDTO gamingKeyboardUpdate,
+                                        bool productTrackChanges, bool gamingKeyboardTrackChanges)
+    {
+        var product = _repository.Product.GetProduct(productId, productTrackChanges);
+        if (product is null)
+            throw new ProductNotFoundException(productId);
+        var gamingKeyboardEntity = _repository.GamingKeyboard.GetGamingKeyboard(productId, id,
+        gamingKeyboardTrackChanges);
+        if (gamingKeyboardEntity is null)
+            throw new GamingKeyboardNotFoundException(id);
+        _mapper.Map(gamingKeyboardUpdate, gamingKeyboardEntity);
+        _repository.Save();
+    }
 }

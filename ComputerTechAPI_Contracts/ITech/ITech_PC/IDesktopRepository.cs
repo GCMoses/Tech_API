@@ -9,5 +9,7 @@ public interface IDesktopRepository
 
     Desktop GetDesktop(Guid productId, Guid id, bool trackChanges);
 
-    void CreateDesktop(Desktop desktop);
+    void CreateDesktopForProduct(Guid productId, Desktop desktop);
+
+    void DeleteDesktop(Desktop desktop);
 }

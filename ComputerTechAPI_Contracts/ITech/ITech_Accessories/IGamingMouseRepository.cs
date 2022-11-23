@@ -8,5 +8,7 @@ public interface IGamingMouseRepository
 
     GamingMouse GetGamingMouse(Guid productId, Guid id, bool trackChanges);
 
-    void CreateGamingMouse(GamingMouse gamingMouse);
+    void CreateGamingMouseForProduct(Guid productId, GamingMouse gamingMouse);
+    void DeleteGamingMouse(GamingMouse gamingMouse);
+
 }

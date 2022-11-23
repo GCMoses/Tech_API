@@ -9,5 +9,7 @@ public interface ICPUCoolerRepository
 
     CPUCooler GetCPUCooler(Guid productId, Guid id, bool trackChanges);
 
-    void CreateCPUCooler(CPUCooler cpuCooler);
+    void CreateCPUCoolerForProduct(Guid productId, CPUCooler cpuCooler);
+
+    void DeleteCPUCooler(CPUCooler cpuCooler);
 }

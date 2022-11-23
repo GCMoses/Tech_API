@@ -19,4 +19,12 @@ public class DroneRepository : RepositoryBase<Drone>, IDroneRepository
     public Drone GetDrone(Guid productId, Guid id, bool trackChanges) =>
         FindByCondition(s => s.ProductId.Equals(productId) && s.Id.Equals(id), trackChanges)
         .SingleOrDefault();
+
+    public void CreateDroneForProduct(Guid productId, Drone drone)
+    {
+        drone.ProductId = productId;
+        Create(drone);
+    }
+
+    public void DeleteDrone(Drone drone) => Delete(drone);
 }

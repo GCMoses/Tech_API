@@ -4,6 +4,7 @@ using ComputerTechAPI_DtoAndFeatures.DTO.PCComponentsDTO;
 using ComputerTechAPI_Entities.ErrorExceptions.PCComponentErrorExceptions;
 using ComputerTechAPI_Entities.ErrorExceptions;
 using ComputerTechAPI_TechService.Contracts.IPCComponentService;
+using ComputerTechAPI_Entities.Tech_Models.PCComponents;
 
 namespace ComputerTechAPI_Services.PCComponentService;
 
@@ -44,5 +45,46 @@ public class HDDService : IHDDService
 
         var hdd = _mapper.Map<HDDDTO>(hddDb);
         return hdd;
+    }
+
+
+    public HDDDTO CreateHDDForProduct(Guid productId, HDDCreateDTO hddCreate, bool trackChanges)
+    {
+        var product = _repository.Product.GetProduct(productId, trackChanges);
+        if (product is null)
+            throw new ProductNotFoundException(productId);
+        var hddEntity = _mapper.Map<HDD>(hddCreate);
+        _repository.HDD.CreateHDDForProduct(productId, hddEntity);
+        _repository.Save();
+        var hddToReturn = _mapper.Map<HDDDTO>(hddEntity);
+        return hddToReturn;
+    }
+
+
+    public void DeleteHDDForProduct(Guid productId, Guid id, bool trackChanges)
+    {
+        var product = _repository.Product.GetProduct(productId, trackChanges);
+        if (product is null)
+            throw new ProductNotFoundException(productId);
+        var hddForProduct = _repository.HDD.GetHDD(productId, id, trackChanges);
+        if (hddForProduct is null)
+            throw new HDDNotFoundException(id);
+        _repository.HDD.DeleteHDD(hddForProduct);
+        _repository.Save();
+    }
+
+
+    public void UpdateHDDForProduct(Guid productId, Guid id, HDDUpdateDTO hddUpdate,
+                                    bool productTrackChanges, bool hddTrackChanges)
+    {
+        var product = _repository.Product.GetProduct(productId, productTrackChanges);
+        if (product is null)
+            throw new ProductNotFoundException(productId);
+        var hddEntity = _repository.HDD.GetHDD(productId, id,
+        hddTrackChanges);
+        if (hddEntity is null)
+            throw new HDDNotFoundException(id);
+        _mapper.Map(hddUpdate, hddEntity);
+        _repository.Save();
     }
 }

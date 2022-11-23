@@ -19,4 +19,13 @@ public class GamingDesktopRepository : RepositoryBase<GamingDesktop>, IGamingDes
     public GamingDesktop GetGamingDesktop(Guid productId, Guid id, bool trackChanges) =>
         FindByCondition(g => g.ProductId.Equals(productId) && g.Id.Equals(id), trackChanges)
         .SingleOrDefault();
+
+    public void CreateGamingDesktopForProduct(Guid productId, GamingDesktop gamingDesktop)
+    {
+        gamingDesktop.ProductId = productId;
+        Create(gamingDesktop);
+    }
+
+
+    public void DeleteGamingDesktop(GamingDesktop gamingDesktop) => Delete(gamingDesktop);
 }

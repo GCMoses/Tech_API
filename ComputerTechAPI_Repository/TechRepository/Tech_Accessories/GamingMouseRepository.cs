@@ -19,4 +19,14 @@ public class GamingMouseRepository : RepositoryBase<GamingMouse>, IGamingMouseRe
     public GamingMouse GetGamingMouse(Guid productId, Guid id, bool trackChanges) =>
         FindByCondition(g => g.ProductId.Equals(productId) && g.Id.Equals(id), trackChanges)
         .SingleOrDefault();
+
+
+    public void CreateGamingMouseForProduct(Guid productId, GamingMouse gamingMouse)
+    {
+        gamingMouse.ProductId = productId;
+        Create(gamingMouse);
+    }
+
+
+    public void DeleteGamingMouse(GamingMouse gamingMouse) => Delete(gamingMouse);
 }

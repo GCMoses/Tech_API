@@ -38,4 +38,5 @@ public interface IRepositoryManager
     //SmartDevices
     IDroneRepository Drone { get; }
     ISmartPhoneRepository SmartPhone { get; }
+    void Save();
 }

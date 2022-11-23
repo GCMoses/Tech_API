@@ -7,6 +7,9 @@ using AutoMapper;
 using ComputerTechAPI_DtoAndFeatures.DTO.GamingDTO;
 using ComputerTechAPI_Entities.ErrorExceptions.GamingErrorExceptions;
 using ComputerTechAPI_Entities.Tech_Models.Gaming;
+using ComputerTechAPI_Entities.Tech_Models.Accessories;
+using ComputerTechAPI_DtoAndFeatures.DTO.NetworkingDTO;
+using ComputerTechAPI_Entities.Tech_Models.Networking;
 
 namespace ComputerTechAPI_Services.GamingService;
 
@@ -49,4 +52,44 @@ public class GamingConsoleService : IGamingConsoleService
         return gamingConsole;
     }
 
+
+    public GamingConsoleDTO CreateGamingConsoleForProduct(Guid productId, GamingConsoleCreateDTO gamingConsoleCreate, bool trackChanges)
+    {
+        var product = _repository.Product.GetProduct(productId, trackChanges);
+        if (product is null)
+            throw new ProductNotFoundException(productId);
+        var gamingConsoleEntity = _mapper.Map<GamingConsole>(gamingConsoleCreate);
+        _repository.GamingConsole.CreateGamingConsoleForProduct(productId, gamingConsoleEntity);
+        _repository.Save();
+        var gamingConsoleToReturn = _mapper.Map<GamingConsoleDTO>(gamingConsoleEntity);
+        return gamingConsoleToReturn;
+    }
+
+
+    public void DeleteGamingConsoleForProduct(Guid productId, Guid id, bool trackChanges)
+    {
+        var product = _repository.Product.GetProduct(productId, trackChanges);
+        if (product is null)
+            throw new ProductNotFoundException(productId);
+        var gamingConsoleForProduct = _repository.GamingConsole.GetGamingConsole(productId, id, trackChanges);
+        if (gamingConsoleForProduct is null)
+            throw new GamingConsoleNotFoundException(id);
+        _repository.GamingConsole.DeleteGamingConsole(gamingConsoleForProduct);
+        _repository.Save();
+    }
+
+
+    public void UpdateGamingConsoleForProduct(Guid productId, Guid id, GamingConsoleUpdateDTO gamingConsoleUpdate,
+                                    bool productTrackChanges, bool gamingConsoleTrackChanges)
+    {
+        var product = _repository.Product.GetProduct(productId, productTrackChanges);
+        if (product is null)
+            throw new ProductNotFoundException(productId);
+        var gamingConsoleEntity = _repository.GamingConsole.GetGamingConsole(productId, id,
+        gamingConsoleTrackChanges);
+        if (gamingConsoleEntity is null)
+            throw new GamingConsoleNotFoundException(id);
+        _mapper.Map(gamingConsoleUpdate, gamingConsoleEntity);
+        _repository.Save();
+    }
 }

@@ -1,4 +1,5 @@
 ﻿using ComputerTechAPI_Contracts.ITech.ITech_PCComponents;
+using ComputerTechAPI_Entities.Tech_Models.Gaming;
 using ComputerTechAPI_Entities.Tech_Models.PC;
 using ComputerTechAPI_Entities.Tech_Models.PCComponents;
 
@@ -20,4 +21,13 @@ public class CaseRepository : RepositoryBase<Case>, ICaseRepository
     public Case GetCase(Guid productId, Guid id, bool trackChanges) =>
         FindByCondition(c => c.ProductId.Equals(productId) && c.Id.Equals(id), trackChanges)
         .SingleOrDefault();
+
+    public void CreateCaseForProduct(Guid productId, Case pcCase)
+    {
+        pcCase.ProductId = productId;
+        Create(pcCase);
+    }
+
+
+    public void DeleteCase(Case pcCase) => Delete(pcCase);
 }

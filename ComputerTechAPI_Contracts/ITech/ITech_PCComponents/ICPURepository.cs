@@ -8,6 +8,10 @@ public interface ICPURepository
     IEnumerable<CPU> GetCPUs(Guid productId, bool trackChanges);
 
     CPU GetCPU(Guid productId, Guid id, bool trackChanges);
+
+    void CreateCPUForProduct(Guid productId, CPU cpu);
+
+    void DeleteCPU(CPU cpu);
 }
 
-void CreateCPU(CPU cpu);
+

@@ -1,4 +1,5 @@
 ﻿using ComputerTechAPI_Contracts.ITech.ITech_PC;
+using ComputerTechAPI_Entities.Tech_Models.Gaming;
 using ComputerTechAPI_Entities.Tech_Models.Networking;
 using ComputerTechAPI_Entities.Tech_Models.PC;
 
@@ -20,4 +21,13 @@ public class DesktopRepository : RepositoryBase<Desktop>, IDesktopRepository
     public Desktop GetDesktop(Guid productId, Guid id, bool trackChanges) =>
         FindByCondition(p => p.ProductId.Equals(productId) && p.Id.Equals(id), trackChanges)
         .SingleOrDefault();
+
+    public void CreateDesktopForProduct(Guid productId, Desktop desktop)
+    {
+        desktop.ProductId = productId;
+        Create(desktop);
+
+    }
+
+        public void DeleteDesktop(Desktop desktop) => Delete(desktop);
 }

@@ -18,4 +18,12 @@ public class GPURepository : RepositoryBase<GPU>, IGPURepository
     public GPU GetGPU(Guid productId, Guid id, bool trackChanges) =>
         FindByCondition(c => c.ProductId.Equals(productId) && c.Id.Equals(id), trackChanges)
         .SingleOrDefault();
+
+    public void CreateGPUForProduct(Guid productId, GPU gpu)
+    {
+        gpu.ProductId = productId;
+        Create(gpu);
+    }
+
+    public void DeleteGPU(GPU gpu) => Delete(gpu);
 }

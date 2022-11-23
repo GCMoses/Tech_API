@@ -8,6 +8,8 @@ public interface IGamingKeyboardRepository
 
     GamingKeyboard GetGamingKeyboard(Guid productId, Guid id, bool trackChanges);
 
-    void CreateGamingKeyboard(GamingKeyboard gamingKeyboard);
+    void CreateGamingKeyboardForProduct(Guid productId, GamingKeyboard gamingKeyboard);
+
+    void DeleteGamingKeyboard(GamingKeyboard gamingKeyboard);
 
 }

@@ -9,5 +9,7 @@ public interface IGPURepository
 
     GPU GetGPU(Guid productId, Guid id, bool trackChanges);
 
-    void CreateGPU(GPU gpu);
+    void CreateGPUForProduct(Guid productId, GPU cpu);
+
+    void DeleteGPU(GPU gpu);
 }

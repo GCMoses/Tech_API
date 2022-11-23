@@ -4,6 +4,7 @@ using ComputerTechAPI_DtoAndFeatures.DTO.GamingDTO;
 using ComputerTechAPI_Entities.ErrorExceptions.GamingErrorExceptions;
 using ComputerTechAPI_Entities.ErrorExceptions;
 using ComputerTechAPI_TechService.Contracts.IGamingService;
+using ComputerTechAPI_Entities.Tech_Models.Gaming;
 
 namespace ComputerTechAPI_Services.GamingService;
 
@@ -44,5 +45,46 @@ public class GamingDesktopService : IGamingDesktopService
 
         var gamingDesktop = _mapper.Map<GamingDesktopDTO>(gamingDesktopDb);
         return gamingDesktop;
+    }
+
+
+    public GamingDesktopDTO CreateGamingDesktopForProduct(Guid productId, GamingDesktopCreateDTO gamingDesktopCreate, bool trackChanges)
+    {
+        var product = _repository.Product.GetProduct(productId, trackChanges);
+        if (product is null)
+            throw new ProductNotFoundException(productId);
+        var gamingDesktopEntity = _mapper.Map<GamingDesktop>(gamingDesktopCreate);
+        _repository.GamingDesktop.CreateGamingDesktopForProduct(productId, gamingDesktopEntity);
+        _repository.Save();
+        var gamingDesktopToReturn = _mapper.Map<GamingDesktopDTO>(gamingDesktopEntity);
+        return gamingDesktopToReturn;
+    }
+
+
+    public void DeleteGamingDesktopForProduct(Guid productId, Guid id, bool trackChanges)
+    {
+        var product = _repository.Product.GetProduct(productId, trackChanges);
+        if (product is null)
+            throw new ProductNotFoundException(productId);
+        var gamingDesktopForProduct = _repository.GamingDesktop.GetGamingDesktop(productId, id, trackChanges);
+        if (gamingDesktopForProduct is null)
+            throw new GamingDesktopNotFoundException(id);
+        _repository.GamingDesktop.DeleteGamingDesktop(gamingDesktopForProduct);
+        _repository.Save();
+    }
+
+
+    public void UpdateGamingDesktopForProduct(Guid productId, Guid id, GamingDesktopUpdateDTO gamingDesktopUpdate,
+                                    bool productTrackChanges, bool gamingDesktopTrackChanges)
+    {
+        var product = _repository.Product.GetProduct(productId, productTrackChanges);
+        if (product is null)
+            throw new ProductNotFoundException(productId);
+        var gamingDesktopEntity = _repository.GamingDesktop.GetGamingDesktop(productId, id,
+        gamingDesktopTrackChanges);
+        if (gamingDesktopEntity is null)
+            throw new GamingDesktopNotFoundException(id);
+        _mapper.Map(gamingDesktopUpdate, gamingDesktopEntity);
+        _repository.Save();
     }
 }

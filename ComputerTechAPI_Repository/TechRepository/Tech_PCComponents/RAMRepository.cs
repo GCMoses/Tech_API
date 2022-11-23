@@ -19,4 +19,12 @@ public class RAMRepository : RepositoryBase<RAM>, IRAMRepository
     public RAM GetRAM(Guid productId, Guid id, bool trackChanges) =>
         FindByCondition(c => c.ProductId.Equals(productId) && c.Id.Equals(id), trackChanges)
         .SingleOrDefault();
+
+    public void CreateRAMForProduct(Guid productId, RAM ram)
+    {
+        ram.ProductId = productId;
+        Create(ram);
+    }
+
+    public void DeleteRAM(RAM ram) => Delete(ram);
 }

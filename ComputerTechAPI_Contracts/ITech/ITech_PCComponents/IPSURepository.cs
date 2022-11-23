@@ -8,5 +8,7 @@ public interface IPSURepository
 
     PSU GetPSU(Guid productId, Guid id, bool trackChanges);
 
-    void CreatePSU(PSU psu);
+    void CreatePSUForProduct(Guid productId, PSU psu);
+
+    void DeletePSU(PSU psu);
 }

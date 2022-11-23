@@ -1,4 +1,5 @@
 ﻿using ComputerTechAPI_Entities.Tech_Models.Accessories;
+using ComputerTechAPI_Entities.Tech_Models.Networking;
 
 namespace ComputerTechAPI_Contracts.ITech.ITech_Accessories;
 
@@ -9,5 +10,7 @@ public interface IGamingHeadphonesAndHeadsetRepository
 
     GamingHeadphonesAndHeadset GetGamingHeadphonesAndHeadset(Guid productId, Guid id, bool trackChanges);
 
-    void CreateGamingHeadphonesAndHeadset(GamingHeadphonesAndHeadset gamingHeadphonesAndHeadset);
+    void CreateGamingHeadphonesAndHeadsetForProduct(Guid productId, GamingHeadphonesAndHeadset gamingHeadphonesAndHeadset);
+
+    void DeleteGamingHeadphonesAndHeadset(GamingHeadphonesAndHeadset gamingHeadphonesAndHeadset); 
 }

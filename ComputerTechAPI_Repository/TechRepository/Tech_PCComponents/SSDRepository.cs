@@ -19,4 +19,14 @@ public class SSDRepository : RepositoryBase<SSD>, ISSDRepository
     public SSD GetSSD(Guid productId, Guid id, bool trackChanges) =>
         FindByCondition(c => c.ProductId.Equals(productId) && c.Id.Equals(id), trackChanges)
         .SingleOrDefault();
+
+
+    public void CreateSSDForProduct(Guid productId, SSD ssd)
+    {
+        ssd.ProductId = productId;
+        Create(ssd);
+    }
+
+
+    public void DeleteSSD(SSD ssd) => Delete(ssd);
 }

@@ -8,5 +8,7 @@ public interface ISSDRepository
 
     SSD GetSSD(Guid productId, Guid id, bool trackChanges);
 
-    void CreateSSD(SSD ssd);
+    void CreateSSDForProduct(Guid productId, SSD ssd);
+
+    void DeleteSSD(SSD ssd);
 }

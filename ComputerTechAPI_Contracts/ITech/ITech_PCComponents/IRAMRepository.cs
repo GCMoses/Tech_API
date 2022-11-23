@@ -8,5 +8,7 @@ public interface IRAMRepository
 
     RAM GetRAM(Guid productId, Guid id, bool trackChanges);
 
-    void CreateRAM(RAM ram);
+    void CreateRAMForProduct(Guid productId, RAM ram);
+
+    void DeleteRAM(RAM ram);
 }

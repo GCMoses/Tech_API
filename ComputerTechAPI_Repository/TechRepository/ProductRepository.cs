@@ -13,7 +13,18 @@ internal sealed class ProductRepository : RepositoryBase<Product>, IProductRepos
 
     public IEnumerable<Product> GetAllProducts(bool trackChanges) => FindAll(trackChanges).OrderBy(p => p.Category).ToList();
 
-    public Product GetProduct(Guid productId, bool trackChanges) =>
- FindByCondition(p => p.Id.Equals(productId), trackChanges)
-.SingleOrDefault();
+    public Product GetProduct(Guid productId, bool trackChanges) => FindByCondition(p => p.Id.Equals(productId), trackChanges)
+    .SingleOrDefault();
+
+
+    public void CreateProduct(Product product) => Create(product);
+
+
+    public IEnumerable<Product> GetByIds(IEnumerable<Guid> ids, bool trackChanges) =>
+ FindByCondition(p => ids.Contains(p.Id), trackChanges)
+    .ToList();
+
+
+
+    public void DeleteProduct(Product product) => Delete(product);
 }

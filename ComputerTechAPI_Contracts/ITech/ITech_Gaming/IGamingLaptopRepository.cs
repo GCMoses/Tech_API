@@ -8,5 +8,7 @@ public interface IGamingLaptopRepository
 
     GamingLaptop GetGamingLaptop(Guid productId, Guid id, bool trackChanges);
 
-    void CreateGamingLaptop(GamingLaptop gamingLaptop);
+    void CreateGamingLaptopForProduct(Guid productId, GamingLaptop gamingLaptop);
+
+    void DeleteGamingLaptop(GamingLaptop gamingLaptop);
 }

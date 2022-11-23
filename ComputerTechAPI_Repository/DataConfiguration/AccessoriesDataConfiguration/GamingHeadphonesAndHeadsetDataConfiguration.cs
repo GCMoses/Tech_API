@@ -1,5 +1,4 @@
 ﻿using ComputerTechAPI_Entities.Tech_Models.Accessories;
-using ComputerTechAPI_Entities.Tech_Models.Gaming;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

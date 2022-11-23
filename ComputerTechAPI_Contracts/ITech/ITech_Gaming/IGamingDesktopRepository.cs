@@ -9,5 +9,7 @@ public interface IGamingDesktopRepository
 
     GamingDesktop GetGamingDesktop(Guid productId, Guid id, bool trackChanges);
 
-    void CreateGamingDesktop(GamingDesktop gamingDesktop);
+    void CreateGamingDesktopForProduct(Guid productId, GamingDesktop gamingDesktop);
+
+    void DeleteGamingDesktop(GamingDesktop gamingDesktop);
 }

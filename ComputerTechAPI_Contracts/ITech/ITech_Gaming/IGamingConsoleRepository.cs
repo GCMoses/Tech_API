@@ -9,5 +9,8 @@ public interface IGamingConsoleRepository
 
     GamingConsole GetGamingConsole(Guid productId, Guid id, bool trackChanges);
 
-    void CreateGamingConsole(GamingConsole gamingConsole);
+    void CreateGamingConsoleForProduct(Guid productId, GamingConsole gamingConsole);
+
+    void DeleteGamingConsole(GamingConsole gamingConsole);
+
 }

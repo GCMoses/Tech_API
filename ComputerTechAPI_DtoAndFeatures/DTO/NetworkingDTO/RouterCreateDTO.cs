@@ -2,5 +2,5 @@
 
 
 public record RouterCreateDTO(string Name, string RAM, string TransferRate,
-                        string WiFiPorts, string MU_MIMO, string Price, double Rating);
+                              string WiFiPorts, string MU_MIMO, string Price, double Rating);
 

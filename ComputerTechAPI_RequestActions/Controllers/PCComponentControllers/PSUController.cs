@@ -1,4 +1,5 @@
-﻿using ComputerTechAPI_TechService.Contracts;
+﻿using ComputerTechAPI_DtoAndFeatures.DTO.PCComponentsDTO;
+using ComputerTechAPI_TechService.Contracts;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ComputerTechAPI_RequestActions.Controllers.PCComponentControllers;
@@ -18,10 +19,50 @@ public class PSUController : ControllerBase
         return Ok(psus);
     }
 
-    [HttpGet("{id:guid}", Name = "PSUById")]
+    [HttpGet("{id:guid}", Name = "GetPSUForProduct")]
     public IActionResult GetPSUForProduct(Guid productId, Guid id)
     {
         var psu = _service.PSUService.GetPSU(productId, id, trackChanges: false);
         return Ok(psu);
+    }
+
+
+    [HttpPost]
+    public IActionResult CreatePSUForProduct(Guid productId, [FromBody] PSUCreateDTO psuCreate)
+    {
+        if (psuCreate is null)
+            return BadRequest("PSUCreateDTO object is null");
+        var psuToReturn =
+        _service.PSUService.CreatePSUForProduct(productId, psuCreate, trackChanges:
+        false);
+        return CreatedAtRoute("GetPSUForProduct", new
+        {
+            productId,
+            id =
+        psuToReturn.Id
+        },
+        psuToReturn);
+    }
+
+
+    [HttpDelete("{id:guid}")]
+    public IActionResult DeletePSUForProduct(Guid productId, Guid id)
+    {
+        _service.PSUService.DeletePSUForProduct(productId, id, trackChanges: false);
+
+        return NoContent();
+    }
+
+    [HttpPut("{id:guid}")]
+    public IActionResult UpdatePSUForProduct(Guid productId, Guid id,
+        [FromBody] PSUUpdateDTO psuUpdate)
+    {
+        if (psuUpdate is null)
+            return BadRequest("PSUUpdateDTO object is null");
+
+        _service.PSUService.UpdatePSUForProduct(productId, id, psuUpdate,
+            productTrackChanges: false, psuTrackChanges: true);
+
+        return NoContent();
     }
 }

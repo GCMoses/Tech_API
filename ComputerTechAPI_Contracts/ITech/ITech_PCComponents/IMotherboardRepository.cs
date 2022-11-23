@@ -9,5 +9,7 @@ public interface IMotherboardRepository
 
     Motherboard GetMotherboard(Guid productId, Guid id, bool trackChanges);
 
-    void CreateMotherboard(Motherboard motherboard);
+    void CreateMotherboardForProduct(Guid productId, Motherboard motherboard);
+
+    void DeleteMotherboard(Motherboard motherboard);
 }

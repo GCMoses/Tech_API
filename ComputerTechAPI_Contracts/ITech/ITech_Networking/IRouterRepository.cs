@@ -9,5 +9,7 @@ public interface IRouterRepository
 
     Router GetRouter(Guid productId, Guid id, bool trackChanges);
 
-    void CreateRouter(Router router);
+    void CreateRouterForProduct(Guid productId, Router router);
+
+    void DeleteRouter(Router router);
 }

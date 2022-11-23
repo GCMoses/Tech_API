@@ -20,4 +20,15 @@ public class RouterRepository : RepositoryBase<Router>, IRouterRepository
     public Router GetRouter(Guid productId, Guid id, bool trackChanges) =>
         FindByCondition(r => r.ProductId.Equals(productId) && r.Id.Equals(id), trackChanges)
         .SingleOrDefault();
+
+
+
+    public void CreateRouterForProduct(Guid productId, Router router)
+    {
+        router.ProductId = productId;
+        Create(router);
+    }
+
+
+    public void DeleteRouter(Router router) => Delete(router);
 }
