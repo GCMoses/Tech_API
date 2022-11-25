@@ -18,4 +18,9 @@ public interface IGamingConsoleService
 
     void UpdateGamingConsoleForProduct(Guid productId, Guid id, GamingConsoleUpdateDTO gamingConsoleUpdate,
                                        bool productTrackChanges, bool gamingConsoleTrackChanges);
+
+    (GamingConsoleUpdateDTO gamingConsoleToPatch, GamingConsole gamingConsoleEntity) GetGamingConsoleForPatch(
+Guid productId, Guid id, bool productTrackChanges, bool gamingConsoleTrackChanges);
+    void SaveChangesForPatch(GamingConsoleUpdateDTO gamingConsoleToPatch, GamingConsole
+    gamingConsoleEntity);
 }

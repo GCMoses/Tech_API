@@ -87,4 +87,26 @@ public class SSDService : ISSDService
         _mapper.Map(ssdUpdate, ssdEntity);
         _repository.Save();
     }
+
+
+    public (SSDUpdateDTO ssdToPatch, SSD ssdEntity) GetSSDForPatch(Guid productId, Guid id,
+       bool productTrackChanges, bool ssdTrackChanges)
+    {
+        var product = _repository.Product.GetProduct(productId, productTrackChanges);
+        if (product is null)
+            throw new ProductNotFoundException(productId);
+        var ssdEntity = _repository.SSD.GetSSD(productId, id,
+       ssdTrackChanges);
+        if (ssdEntity is null)
+            throw new SSDNotFoundException(productId);
+        var ssdToPatch = _mapper.Map<SSDUpdateDTO>(ssdEntity);
+        return (ssdToPatch, ssdEntity);
+    }
+
+    public void SaveChangesForPatch(SSDUpdateDTO ssdToPatch, SSD
+    ssdEntity)
+    {
+        _mapper.Map(ssdToPatch, ssdEntity);
+        _repository.Save();
+    }
 }

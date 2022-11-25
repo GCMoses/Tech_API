@@ -16,4 +16,9 @@ public interface IGamingLaptopService
 
     void UpdateGamingLaptopForProduct(Guid productId, Guid id, GamingLaptopUpdateDTO gamingLaptopUpdate,
                                                      bool productTrackChanges, bool gamingLaptopTrackChanges);
+
+    (GamingLaptopUpdateDTO gamingLaptopToPatch, GamingLaptop gamingLaptopEntity) GetGamingLaptopForPatch(
+Guid productId, Guid id, bool productTrackChanges, bool gamingLaptopTrackChanges);
+    void SaveChangesForPatch(GamingLaptopUpdateDTO gamingLaptopToPatch, GamingLaptop
+    gamingLaptopEntity);
 }

@@ -22,6 +22,8 @@ public class MapInitializer : Profile
     public MapInitializer()
     {
         //Mapping Model Entities to DTOs
+        //DTO TO ENTITIES
+
         CreateMap<Product, ProductDTO>();
         //Accessories mapping
         CreateMap<GamingHeadphonesAndHeadset, GamingHeadphonesAndHeadsetDTO>();
@@ -52,6 +54,7 @@ public class MapInitializer : Profile
 
 
         //CreateDTO Entities
+        //CREATE ENTITIES
         CreateMap<ProductCreateDTO, Product>();
         //Accessories CreateDTO mapping 
         CreateMap<GamingHeadphonesAndHeadsetCreateDTO, GamingHeadphonesAndHeadset>();
@@ -79,11 +82,9 @@ public class MapInitializer : Profile
         //Smart Devices CreateDTO mapping
         CreateMap<DroneCreateDTO, Drone>();
         CreateMap<SmartPhoneCreateDTO, SmartPhone>();
-
-
-        //Update
-        CreateMap<ProductUpdateDTO, Product>();
-        //Accessories UpdateDTO mapping 
+    
+        //Update Map
+        //UPDATE ENTITIES
         CreateMap<GamingHeadphonesAndHeadsetUpdateDTO, GamingHeadphonesAndHeadset>();
         CreateMap<GamingKeyboardUpdateDTO, GamingKeyboard>();
         CreateMap<GamingMouseUpdateDTO, GamingMouse>();
@@ -109,6 +110,50 @@ public class MapInitializer : Profile
         //Smart Devices UpdateDTO mapping
         CreateMap<DroneUpdateDTO, Drone>();
         CreateMap<SmartPhoneUpdateDTO, SmartPhone>();
+
+
+
+       
+
+        //ReverseMapping
+        //REVERSEMAP UPDATE ENTITIES
+        CreateMap<ProductUpdateDTO, Product>().ReverseMap();
+
+        //Accessories UpdateDTO mapping 
+        CreateMap<GamingHeadphonesAndHeadsetUpdateDTO, GamingHeadphonesAndHeadset>().ReverseMap();
+
+        CreateMap<GamingKeyboardUpdateDTO, GamingKeyboard>().ReverseMap();
+
+        CreateMap<GamingMouseUpdateDTO, GamingMouse>().ReverseMap();
+        ;
+        //Gaming Update mapping 
+        CreateMap<GamingConsoleUpdateDTO, GamingConsole>().ReverseMap();
+        ;
+        CreateMap<GamingDesktopUpdateDTO, GamingDesktop>().ReverseMap();
+        ;
+        CreateMap<GamingLaptopUpdateDTO, GamingLaptop>().ReverseMap();
+        //Networking UpdateDTO mapping 
+        CreateMap<RouterUpdateDTO, Router>().ReverseMap();
+        //PC UpdateDTO mapping 
+        CreateMap<DesktopUpdateDTO, Desktop>().ReverseMap();
+        CreateMap<LaptopUpdateDTO, Laptop>().ReverseMap();
+        //PC Components UpdateDTO mapping
+        CreateMap<CaseUpdateDTO, Case>().ReverseMap();
+        CreateMap<CPUCoolerUpdateDTO, CPUCooler>().ReverseMap();
+        CreateMap<CPUUpdateDTO, CPU>().ReverseMap();
+        CreateMap<GPUUpdateDTO, GPU>().ReverseMap();
+        CreateMap<HDDUpdateDTO, HDD>().ReverseMap();
+        CreateMap<MotherboardUpdateDTO, Motherboard>().ReverseMap();
+        CreateMap<PSUUpdateDTO, PSU>().ReverseMap();
+        CreateMap<RAMUpdateDTO, RAM>().ReverseMap();
+        CreateMap<SSDUpdateDTO, SSD>().ReverseMap();
+        //Smart Devices UpdateDTO mapping
+        CreateMap<DroneUpdateDTO, Drone>().ReverseMap();
+        CreateMap<SmartPhoneUpdateDTO, SmartPhone>().ReverseMap();
+
+
+        //ReverseMapping
+        
     }
 }
 

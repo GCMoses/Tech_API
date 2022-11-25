@@ -9,6 +9,7 @@ using ComputerTechAPI_Entities.ErrorExceptions.PCErrorExceptions;
 using ComputerTechAPI_DtoAndFeatures.DTO.GamingDTO;
 using ComputerTechAPI_Entities.Tech_Models.Gaming;
 using ComputerTechAPI_Entities.Tech_Models.PC;
+using ComputerTechAPI_Entities.ErrorExceptions.GamingErrorExceptions;
 
 namespace ComputerTechAPI_Services.PCService;
 
@@ -89,6 +90,29 @@ public class DesktopService : IDesktopService
         if (desktopEntity is null)
             throw new DesktopNotFoundException(id);
         _mapper.Map(desktopUpdate, desktopEntity);
+        _repository.Save();
+    }
+
+
+    public (DesktopUpdateDTO desktopToPatch, Desktop
+       desktopEntity) GetDesktopForPatch(Guid productId, Guid id,
+       bool productTrackChanges, bool desktopTrackChanges)
+    {
+        var product = _repository.Product.GetProduct(productId, productTrackChanges);
+        if (product is null)
+            throw new ProductNotFoundException(productId);
+        var desktopEntity = _repository.Desktop.GetDesktop(productId, id,
+        desktopTrackChanges);
+        if (desktopEntity is null)
+            throw new DesktopNotFoundException(productId);
+        var desktopToPatch = _mapper.Map<DesktopUpdateDTO>(desktopEntity);
+        return (desktopToPatch, desktopEntity);
+    }
+
+    public void SaveChangesForPatch(DesktopUpdateDTO DesktopToPatch, Desktop
+    desktopEntity)
+    {
+        _mapper.Map(DesktopToPatch, desktopEntity);
         _repository.Save();
     }
 }

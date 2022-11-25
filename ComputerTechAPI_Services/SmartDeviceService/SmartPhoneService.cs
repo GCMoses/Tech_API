@@ -4,8 +4,6 @@ using ComputerTechAPI_DtoAndFeatures.DTO.SmartDevicesDTO;
 using ComputerTechAPI_Entities.ErrorExceptions.SmartDevicesErrorExceptions;
 using ComputerTechAPI_Entities.ErrorExceptions;
 using ComputerTechAPI_TechService.Contracts.ISmartDeviceService;
-using ComputerTechAPI_DtoAndFeatures.DTO.PCComponentsDTO;
-using ComputerTechAPI_Entities.Tech_Models.PCComponents;
 using ComputerTechAPI_Entities.Tech_Models.SmartDevices;
 
 namespace ComputerTechAPI_Services.PCSeSmartDeviceServicervice;
@@ -87,6 +85,28 @@ public class SmartPhoneService : ISmartPhoneService
         if (smartPhoneEntity is null)
             throw new SmartPhoneNotFoundException(id);
         _mapper.Map(smartPhoneUpdate, smartPhoneEntity);
+        _repository.Save();
+    }
+
+
+    public (SmartPhoneUpdateDTO smartPhoneToPatch, SmartPhone smartPhoneEntity) GetSmartPhoneForPatch(Guid productId, Guid id,
+        bool productTrackChanges, bool smartPhoneTrackChanges)
+    {
+        var product = _repository.Product.GetProduct(productId, productTrackChanges);
+        if (product is null)
+            throw new ProductNotFoundException(productId);
+        var smartPhoneEntity = _repository.SmartPhone.GetSmartPhone(productId, id,
+       smartPhoneTrackChanges);
+        if (smartPhoneEntity is null)
+            throw new SmartPhoneNotFoundException(productId);
+        var smartPhoneToPatch = _mapper.Map<SmartPhoneUpdateDTO>(smartPhoneEntity);
+        return (smartPhoneToPatch, smartPhoneEntity);
+    }
+
+    public void SaveChangesForPatch(SmartPhoneUpdateDTO smartPhoneToPatch, SmartPhone
+        smartPhoneEntity)
+    {
+        _mapper.Map(smartPhoneToPatch, smartPhoneEntity);
         _repository.Save();
     }
 

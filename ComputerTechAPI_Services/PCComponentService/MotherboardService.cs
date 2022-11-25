@@ -87,4 +87,26 @@ public class MotherboardService : IMotherboardService
         _mapper.Map(motherboardUpdate, motherboardEntity);
         _repository.Save();
     }
+
+
+    public (MotherboardUpdateDTO motherboardToPatch, Motherboard motherboardEntity) GetMotherboardForPatch(Guid productId, Guid id,
+        bool productTrackChanges, bool motherboardTrackChanges)
+    {
+        var product = _repository.Product.GetProduct(productId, productTrackChanges);
+        if (product is null)
+            throw new ProductNotFoundException(productId);
+        var motherboardEntity = _repository.Motherboard.GetMotherboard(productId, id,
+       motherboardTrackChanges);
+        if (motherboardEntity is null)
+            throw new MotherboardNotFoundException(productId);
+        var motherboardToPatch = _mapper.Map<MotherboardUpdateDTO>(motherboardEntity);
+        return (motherboardToPatch, motherboardEntity);
+    }
+
+    public void SaveChangesForPatch(MotherboardUpdateDTO motherboardToPatch, Motherboard
+    motherboardEntity)
+    {
+        _mapper.Map(motherboardToPatch, motherboardEntity);
+        _repository.Save();
+    }
 }

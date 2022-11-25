@@ -7,6 +7,9 @@ using ComputerTechAPI_Entities.ErrorExceptions.NetworkingErrorExceptions;
 using ComputerTechAPI_Entities.Tech_Models.Networking;
 using ComputerTechAPI_Entities.ErrorExceptions.GamingErrorExceptions;
 using ComputerTechAPI_DtoAndFeatures.DTO.GamingDTO;
+using ComputerTechAPI_DtoAndFeatures.DTO.PCDTO;
+using ComputerTechAPI_Entities.ErrorExceptions.PCErrorExceptions;
+using ComputerTechAPI_Entities.Tech_Models.PC;
 
 namespace ComputerTechAPI_Services.NetworkingService;
 
@@ -88,6 +91,29 @@ public class RouterService : IRouterService
         if (routerEntity is null)
             throw new RouterNotFoundException(id);
         _mapper.Map(routerUpdate, routerEntity);
+        _repository.Save();
+    }
+
+
+    public (RouterUpdateDTO routerToPatch, Router
+        routerEntity) GetRouterForPatch(Guid productId, Guid id,
+        bool productTrackChanges, bool routerTrackChanges)
+    {
+        var product = _repository.Product.GetProduct(productId, productTrackChanges);
+        if (product is null)
+            throw new ProductNotFoundException(productId);
+        var routerEntity = _repository.Router.GetRouter(productId, id,
+        routerTrackChanges);
+        if (routerEntity is null)
+            throw new RouterNotFoundException(productId);
+        var routerToPatch = _mapper.Map<RouterUpdateDTO>(routerEntity);
+        return (routerToPatch, routerEntity);
+    }
+
+    public void SaveChangesForPatch(RouterUpdateDTO routerToPatch, Router
+    routerEntity)
+    {
+        _mapper.Map(routerToPatch, routerEntity);
         _repository.Save();
     }
 }

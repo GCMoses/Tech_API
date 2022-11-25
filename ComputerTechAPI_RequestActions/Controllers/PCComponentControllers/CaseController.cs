@@ -2,6 +2,7 @@
 using ComputerTechAPI_DtoAndFeatures.DTO.PCComponentsDTO;
 using ComputerTechAPI_Entities.Tech_Models.PCComponents;
 using ComputerTechAPI_TechService.Contracts;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ComputerTechAPI_RequestActions.Controllers.PCComponentControllers;
@@ -33,6 +34,9 @@ public class LaptopController : ControllerBase
     {
         if (pcCaseCreate is null)
             return BadRequest("CaseCreateDTO object is null");
+        if (!ModelState.IsValid)
+            return UnprocessableEntity(ModelState);
+
         var pcCaseToReturn =
         _service.CaseService.CreateCaseForProduct(productId, pcCaseCreate, trackChanges:
         false);
@@ -65,6 +69,27 @@ public class LaptopController : ControllerBase
         _service.CaseService.UpdateCaseForProduct(productId, id, pcCaseUpdate,
             productTrackChanges: false, pcCaseTrackChanges: true);
 
+        return NoContent();
+    }
+
+
+    [HttpPatch("{id:guid}")]
+    public IActionResult PartiallyUpdateCaseForProduct(Guid productId, Guid id,
+[FromBody] JsonPatchDocument<CaseUpdateDTO> patchDoc)
+    {
+        if (patchDoc is null)
+            return BadRequest("patchDoc object sent from client is null.");
+        var result = _service.CaseService.GetCaseForPatch(productId, id,
+        productTrackChanges: false,
+        pcCaseTrackChanges: true);
+        patchDoc.ApplyTo(result.pcCaseToPatch, ModelState);
+
+        TryValidateModel(result.pcCaseToPatch);
+
+        if (!ModelState.IsValid)
+            return UnprocessableEntity(ModelState);
+        _service.CaseService.SaveChangesForPatch(result.pcCaseToPatch,
+        result.pcCaseEntity);
         return NoContent();
     }
 }

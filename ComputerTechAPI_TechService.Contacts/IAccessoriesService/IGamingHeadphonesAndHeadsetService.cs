@@ -17,4 +17,9 @@ public interface IGamingHeadphonesAndHeadsetService
     void UpdateGamingHeadphonesAndHeadsetForProduct(Guid productId, Guid id, GamingHeadphonesAndHeadsetUpdateDTO gamingHeadphonesAndHeadsetUpdate, 
                                                     bool productTrackChanges, bool gamingHeadphonesAndHeadsetTrackChanges);
 
+    (GamingHeadphonesAndHeadsetUpdateDTO gamingHeadphonesAndHeadsetToPatch, GamingHeadphonesAndHeadset gamingHeadphonesAndHeadsetEntity) GetGamingHeadphonesAndHeadsetForPatch(
+Guid productId, Guid id, bool productTrackChanges, bool gamingHeadphonesAndHeadsetTrackChanges);
+    void SaveChangesForPatch(GamingHeadphonesAndHeadsetUpdateDTO gamingHeadphonesAndHeadsetToPatch, GamingHeadphonesAndHeadset
+    gamingHeadphonesAndHeadsetEntity);
+
 }

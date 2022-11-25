@@ -16,4 +16,10 @@ public interface IMotherboardService
 
     void UpdateMotherboardForProduct(Guid productId, Guid id, MotherboardUpdateDTO motherboardUpdate,
                                  bool productTrackChanges, bool motherboardTrackChanges);
+
+
+    (MotherboardUpdateDTO motherboardToPatch, Motherboard motherboardEntity) GetMotherboardForPatch(
+Guid productId, Guid id, bool productTrackChanges, bool motherboardTrackChanges);
+    void SaveChangesForPatch(MotherboardUpdateDTO motherboardToPatch, Motherboard
+    motherboardEntity);
 }

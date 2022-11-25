@@ -5,6 +5,7 @@ using ComputerTechAPI_Entities.ErrorExceptions.PCComponentErrorExceptions;
 using ComputerTechAPI_Entities.ErrorExceptions;
 using ComputerTechAPI_TechService.Contracts.IPCComponentService;
 using ComputerTechAPI_Entities.Tech_Models.PCComponents;
+using System.Runtime.InteropServices;
 
 namespace ComputerTechAPI_Services.PCComponentService;
 
@@ -85,6 +86,28 @@ public class PSUService : IPSUService
         if (psuEntity is null)
             throw new PSUNotFoundException(id);
         _mapper.Map(psuUpdate, psuEntity);
+        _repository.Save();
+    }
+
+
+    public (PSUUpdateDTO psuToPatch, PSU psuEntity) GetPSUForPatch(Guid productId, Guid id,
+       bool productTrackChanges, bool psuTrackChanges)
+    {
+        var product = _repository.Product.GetProduct(productId, productTrackChanges);
+        if (product is null)
+            throw new ProductNotFoundException(productId);
+        var psuEntity = _repository.PSU.GetPSU(productId, id,
+       psuTrackChanges);
+        if (psuEntity is null)
+            throw new PSUNotFoundException(productId);
+        var psuToPatch = _mapper.Map<PSUUpdateDTO>(psuEntity);
+        return (psuToPatch, psuEntity);
+    }
+
+        public void SaveChangesForPatch(PSUUpdateDTO psuToPatch, PSU
+        psuEntity)
+        {
+            _mapper.Map(psuToPatch, psuEntity);
         _repository.Save();
     }
 }

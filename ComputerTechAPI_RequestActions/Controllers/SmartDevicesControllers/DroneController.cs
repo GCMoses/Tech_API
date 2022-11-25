@@ -1,6 +1,7 @@
-﻿using ComputerTechAPI_DtoAndFeatures.DTO.PCDTO;
+﻿        using ComputerTechAPI_DtoAndFeatures.DTO.PCDTO;
 using ComputerTechAPI_DtoAndFeatures.DTO.SmartDevicesDTO;
 using ComputerTechAPI_TechService.Contracts;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ComputerTechAPI_RequestActions.Controllers.SmartDevicesControllers;
@@ -33,6 +34,8 @@ public class DroneController : ControllerBase
     {
         if (droneCreate is null)
             return BadRequest("DroneCreateDTO object is null");
+        if (!ModelState.IsValid)
+            return UnprocessableEntity(ModelState);
         var droneToReturn =
         _service.DroneService.CreateDroneForProduct(productId, droneCreate, trackChanges:
         false);
@@ -63,6 +66,27 @@ public class DroneController : ControllerBase
         _service.DroneService.UpdateDroneForProduct(productId, id, droneUpdate,
             productTrackChanges: false, droneTrackChanges: true);
 
+        return NoContent();
+    }
+
+
+    [HttpPatch("{id:guid}")]
+    public IActionResult PartiallyUpdateDroneForProduct(Guid productId, Guid id, [FromBody]
+    JsonPatchDocument<DroneUpdateDTO> patchDoc)
+    {
+        if (patchDoc is null)
+            return BadRequest("patchDoc object sent from client is null.");
+        var result = _service.DroneService.GetDroneForPatch(productId, id,
+        productTrackChanges: false,
+        droneTrackChanges: true);
+        patchDoc.ApplyTo(result.droneToPatch, ModelState);
+
+        TryValidateModel(result.droneToPatch);
+
+        if (!ModelState.IsValid)
+            return UnprocessableEntity(ModelState);
+        _service.DroneService.SaveChangesForPatch(result.droneToPatch,
+        result.droneEntity);
         return NoContent();
     }
 }

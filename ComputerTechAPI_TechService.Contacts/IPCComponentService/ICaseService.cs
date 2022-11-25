@@ -17,4 +17,10 @@ public interface ICaseService
 
     void UpdateCaseForProduct(Guid productId, Guid id, CaseUpdateDTO pcCaseUpdate,
                                                          bool productTrackChanges, bool pcCaseTrackChanges);
+
+
+    (CaseUpdateDTO pcCaseToPatch, Case pcCaseEntity) GetCaseForPatch(
+Guid productId, Guid id, bool productTrackChanges, bool pcCaseTrackChanges);
+    void SaveChangesForPatch(CaseUpdateDTO pcCaseToPatch, Case
+    pcCaseEntity);
 }

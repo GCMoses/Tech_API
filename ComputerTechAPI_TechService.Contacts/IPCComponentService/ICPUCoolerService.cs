@@ -16,4 +16,10 @@ public interface ICPUCoolerService
 
     void UpdateCPUCoolerForProduct(Guid productId, Guid id, CPUCoolerUpdateDTO cpuCoolerUpdate,
                                 bool productTrackChanges, bool cpuCoolerTrackChanges);
+
+
+    (CPUCoolerUpdateDTO cpuCoolerToPatch, CPUCooler cpuCoolerEntity) GetCPUCoolerForPatch(
+Guid productId, Guid id, bool productTrackChanges, bool cpuCoolerTrackChanges);
+    void SaveChangesForPatch(CPUCoolerUpdateDTO cpuCoolerToPatch, CPUCooler
+    cpuCoolerEntity);
 }

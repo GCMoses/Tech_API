@@ -1,5 +1,6 @@
 ﻿using ComputerTechAPI_DtoAndFeatures.DTO.PCComponentsDTO;
 using ComputerTechAPI_TechService.Contracts;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ComputerTechAPI_RequestActions.Controllers.PCComponentControllers;
@@ -32,6 +33,8 @@ public class PSUController : ControllerBase
     {
         if (psuCreate is null)
             return BadRequest("PSUCreateDTO object is null");
+        if (!ModelState.IsValid)
+            return UnprocessableEntity(ModelState);
         var psuToReturn =
         _service.PSUService.CreatePSUForProduct(productId, psuCreate, trackChanges:
         false);
@@ -63,6 +66,27 @@ public class PSUController : ControllerBase
         _service.PSUService.UpdatePSUForProduct(productId, id, psuUpdate,
             productTrackChanges: false, psuTrackChanges: true);
 
+        return NoContent();
+    }
+
+
+    [HttpPatch("{id:guid}")]
+    public IActionResult PartiallyUpdatePSUForProduct(Guid productId, Guid id, [FromBody]
+    JsonPatchDocument<PSUUpdateDTO> patchDoc)
+    {
+        if (patchDoc is null)
+            return BadRequest("patchDoc object sent from client is null.");
+        var result = _service.PSUService.GetPSUForPatch(productId, id,
+        productTrackChanges: false,
+        psuTrackChanges: true);
+        patchDoc.ApplyTo(result.psuToPatch, ModelState);
+
+        TryValidateModel(result.psuToPatch);
+
+        if (!ModelState.IsValid)
+            return UnprocessableEntity(ModelState);
+        _service.PSUService.SaveChangesForPatch(result.psuToPatch,
+        result.psuEntity);
         return NoContent();
     }
 }

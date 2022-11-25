@@ -15,4 +15,10 @@ public interface IGPUService
 
     void UpdateGPUForProduct(Guid productId, Guid id, GPUUpdateDTO gpuUpdate,
                                 bool productTrackChanges, bool gpuTrackChanges);
+
+
+    (GPUUpdateDTO gpuToPatch, GPU gpuEntity) GetGPUForPatch(
+Guid productId, Guid id, bool productTrackChanges, bool gpuTrackChanges);
+    void SaveChangesForPatch(GPUUpdateDTO gpuToPatch, GPU
+    gpuEntity);
 }

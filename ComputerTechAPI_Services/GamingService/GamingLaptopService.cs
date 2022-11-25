@@ -91,5 +91,25 @@ public class GamingLaptopService : IGamingLaptopService
         _repository.Save();
     }
 
-   
+    public (GamingLaptopUpdateDTO gamingLaptopToPatch, GamingLaptop
+        gamingLaptopEntity) GetGamingLaptopForPatch(Guid productId, Guid id,
+        bool productTrackChanges, bool gamingLaptopTrackChanges)
+    {
+        var product = _repository.Product.GetProduct(productId, productTrackChanges);
+        if (product is null)
+            throw new ProductNotFoundException(productId);
+        var gamingLaptopEntity = _repository.GamingLaptop.GetGamingLaptop(productId, id,
+        gamingLaptopTrackChanges);
+        if (gamingLaptopEntity is null)
+            throw new GamingLaptopNotFoundException(productId);
+        var gamingLaptopToPatch = _mapper.Map<GamingLaptopUpdateDTO>(gamingLaptopEntity);
+        return (gamingLaptopToPatch, gamingLaptopEntity);
+    }
+
+    public void SaveChangesForPatch(GamingLaptopUpdateDTO gamingLaptopToPatch, GamingLaptop
+    gamingLaptopEntity)
+    {
+        _mapper.Map(gamingLaptopToPatch, gamingLaptopEntity);
+        _repository.Save();
+    }
 }

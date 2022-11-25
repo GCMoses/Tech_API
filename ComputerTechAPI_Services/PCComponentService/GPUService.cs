@@ -86,4 +86,26 @@ public class GPUService : IGPUService
         _mapper.Map(gpuUpdate, gpuEntity);
         _repository.Save();
     }
+
+
+    public (GPUUpdateDTO gpuToPatch, GPU gpuEntity) GetGPUForPatch(Guid productId, Guid id,
+        bool productTrackChanges, bool gpuTrackChanges)
+    {
+        var product = _repository.Product.GetProduct(productId, productTrackChanges);
+        if (product is null)
+            throw new ProductNotFoundException(productId);
+        var gpuEntity = _repository.GPU.GetGPU(productId, id,
+       gpuTrackChanges);
+        if (gpuEntity is null)
+            throw new GPUNotFoundException(productId);
+        var gpuToPatch = _mapper.Map<GPUUpdateDTO>(gpuEntity);
+        return (gpuToPatch, gpuEntity);
+    }
+
+    public void SaveChangesForPatch(GPUUpdateDTO gpuToPatch, GPU
+    gpuEntity)
+    {
+        _mapper.Map(gpuToPatch, gpuEntity);
+        _repository.Save();
+    }
 }

@@ -19,4 +19,9 @@ public interface IDroneService
     void UpdateDroneForProduct(Guid productId, Guid id, DroneUpdateDTO droneUpdate,
                                bool productTrackChanges, bool droneTrackChanges);
 
+    (DroneUpdateDTO droneToPatch, Drone droneEntity) GetDroneForPatch(
+Guid productId, Guid id, bool productTrackChanges, bool droneTrackChanges);
+    void SaveChangesForPatch(DroneUpdateDTO droneToPatch, Drone
+    droneEntity);
+
 }

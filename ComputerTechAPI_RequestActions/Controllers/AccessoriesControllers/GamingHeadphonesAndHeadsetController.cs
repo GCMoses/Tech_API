@@ -1,7 +1,6 @@
 ﻿using ComputerTechAPI_DtoAndFeatures.DTO.AccessoriesDTO;
-using ComputerTechAPI_DtoAndFeatures.DTO.NetworkingDTO;
-using ComputerTechAPI_Entities.Tech_Models.Accessories;
 using ComputerTechAPI_TechService.Contracts;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ComputerTechAPI_RequestActions.Controllers.AccessoriesController;
@@ -36,6 +35,9 @@ public class GamingHeadphonesAndHeadsetController : ControllerBase
     {
         if (gamingHeadphonesAndHeadsetCreate is null)
             return BadRequest("GamingHeadphonesAndHeadsetCreateDTO object is null");
+        if (!ModelState.IsValid)
+            return UnprocessableEntity(ModelState);
+
         var gamingHeadphonesAndHeadsetToReturn =
         _service.GamingHeadphonesAndHeadsetService.CreateGamingHeadphonesAndHeadsetForProduct(productId, gamingHeadphonesAndHeadsetCreate, trackChanges:
         false);
@@ -68,5 +70,28 @@ public class GamingHeadphonesAndHeadsetController : ControllerBase
 
         return NoContent();
     }
+
+
+    [HttpPatch("{id:guid}")]
+    public IActionResult PartiallyUpdateGamingHeadsetAndHeadphonesForProduct(Guid productId, Guid id, [FromBody] 
+    JsonPatchDocument<GamingHeadphonesAndHeadsetUpdateDTO> patchDoc)
+    {
+        if (patchDoc is null)
+            return BadRequest("patchDoc object sent from client is null.");
+        var result = _service.GamingHeadphonesAndHeadsetService.GetGamingHeadphonesAndHeadsetForPatch(productId, id,
+        productTrackChanges: false,
+        gamingHeadphonesAndHeadsetTrackChanges: true);
+        patchDoc.ApplyTo(result.gamingHeadphonesAndHeadsetToPatch, ModelState);
+
+        TryValidateModel(result.gamingHeadphonesAndHeadsetToPatch);
+
+        if (!ModelState.IsValid)
+            return UnprocessableEntity(ModelState);
+
+        _service.GamingHeadphonesAndHeadsetService.SaveChangesForPatch(result.gamingHeadphonesAndHeadsetToPatch,
+        result.gamingHeadphonesAndHeadsetEntity);
+        return NoContent();
+    }
+
 
 }

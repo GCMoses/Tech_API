@@ -16,4 +16,11 @@ public interface ISSDService
 
     void UpdateSSDForProduct(Guid productId, Guid id, SSDUpdateDTO ssdUpdate,
                                  bool productTrackChanges, bool ssdTrackChanges);
+
+
+    (SSDUpdateDTO ssdToPatch, SSD ssdEntity) GetSSDForPatch(
+Guid productId, Guid id, bool productTrackChanges, bool ssdTrackChanges);
+    void SaveChangesForPatch(SSDUpdateDTO ssdToPatch, SSD
+    ssdEntity);
+
 }

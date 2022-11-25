@@ -16,6 +16,12 @@ public interface IRAMService
 
     void UpdateRAMForProduct(Guid productId, Guid id, RAMUpdateDTO ramUpdate,
                                bool productTrackChanges, bool ramTrackChanges);
+
+
+    (RAMUpdateDTO ramToPatch, RAM ramEntity) GetRAMForPatch(
+Guid productId, Guid id, bool productTrackChanges, bool ramTrackChanges);
+    void SaveChangesForPatch(RAMUpdateDTO ramToPatch, RAM
+    ramEntity);
 }
 
 

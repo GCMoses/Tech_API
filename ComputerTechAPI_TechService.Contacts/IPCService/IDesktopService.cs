@@ -19,4 +19,9 @@ public interface IDesktopService
 
     void UpdateDesktopForProduct(Guid productId, Guid id, DesktopUpdateDTO desktopUpdate,
                                    bool productTrackChanges, bool desktopTrackChanges);
+
+    (DesktopUpdateDTO desktopToPatch, Desktop desktopEntity) GetDesktopForPatch(
+Guid productId, Guid id, bool productTrackChanges, bool desktopTrackChanges);
+    void SaveChangesForPatch(DesktopUpdateDTO desktopToPatch, Desktop
+    desktopEntity);
 }

@@ -1,5 +1,6 @@
 ﻿using ComputerTechAPI_DtoAndFeatures.DTO.PCComponentsDTO;
 using ComputerTechAPI_TechService.Contracts;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ComputerTechAPI_RequestActions.Controllers.PCComponentControllers;
@@ -32,6 +33,8 @@ public class RAMController : ControllerBase
     {
         if (ramCreate is null)
             return BadRequest("RAMCreateDTO object is null");
+        if (!ModelState.IsValid)
+            return UnprocessableEntity(ModelState);
         var ramToReturn =
         _service.RAMService.CreateRAMForProduct(productId, ramCreate, trackChanges:
         false);
@@ -62,6 +65,27 @@ public class RAMController : ControllerBase
         _service.RAMService.UpdateRAMForProduct(productId, id, ramUpdate,
             productTrackChanges: false, ramTrackChanges: true);
 
+        return NoContent();
+    }
+
+
+    [HttpPatch("{id:guid}")]
+    public IActionResult PartiallyUpdateRAMForProduct(Guid productId, Guid id, [FromBody]
+    JsonPatchDocument<RAMUpdateDTO> patchDoc)
+    {
+        if (patchDoc is null)
+            return BadRequest("patchDoc object sent from client is null.");
+        var result = _service.RAMService.GetRAMForPatch(productId, id,
+        productTrackChanges: false,
+        ramTrackChanges: true);
+        patchDoc.ApplyTo(result.ramToPatch, ModelState);
+
+        TryValidateModel(result.ramToPatch);
+
+        if (!ModelState.IsValid)
+            return UnprocessableEntity(ModelState);
+        _service.RAMService.SaveChangesForPatch(result.ramToPatch,
+        result.ramEntity);
         return NoContent();
     }
 

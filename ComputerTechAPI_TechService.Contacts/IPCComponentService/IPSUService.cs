@@ -16,4 +16,10 @@ public interface IPSUService
 
     void UpdatePSUForProduct(Guid productId, Guid id, PSUUpdateDTO psuUpdate,
                                bool productTrackChanges, bool psuTrackChanges);
+
+
+    (PSUUpdateDTO psuToPatch, PSU psuEntity) GetPSUForPatch(
+Guid productId, Guid id, bool productTrackChanges, bool psuTrackChanges);
+    void SaveChangesForPatch(PSUUpdateDTO psuToPatch, PSU
+    psuEntity);
 }

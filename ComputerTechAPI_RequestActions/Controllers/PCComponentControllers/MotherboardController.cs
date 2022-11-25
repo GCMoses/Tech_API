@@ -1,6 +1,7 @@
 ﻿using ComputerTechAPI_DtoAndFeatures.DTO.PCComponentsDTO;
 using ComputerTechAPI_Entities.Tech_Models.PCComponents;
 using ComputerTechAPI_TechService.Contracts;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ComputerTechAPI_RequestActions.Controllers.PCComponentControllers;
@@ -33,6 +34,8 @@ public class MotherboardController : ControllerBase
     {
         if (motherboardCreate is null)
             return BadRequest("MotherboardCreateDTO object is null");
+        if (!ModelState.IsValid)
+            return UnprocessableEntity(ModelState);
         var motherboardToReturn =
         _service.MotherboardService.CreateMotherboardForProduct(productId, motherboardCreate, trackChanges:
         false);
@@ -65,6 +68,27 @@ public class MotherboardController : ControllerBase
         _service.MotherboardService.UpdateMotherboardForProduct(productId, id, motherboardUpdate,
             productTrackChanges: false, motherboardTrackChanges: true);
 
+        return NoContent();
+    }
+
+
+    [HttpPatch("{id:guid}")]
+    public IActionResult PartiallyUpdateMotherboardForProduct(Guid productId, Guid id, [FromBody]
+    JsonPatchDocument<MotherboardUpdateDTO> patchDoc)
+    {
+        if (patchDoc is null)
+            return BadRequest("patchDoc object sent from client is null.");
+        var result = _service.MotherboardService.GetMotherboardForPatch(productId, id,
+        productTrackChanges: false,
+            motherboardTrackChanges: true);
+            patchDoc.ApplyTo(result.motherboardToPatch, ModelState);
+
+        TryValidateModel(result.motherboardToPatch);
+
+        if (!ModelState.IsValid)
+            return UnprocessableEntity(ModelState);
+        _service.MotherboardService.SaveChangesForPatch(result.motherboardToPatch,
+        result.motherboardEntity);
         return NoContent();
     }
 }

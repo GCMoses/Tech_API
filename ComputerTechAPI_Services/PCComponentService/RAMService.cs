@@ -75,7 +75,7 @@ public class RAMService : IRAMService
 
 
     public void UpdateRAMForProduct(Guid productId, Guid id, RAMUpdateDTO ramUpdate,
-                                   bool productTrackChanges, bool ramTrackChanges)
+                                  bool productTrackChanges, bool ramTrackChanges)
     {
         var product = _repository.Product.GetProduct(productId, productTrackChanges);
         if (product is null)
@@ -87,4 +87,27 @@ public class RAMService : IRAMService
         _mapper.Map(ramUpdate, ramEntity);
         _repository.Save();
     }
+
+
+    public (RAMUpdateDTO ramToPatch, RAM ramEntity) GetRAMForPatch(Guid productId, Guid id,
+        bool productTrackChanges, bool ramTrackChanges)
+    {
+        var product = _repository.Product.GetProduct(productId, productTrackChanges);
+        if (product is null)
+            throw new ProductNotFoundException(productId);
+        var ramEntity = _repository.RAM.GetRAM(productId, id,
+       ramTrackChanges);
+        if (ramEntity is null)
+            throw new RAMNotFoundException(productId);
+        var ramToPatch = _mapper.Map<RAMUpdateDTO>(ramEntity);
+        return (ramToPatch, ramEntity);
+    }
+
+    public void SaveChangesForPatch(RAMUpdateDTO ramToPatch, RAM
+    ramEntity)
+    {
+        _mapper.Map(ramToPatch, ramEntity);
+        _repository.Save();
+    }
+
 }

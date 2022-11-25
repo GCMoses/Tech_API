@@ -90,4 +90,26 @@ public class DroneService : IDroneService
         _mapper.Map(droneUpdate, droneEntity);
         _repository.Save();
     }
+
+
+    public (DroneUpdateDTO droneToPatch, Drone droneEntity) GetDroneForPatch(Guid productId, Guid id,
+       bool productTrackChanges, bool droneTrackChanges)
+    {
+        var product = _repository.Product.GetProduct(productId, productTrackChanges);
+        if (product is null)
+            throw new ProductNotFoundException(productId);
+        var droneEntity = _repository.Drone.GetDrone(productId, id,
+       droneTrackChanges);
+        if (droneEntity is null)
+            throw new DroneNotFoundException(productId);
+        var droneToPatch = _mapper.Map<DroneUpdateDTO>(droneEntity);
+        return (droneToPatch, droneEntity);
+    }
+
+    public void SaveChangesForPatch(DroneUpdateDTO droneToPatch, Drone
+        droneEntity)
+    {
+        _mapper.Map(droneToPatch, droneEntity);
+        _repository.Save();
+    }
 }

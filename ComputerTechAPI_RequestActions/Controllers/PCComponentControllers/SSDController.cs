@@ -1,5 +1,6 @@
 ﻿using ComputerTechAPI_DtoAndFeatures.DTO.PCComponentsDTO;
 using ComputerTechAPI_TechService.Contracts;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ComputerTechAPI_RequestActions.Controllers.PCComponentControllers;
@@ -32,6 +33,8 @@ public class SSDController : ControllerBase
     {
         if (ssdCreate is null)
             return BadRequest("SSDCreateDTO object is null");
+        if (!ModelState.IsValid)
+            return UnprocessableEntity(ModelState);
         var ssdToReturn =
         _service.SSDService.CreateSSDForProduct(productId, ssdCreate, trackChanges:
         false);
@@ -63,6 +66,27 @@ public class SSDController : ControllerBase
         _service.SSDService.UpdateSSDForProduct(productId, id, ssdUpdate,
             productTrackChanges: false, ssdTrackChanges: true);
 
+        return NoContent();
+    }
+
+
+    [HttpPatch("{id:guid}")]
+    public IActionResult PartiallyUpdateSSDForProduct(Guid productId, Guid id, [FromBody]
+    JsonPatchDocument<SSDUpdateDTO> patchDoc)
+    {
+        if (patchDoc is null)
+            return BadRequest("patchDoc object sent from client is null.");
+        var result = _service.SSDService.GetSSDForPatch(productId, id,
+        productTrackChanges: false,
+        ssdTrackChanges: true);
+        patchDoc.ApplyTo(result.ssdToPatch, ModelState);
+
+        TryValidateModel(result.ssdToPatch);
+
+        if (!ModelState.IsValid)
+            return UnprocessableEntity(ModelState);
+        _service.SSDService.SaveChangesForPatch(result.ssdToPatch,
+        result.ssdEntity);
         return NoContent();
     }
 }

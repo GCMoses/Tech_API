@@ -87,4 +87,28 @@ public class LaptopService : ILaptopService
         _mapper.Map(laptopUpdate, laptopEntity);
         _repository.Save();
     }
+
+
+    public (LaptopUpdateDTO laptopToPatch, Laptop
+        laptopEntity) GetLaptopForPatch(Guid productId, Guid id,
+        bool productTrackChanges, bool laptopTrackChanges)
+    {
+        var product = _repository.Product.GetProduct(productId, productTrackChanges);
+        if (product is null)
+            throw new ProductNotFoundException(productId);
+        var laptopEntity = _repository.Laptop.GetLaptop(productId, id,
+        laptopTrackChanges);
+        if (laptopEntity is null)
+            throw new LaptopNotFoundException(productId);
+        var laptopToPatch = _mapper.Map<LaptopUpdateDTO>(laptopEntity);
+        return (laptopToPatch, laptopEntity);
+    }
+
+    public void SaveChangesForPatch(LaptopUpdateDTO laptopToPatch, Laptop
+    laptopEntity)
+    {
+        _mapper.Map(laptopToPatch, laptopEntity);
+        _repository.Save();
+    }
+
 }

@@ -86,4 +86,26 @@ public class CPUService : ICPUService
         _mapper.Map(cpuUpdate, cpuEntity);
         _repository.Save();
     }
+
+
+    public (CPUUpdateDTO cpuToPatch, CPU cpuEntity) GetCPUForPatch(Guid productId, Guid id,
+        bool productTrackChanges, bool cpuTrackChanges)
+    {
+        var product = _repository.Product.GetProduct(productId, productTrackChanges);
+        if (product is null)
+            throw new ProductNotFoundException(productId);
+        var cpuEntity = _repository.CPU.GetCPU(productId, id,
+       cpuTrackChanges);
+        if (cpuEntity is null)
+            throw new CPUNotFoundException(productId);
+        var cpuToPatch = _mapper.Map<CPUUpdateDTO>(cpuEntity);
+        return (cpuToPatch, cpuEntity);
+    }
+
+    public void SaveChangesForPatch(CPUUpdateDTO cpuToPatch, CPU
+    cpuEntity)
+    {
+        _mapper.Map(cpuToPatch, cpuEntity);
+        _repository.Save();
+    }
 }

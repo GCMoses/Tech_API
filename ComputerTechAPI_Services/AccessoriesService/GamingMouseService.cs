@@ -89,4 +89,28 @@ public class GamingMouseService : IGamingMouseService
         _mapper.Map(gamingMouseUpdate, gamingMouseEntity);
         _repository.Save();
     }
+
+
+
+    public (GamingMouseUpdateDTO gamingMouseToPatch, GamingMouse
+        gamingMouseEntity) GetGamingMouseForPatch(Guid productId, Guid id,
+        bool productTrackChanges, bool gamingMouseTrackChanges)
+    {
+        var product = _repository.Product.GetProduct(productId, productTrackChanges);
+        if (product is null)
+            throw new ProductNotFoundException(productId);
+        var gamingMouseEntity = _repository.GamingMouse.GetGamingMouse(productId, id,
+        gamingMouseTrackChanges);
+        if (gamingMouseEntity is null)
+            throw new GamingMouseNotFoundException(productId);
+        var gamingMouseToPatch = _mapper.Map<GamingMouseUpdateDTO>(gamingMouseEntity);
+        return (gamingMouseToPatch, gamingMouseEntity);
+    }
+
+    public void SaveChangesForPatch(GamingMouseUpdateDTO gamingMouseToPatch, GamingMouse
+    gamingMouseEntity)
+    {
+        _mapper.Map(gamingMouseToPatch, gamingMouseEntity);
+        _repository.Save();
+    }
 }

@@ -91,4 +91,27 @@ public class CaseService : ICaseService
         _mapper.Map(pcCaseUpdate, pcCaseEntity);
         _repository.Save();
     }
+
+
+    public (CaseUpdateDTO pcCaseToPatch, Case
+        pcCaseEntity) GetCaseForPatch(Guid productId, Guid id,
+        bool productTrackChanges, bool pcCaseTrackChanges)
+    {
+        var product = _repository.Product.GetProduct(productId, productTrackChanges);
+        if (product is null)
+            throw new ProductNotFoundException(productId);
+        var pcCaseEntity = _repository.Case.GetCase(productId, id,
+        pcCaseTrackChanges);
+        if (pcCaseEntity is null)
+            throw new CaseNotFoundException(productId);
+        var pcCaseToPatch = _mapper.Map<CaseUpdateDTO>(pcCaseEntity);
+        return (pcCaseToPatch, pcCaseEntity);
+    }
+
+    public void SaveChangesForPatch(CaseUpdateDTO pcCaseToPatch, Case
+    pcCaseEntity)
+    {
+        _mapper.Map(pcCaseToPatch, pcCaseEntity);
+        _repository.Save();
+    }
 }

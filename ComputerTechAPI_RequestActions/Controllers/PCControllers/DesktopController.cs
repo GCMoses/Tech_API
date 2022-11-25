@@ -2,6 +2,7 @@
 using ComputerTechAPI_DtoAndFeatures.DTO.PCComponentsDTO;
 using ComputerTechAPI_DtoAndFeatures.DTO.PCDTO;
 using ComputerTechAPI_TechService.Contracts;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ComputerTechAPI_RequestActions.Controllers.PCControllers;
@@ -34,6 +35,8 @@ public class DesktopController : ControllerBase
     {
         if (desktopCreate is null)
             return BadRequest("DesktopCreateDTO object is null");
+        if (!ModelState.IsValid)
+            return UnprocessableEntity(ModelState);
         var desktopToReturn =
         _service.DesktopService.CreateDesktopForProduct(productId, desktopCreate, trackChanges:
        false);
@@ -64,6 +67,27 @@ public class DesktopController : ControllerBase
         _service.DesktopService.UpdateDesktopForProduct(productId, id, desktopUpdate,
             productTrackChanges: false, desktopTrackChanges: true);
 
+        return NoContent();
+    }
+
+
+    [HttpPatch("{id:guid}")]
+    public IActionResult PartiallyUpdateDesktopForProduct(Guid productId, Guid id, [FromBody]
+    JsonPatchDocument<DesktopUpdateDTO> patchDoc)
+    {
+        if (patchDoc is null)
+            return BadRequest("patchDoc object sent from client is null.");
+        var result = _service.DesktopService.GetDesktopForPatch(productId, id,
+        productTrackChanges: false,
+        desktopTrackChanges: true);
+        patchDoc.ApplyTo(result.desktopToPatch, ModelState);
+
+        TryValidateModel(result.desktopToPatch);
+
+        if (!ModelState.IsValid)
+            return UnprocessableEntity(ModelState);
+        _service.DesktopService.SaveChangesForPatch(result.desktopToPatch,
+        result.desktopEntity);
         return NoContent();
     }
 }

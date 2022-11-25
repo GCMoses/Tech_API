@@ -1,5 +1,6 @@
 ﻿using ComputerTechAPI_DtoAndFeatures.DTO.PCComponentsDTO;
 using ComputerTechAPI_TechService.Contracts;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ComputerTechAPI_RequestActions.Controllers.PCComponentControllers;
@@ -32,6 +33,8 @@ public class HDDController : ControllerBase
     {
         if (hddCreate is null)
             return BadRequest("HDDCreateDTO object is null");
+        if (!ModelState.IsValid)
+            return UnprocessableEntity(ModelState);
         var hddToReturn =
         _service.HDDService.CreateHDDForProduct(productId, hddCreate, trackChanges:
         false);
@@ -64,6 +67,27 @@ public class HDDController : ControllerBase
         _service.HDDService.UpdateHDDForProduct(productId, id, hddUpdate,
             productTrackChanges: false, hddTrackChanges: true);
 
+        return NoContent();
+    }
+
+
+    [HttpPatch("{id:guid}")]
+    public IActionResult PartiallyUpdateHDDForProduct(Guid productId, Guid id,[FromBody] 
+    JsonPatchDocument<HDDUpdateDTO> patchDoc)
+    {
+        if (patchDoc is null)
+            return BadRequest("patchDoc object sent from client is null.");
+        var result = _service.HDDService.GetHDDForPatch(productId, id,
+        productTrackChanges: false,
+        hddTrackChanges: true);
+        patchDoc.ApplyTo(result.hddToPatch, ModelState);
+
+        TryValidateModel(result.hddToPatch);
+
+        if (!ModelState.IsValid)
+            return UnprocessableEntity(ModelState);
+        _service.HDDService.SaveChangesForPatch(result.hddToPatch,
+        result.hddEntity);
         return NoContent();
     }
 }

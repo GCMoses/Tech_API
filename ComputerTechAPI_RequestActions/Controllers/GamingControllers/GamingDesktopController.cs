@@ -1,5 +1,6 @@
 ﻿using ComputerTechAPI_DtoAndFeatures.DTO.GamingDTO;
 using ComputerTechAPI_TechService.Contracts;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ComputerTechAPI_RequestActions.Controllers.GamingController;
@@ -31,6 +32,9 @@ public class GamingDesktopController : ControllerBase
     {
         if (gamingDesktopCreate is null)
             return BadRequest("GamingDesktopCreateDTO object is null");
+        if (!ModelState.IsValid)
+            return UnprocessableEntity(ModelState);
+
         var gamingDesktopToReturn =
         _service.GamingDesktopService.CreateGamingDesktopForProduct(productId, gamingDesktopCreate, trackChanges:
         false);
@@ -61,6 +65,27 @@ public class GamingDesktopController : ControllerBase
         _service.GamingDesktopService.UpdateGamingDesktopForProduct(productId, id, gamingDesktopUpdate,
             productTrackChanges: false, gamingDesktopTrackChanges: true);
 
+        return NoContent();
+    }
+
+
+    [HttpPatch("{id:guid}")]
+    public IActionResult PartiallyUpdateGamingDesktopForProduct(Guid productId, Guid id,
+[FromBody] JsonPatchDocument<GamingDesktopUpdateDTO> patchDoc)
+    {
+        if (patchDoc is null)
+            return BadRequest("patchDoc object sent from client is null.");
+        var result = _service.GamingDesktopService.GetGamingDesktopForPatch(productId, id,
+        productTrackChanges: false,
+        gamingDesktopTrackChanges: true);
+        patchDoc.ApplyTo(result.gamingDesktopToPatch, ModelState);
+
+        TryValidateModel(result.gamingDesktopToPatch);
+
+        if (!ModelState.IsValid)
+            return UnprocessableEntity(ModelState);
+        _service.GamingDesktopService.SaveChangesForPatch(result.gamingDesktopToPatch,
+        result.gamingDesktopEntity);
         return NoContent();
     }
 }

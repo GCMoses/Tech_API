@@ -1,6 +1,7 @@
 ﻿using ComputerTechAPI_DtoAndFeatures.DTO.GamingDTO;
 using ComputerTechAPI_Entities.Tech_Models.Gaming;
 using ComputerTechAPI_TechService.Contracts;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ComputerTechAPI_RequestActions.Controllers.GamingController;
@@ -33,6 +34,8 @@ public class GamingLaptopController : ControllerBase
     {
         if (gamingLaptopCreate is null)
             return BadRequest("GamingLaptopCreateDTO object is null");
+        if (!ModelState.IsValid)
+            return UnprocessableEntity(ModelState);
         var gamingLaptopToReturn =
         _service.GamingLaptopService.CreateGamingLaptopForProduct(productId, gamingLaptopCreate, trackChanges:
         false);
@@ -63,6 +66,27 @@ public class GamingLaptopController : ControllerBase
         _service.GamingLaptopService.UpdateGamingLaptopForProduct(productId, id, gamingLaptopUpdate, 
             productTrackChanges: false, gamingLaptopTrackChanges: true);
 
+        return NoContent();
+    }
+
+
+    [HttpPatch("{id:guid}")]
+    public IActionResult PartiallyUpdateGamingLaptopForProduct(Guid productId, Guid id,
+[FromBody] JsonPatchDocument<GamingLaptopUpdateDTO> patchDoc)
+    {
+        if (patchDoc is null)
+            return BadRequest("patchDoc object sent from client is null.");
+        var result = _service.GamingLaptopService.GetGamingLaptopForPatch(productId, id,
+        productTrackChanges: false,
+        gamingLaptopTrackChanges: true);
+        patchDoc.ApplyTo(result.gamingLaptopToPatch, ModelState);
+
+        TryValidateModel(result.gamingLaptopToPatch);
+
+        if (!ModelState.IsValid)
+            return UnprocessableEntity(ModelState);
+        _service.GamingLaptopService.SaveChangesForPatch(result.gamingLaptopToPatch,
+        result.gamingLaptopEntity);
         return NoContent();
     }
 }

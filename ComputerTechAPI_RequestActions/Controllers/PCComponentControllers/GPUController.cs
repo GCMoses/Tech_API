@@ -1,5 +1,6 @@
 ﻿using ComputerTechAPI_DtoAndFeatures.DTO.PCComponentsDTO;
 using ComputerTechAPI_TechService.Contracts;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ComputerTechAPI_RequestActions.Controllers.PCComponentControllers;
@@ -32,6 +33,8 @@ public class GPUController : ControllerBase
     {
         if (gpuCreate is null)
             return BadRequest("CPUCreateDTO object is null");
+        if (!ModelState.IsValid)
+            return UnprocessableEntity(ModelState);
         var gpuToReturn =
         _service.GPUService.CreateGPUForProduct(productId, gpuCreate, trackChanges:
         false);
@@ -64,6 +67,27 @@ public class GPUController : ControllerBase
         _service.GPUService.UpdateGPUForProduct(productId, id, gpuUpdate,
             productTrackChanges: false, gpuTrackChanges: true);
 
+        return NoContent();
+    }
+
+
+    [HttpPatch("{id:guid}")]
+    public IActionResult PartiallyUpdateGPUForProduct(Guid productId, Guid id,
+[FromBody] JsonPatchDocument<GPUUpdateDTO> patchDoc)
+    {
+        if (patchDoc is null)
+            return BadRequest("patchDoc object sent from client is null.");
+        var result = _service.GPUService.GetGPUForPatch(productId, id,
+        productTrackChanges: false,
+        gpuTrackChanges: true);
+        patchDoc.ApplyTo(result.gpuToPatch, ModelState);
+
+        TryValidateModel(result.gpuToPatch);
+
+        if (!ModelState.IsValid)
+            return UnprocessableEntity(ModelState);
+        _service.GPUService.SaveChangesForPatch(result.gpuToPatch,
+        result.gpuEntity);
         return NoContent();
     }
 }

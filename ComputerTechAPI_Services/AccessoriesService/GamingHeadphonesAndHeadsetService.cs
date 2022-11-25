@@ -92,4 +92,27 @@ public class GamingHeadphonesAndHeadsetService : IGamingHeadphonesAndHeadsetServ
     }
 
 
+    public (GamingHeadphonesAndHeadsetUpdateDTO gamingHeadphonesAndHeadsetToPatch, GamingHeadphonesAndHeadset
+        gamingHeadphonesAndHeadsetEntity) GetGamingHeadphonesAndHeadsetForPatch(Guid productId, Guid id,
+        bool productTrackChanges, bool gamingHeadphonesAndHeadsetTrackChanges)
+    {
+        var product = _repository.Product.GetProduct(productId, productTrackChanges);
+        if (product is null)
+            throw new ProductNotFoundException(productId);
+        var gamingHeadphonesAndHeadsetEntity = _repository.GamingHeadphonesAndHeadset.GetGamingHeadphonesAndHeadset(productId, id,
+        gamingHeadphonesAndHeadsetTrackChanges);
+        if (gamingHeadphonesAndHeadsetEntity is null)
+            throw new GamingHeadphonesAndHeadsetNotFoundException(productId);
+        var gamingHeadphonesAndHeadsetToPatch = _mapper.Map<GamingHeadphonesAndHeadsetUpdateDTO>(gamingHeadphonesAndHeadsetEntity);
+        return (gamingHeadphonesAndHeadsetToPatch, gamingHeadphonesAndHeadsetEntity);
+    }       
+
+    public void SaveChangesForPatch(GamingHeadphonesAndHeadsetUpdateDTO gamingHeadphonesAndHeadsetToPatch, GamingHeadphonesAndHeadset
+    gamingHeadphonesAndHeadsetEntity)
+    {
+        _mapper.Map(gamingHeadphonesAndHeadsetToPatch, gamingHeadphonesAndHeadsetEntity);
+        _repository.Save();
+    }
+
+    
 }

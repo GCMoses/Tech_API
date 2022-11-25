@@ -1,6 +1,7 @@
 ﻿using ComputerTechAPI_DtoAndFeatures.DTO.GamingDTO;
 using ComputerTechAPI_DtoAndFeatures.DTO.PCDTO;
 using ComputerTechAPI_TechService.Contracts;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ComputerTechAPI_RequestActions.Controllers.PCControllers;
@@ -33,6 +34,8 @@ public class LaptopController : ControllerBase
     {
         if (laptopCreate is null)
             return BadRequest("LaptopCreateDTO object is null");
+        if (!ModelState.IsValid)
+            return UnprocessableEntity(ModelState);
         var laptopToReturn =
         _service.LaptopService.CreateLaptopForProduct(productId, laptopCreate, trackChanges:
         false);
@@ -63,6 +66,27 @@ public class LaptopController : ControllerBase
         _service.LaptopService.UpdateLaptopForProduct(productId, id, laptopUpdate,
             productTrackChanges: false, laptopTrackChanges: true);
 
+        return NoContent();
+    }
+
+
+    [HttpPatch("{id:guid}")]
+    public IActionResult PartiallyUpdateLaptopForProduct(Guid productId, Guid id, [FromBody]
+    JsonPatchDocument<LaptopUpdateDTO> patchDoc)
+    {
+        if (patchDoc is null)
+            return BadRequest("patchDoc object sent from client is null.");
+        var result = _service.LaptopService.GetLaptopForPatch(productId, id,
+        productTrackChanges: false,
+        laptopTrackChanges: true);
+        patchDoc.ApplyTo(result.laptopToPatch, ModelState);
+
+        TryValidateModel(result.laptopToPatch);
+
+        if (!ModelState.IsValid)
+            return UnprocessableEntity(ModelState);
+        _service.LaptopService.SaveChangesForPatch(result.laptopToPatch,
+        result.laptopEntity);
         return NoContent();
     }
 }

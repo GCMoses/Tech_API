@@ -89,4 +89,26 @@ public class CPUCoolerService : ICPUCoolerService
         _mapper.Map(cpuCoolerUpdate, cpuCoolerEntity);
         _repository.Save();
     }
+
+
+    public (CPUCoolerUpdateDTO cpuCoolerToPatch, CPUCooler cpuCoolerEntity) GetCPUCoolerForPatch(Guid productId, Guid id,
+        bool productTrackChanges, bool cpuCoolerTrackChanges)
+    {
+        var product = _repository.Product.GetProduct(productId, productTrackChanges);
+        if (product is null)
+            throw new ProductNotFoundException(productId);
+        var cpuCoolerEntity = _repository.CPUCooler.GetCPUCooler(productId, id,
+       cpuCoolerTrackChanges);
+        if (cpuCoolerEntity is null)
+            throw new CPUCoolerNotFoundException(productId);
+        var cpuCoolerToPatch = _mapper.Map<CPUCoolerUpdateDTO>(cpuCoolerEntity);
+        return (cpuCoolerToPatch, cpuCoolerEntity);
+    }
+
+    public void SaveChangesForPatch(CPUCoolerUpdateDTO cpuCoolerToPatch, CPUCooler
+    cpuCoolerEntity)
+    {
+        _mapper.Map(cpuCoolerToPatch, cpuCoolerEntity);
+        _repository.Save();
+    }
 }

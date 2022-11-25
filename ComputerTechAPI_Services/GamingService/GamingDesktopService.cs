@@ -87,4 +87,27 @@ public class GamingDesktopService : IGamingDesktopService
         _mapper.Map(gamingDesktopUpdate, gamingDesktopEntity);
         _repository.Save();
     }
+
+
+    public (GamingDesktopUpdateDTO gamingDesktopToPatch, GamingDesktop
+        gamingDesktopEntity) GetGamingDesktopForPatch(Guid productId, Guid id,
+        bool productTrackChanges, bool gamingDesktopTrackChanges)
+    {
+        var product = _repository.Product.GetProduct(productId, productTrackChanges);
+        if (product is null)
+            throw new ProductNotFoundException(productId);
+        var gamingDesktopEntity = _repository.GamingDesktop.GetGamingDesktop(productId, id,
+        gamingDesktopTrackChanges);
+        if (gamingDesktopEntity is null)
+            throw new GamingDesktopNotFoundException(productId);
+        var gamingDesktopToPatch = _mapper.Map<GamingDesktopUpdateDTO>(gamingDesktopEntity);
+        return (gamingDesktopToPatch, gamingDesktopEntity);
+    }
+
+    public void SaveChangesForPatch(GamingDesktopUpdateDTO gamingDesktopToPatch, GamingDesktop
+    gamingDesktopEntity)
+    {
+        _mapper.Map(gamingDesktopToPatch, gamingDesktopEntity);
+        _repository.Save();
+    }
 }

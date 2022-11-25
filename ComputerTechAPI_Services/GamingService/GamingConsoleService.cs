@@ -92,4 +92,26 @@ public class GamingConsoleService : IGamingConsoleService
         _mapper.Map(gamingConsoleUpdate, gamingConsoleEntity);
         _repository.Save();
     }
+
+    public (GamingConsoleUpdateDTO gamingConsoleToPatch, GamingConsole
+        gamingConsoleEntity) GetGamingConsoleForPatch(Guid productId, Guid id,
+        bool productTrackChanges, bool gamingConsoleTrackChanges)
+    {
+        var product = _repository.Product.GetProduct(productId, productTrackChanges);
+        if (product is null)
+            throw new ProductNotFoundException(productId);
+        var gamingConsoleEntity = _repository.GamingConsole.GetGamingConsole(productId, id,
+        gamingConsoleTrackChanges);
+        if (gamingConsoleEntity is null)
+            throw new GamingConsoleNotFoundException(productId);
+        var gamingConsoleToPatch = _mapper.Map<GamingConsoleUpdateDTO>(gamingConsoleEntity);
+        return (gamingConsoleToPatch, gamingConsoleEntity);
+    }
+
+    public void SaveChangesForPatch(GamingConsoleUpdateDTO gamingConsoleToPatch, GamingConsole
+    gamingConsoleEntity)
+    {
+        _mapper.Map(gamingConsoleToPatch, gamingConsoleEntity);
+        _repository.Save();
+    }
 }

@@ -1,5 +1,6 @@
 ﻿using ComputerTechAPI_DtoAndFeatures.DTO.SmartDevicesDTO;
 using ComputerTechAPI_TechService.Contracts;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ComputerTechAPI_RequestActions.Controllers.SmartDevicesControllers;
@@ -32,6 +33,8 @@ public class SmartPhoneController : ControllerBase
     {
         if (smartPhoneCreate is null)
             return BadRequest("SmartPhoneCreateDTO object is null");
+        if (!ModelState.IsValid)
+            return UnprocessableEntity(ModelState);
         var smartPhoneToReturn =
         _service.SmartPhoneService.CreateSmartPhoneForProduct(productId, smartPhoneCreate, trackChanges:
         false);
@@ -61,6 +64,27 @@ public class SmartPhoneController : ControllerBase
         _service.SmartPhoneService.UpdateSmartPhoneForProduct(productId, id, smartPhoneUpdate,
             productTrackChanges: false, smartPhoneTrackChanges: true);
 
+        return NoContent();
+    }
+
+
+    [HttpPatch("{id:guid}")]
+    public IActionResult PartiallyUpdateSmartPhoneForProduct(Guid productId, Guid id, [FromBody]
+    JsonPatchDocument<SmartPhoneUpdateDTO> patchDoc)
+    {
+        if (patchDoc is null)
+            return BadRequest("patchDoc object sent from client is null.");
+        var result = _service.SmartPhoneService.GetSmartPhoneForPatch(productId, id,
+        productTrackChanges: false,
+        smartPhoneTrackChanges: true);
+        patchDoc.ApplyTo(result.smartPhoneToPatch, ModelState);
+
+        TryValidateModel(result.smartPhoneToPatch);
+
+        if (!ModelState.IsValid)
+            return UnprocessableEntity(ModelState);
+        _service.SmartPhoneService.SaveChangesForPatch(result.smartPhoneToPatch,
+        result.smartPhoneEntity);
         return NoContent();
     }
 }

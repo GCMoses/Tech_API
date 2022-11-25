@@ -16,4 +16,10 @@ public interface IHDDService
 
     void UpdateHDDForProduct(Guid productId, Guid id, HDDUpdateDTO hddUpdate,
                                 bool productTrackChanges, bool hddTrackChanges);
+
+
+    (HDDUpdateDTO hddToPatch, HDD hddEntity) GetHDDForPatch(
+Guid productId, Guid id, bool productTrackChanges, bool hddTrackChanges);
+    void SaveChangesForPatch(HDDUpdateDTO hddToPatch, HDD
+    hddEntity);
 }

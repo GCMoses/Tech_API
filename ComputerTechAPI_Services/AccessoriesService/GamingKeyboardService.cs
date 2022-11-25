@@ -91,4 +91,27 @@ public class GamingKeyboardService : IGamingKeyboardService
         _mapper.Map(gamingKeyboardUpdate, gamingKeyboardEntity);
         _repository.Save();
     }
+
+
+    public (GamingKeyboardUpdateDTO gamingKeyboardToPatch, GamingKeyboard
+        gamingKeyboardEntity) GetGamingKeyboardForPatch(Guid productId, Guid id,
+        bool productTrackChanges, bool gamingKeyboardTrackChanges)
+    {
+        var product = _repository.Product.GetProduct(productId, productTrackChanges);
+        if (product is null)
+            throw new ProductNotFoundException(productId);
+        var gamingKeyboardEntity = _repository.GamingKeyboard.GetGamingKeyboard(productId, id,
+        gamingKeyboardTrackChanges);
+        if (gamingKeyboardEntity is null)
+            throw new GamingKeyboardNotFoundException(productId);
+        var gamingKeyboardToPatch = _mapper.Map<GamingKeyboardUpdateDTO>(gamingKeyboardEntity);
+        return (gamingKeyboardToPatch, gamingKeyboardEntity);
+    }
+
+    public void SaveChangesForPatch(GamingKeyboardUpdateDTO gamingKeyboardToPatch, GamingKeyboard
+    gamingKeyboardEntity)
+    {
+        _mapper.Map(gamingKeyboardToPatch, gamingKeyboardEntity);
+        _repository.Save();
+    }
 }

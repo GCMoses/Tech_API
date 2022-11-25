@@ -87,4 +87,26 @@ public class HDDService : IHDDService
         _mapper.Map(hddUpdate, hddEntity);
         _repository.Save();
     }
+
+
+    public (HDDUpdateDTO hddToPatch, HDD hddEntity) GetHDDForPatch(Guid productId, Guid id,
+        bool productTrackChanges, bool hddTrackChanges)
+    {
+        var product = _repository.Product.GetProduct(productId, productTrackChanges);
+        if (product is null)
+            throw new ProductNotFoundException(productId);
+        var hddEntity = _repository.HDD.GetHDD(productId, id,
+       hddTrackChanges);
+        if (hddEntity is null)
+            throw new HDDNotFoundException(productId);
+        var hddToPatch = _mapper.Map<HDDUpdateDTO>(hddEntity);
+        return (hddToPatch, hddEntity);
+    }
+
+    public void SaveChangesForPatch(HDDUpdateDTO hddToPatch, HDD
+    hddEntity)
+    {
+        _mapper.Map(hddToPatch, hddEntity);
+        _repository.Save();
+    }
 }

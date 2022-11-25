@@ -14,4 +14,9 @@ public interface IGamingKeyboardService
 
     void UpdateGamingKeyboardForProduct(Guid productId, Guid id, GamingKeyboardUpdateDTO gamingKeyboardUpdate,
                                        bool productTrackChanges, bool gamingKeyboardTrackChanges);
+
+    (GamingKeyboardUpdateDTO gamingKeyboardToPatch, GamingKeyboard gamingKeyboardEntity) GetGamingKeyboardForPatch(
+Guid productId, Guid id, bool productTrackChanges, bool gamingKeyboardTrackChanges);
+    void SaveChangesForPatch(GamingKeyboardUpdateDTO gamingKeyboardToPatch, GamingKeyboard
+    gamingKeyboardEntity);
 }

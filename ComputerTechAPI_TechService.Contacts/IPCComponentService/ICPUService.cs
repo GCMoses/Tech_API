@@ -16,4 +16,9 @@ public interface ICPUService
 
     void UpdateCPUForProduct(Guid productId, Guid id, CPUUpdateDTO cpuUpdate,
                                 bool productTrackChanges, bool cpuTrackChanges);
+
+
+    (CPUUpdateDTO cpuToPatch, CPU cpuEntity) GetCPUForPatch(
+Guid productId, Guid id, bool productTrackChanges, bool cpuTrackChanges);
+    void SaveChangesForPatch(CPUUpdateDTO cpuToPatch, CPU cpuEntity);
 }

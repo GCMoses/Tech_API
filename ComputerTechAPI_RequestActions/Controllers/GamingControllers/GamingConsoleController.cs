@@ -1,6 +1,7 @@
 ﻿using ComputerTechAPI_DtoAndFeatures.DTO.AccessoriesDTO;
 using ComputerTechAPI_DtoAndFeatures.DTO.GamingDTO;
 using ComputerTechAPI_TechService.Contracts;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ComputerTechAPI_RequestActions.Controllers.GamingController;
@@ -33,6 +34,9 @@ public class GamingConsoleController : ControllerBase
     {
         if (gamingConsoleCreate is null)
             return BadRequest("GamingConsoleCreateDTO object is null");
+        if (!ModelState.IsValid)
+            return UnprocessableEntity(ModelState);
+    
         var gamingConsoleToReturn =
         _service.GamingConsoleService.CreateGamingConsoleForProduct(productId, gamingConsoleCreate, trackChanges:
         false);
@@ -62,6 +66,27 @@ public class GamingConsoleController : ControllerBase
         _service.GamingConsoleService.UpdateGamingConsoleForProduct(productId, id, gamingConsoleUpdate,
             productTrackChanges: false, gamingConsoleTrackChanges: true);
 
+        return NoContent();
+    }
+
+
+    [HttpPatch("{id:guid}")]
+    public IActionResult PartiallyUpdateGamingConsoleForProduct(Guid productId, Guid id,
+[FromBody] JsonPatchDocument<GamingConsoleUpdateDTO> patchDoc)
+    {
+        if (patchDoc is null)
+            return BadRequest("patchDoc object sent from client is null.");
+        var result = _service.GamingConsoleService.GetGamingConsoleForPatch(productId, id,
+        productTrackChanges: false,
+        gamingConsoleTrackChanges: true);
+        patchDoc.ApplyTo(result.gamingConsoleToPatch, ModelState);
+
+        TryValidateModel(result.gamingConsoleToPatch);
+
+        if (!ModelState.IsValid)
+            return UnprocessableEntity(ModelState);
+        _service.GamingConsoleService.SaveChangesForPatch(result.gamingConsoleToPatch,
+        result.gamingConsoleEntity);
         return NoContent();
     }
 }
