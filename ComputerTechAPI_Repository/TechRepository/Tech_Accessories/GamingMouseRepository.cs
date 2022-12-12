@@ -1,5 +1,9 @@
 ﻿using ComputerTechAPI_Contracts.ITech.ITech_Accessories;
+using ComputerTechAPI_DtoAndFeatures.RequestFeatures;
+using ComputerTechAPI_DtoAndFeatures.RequestFeatures.TechParams.AccessoriesTechParams;
 using ComputerTechAPI_Entities.Tech_Models.Accessories;
+using ComputerTechAPI_Repository.Extensions.AccessoriesExtensions;
+using Microsoft.EntityFrameworkCore;
 
 namespace ComputerTechAPI_Repository.TechRepository.Tech_Accessories;
 
@@ -10,15 +14,25 @@ public class GamingMouseRepository : RepositoryBase<GamingMouse>, IGamingMouseRe
     {
     }
 
-    public IEnumerable<GamingMouse> GetGamingMouses(Guid productId, bool trackChanges) =>
-        FindByCondition(g => g.ProductId.Equals(productId), trackChanges)
-       .OrderBy(g => g.Name)
-       .ToList();
+    //Can be used to get large rows 100k-millions data and It's been tried and tested on large scale apps.  
 
+    public async Task<PagedList<GamingMouse>> GetGamingMousesAsync(Guid productId,
+    GamingMouseParams gamingMouseParams, bool trackChanges)
+    {
+        var gamingMouses = await FindByCondition(g => g.ProductId.Equals(productId), trackChanges)
+        //.FilterGamingMouses(gamingMouseParams.MinRating, gamingMouseParams.MaxRating)
+        .Search(gamingMouseParams.SearchTerm)
+        //.Sort(gamingMouseParams.OrderBy)
+        .ToListAsync();
+        var count = await FindByCondition(e => e.ProductId.Equals(productId), trackChanges).CountAsync();
+        return new PagedList<GamingMouse>(gamingMouses, count,
+        gamingMouseParams.PageNumber, gamingMouseParams.PageSize);
+    }
 
-    public GamingMouse GetGamingMouse(Guid productId, Guid id, bool trackChanges) =>
-        FindByCondition(g => g.ProductId.Equals(productId) && g.Id.Equals(id), trackChanges)
-        .SingleOrDefault();
+    public async Task<GamingMouse> GetGamingMouseAsync(Guid productId, Guid id, bool trackChanges) =>
+        await FindByCondition(g => g.ProductId.Equals(productId) && g.Id.Equals(id), trackChanges)
+        .SingleOrDefaultAsync();
+
 
 
     public void CreateGamingMouseForProduct(Guid productId, GamingMouse gamingMouse)
@@ -27,6 +41,7 @@ public class GamingMouseRepository : RepositoryBase<GamingMouse>, IGamingMouseRe
         Create(gamingMouse);
     }
 
-
     public void DeleteGamingMouse(GamingMouse gamingMouse) => Delete(gamingMouse);
+
+
 }

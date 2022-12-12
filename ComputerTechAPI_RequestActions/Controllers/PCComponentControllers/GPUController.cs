@@ -1,93 +1,133 @@
 ﻿using ComputerTechAPI_DtoAndFeatures.DTO.PCComponentsDTO;
+using ComputerTechAPI_DtoAndFeatures.RequestFeatures.TechParams.PCComponentsTechParams;
+using ComputerTechAPI_Entities.LinkModels.TechLinkParams.PCComponentLinkParams;
+using ComputerTechAPI_RequestActions.FilteringActions;
 using ComputerTechAPI_TechService.Contracts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
+using System.Text.Json;
 
 namespace ComputerTechAPI_RequestActions.Controllers.PCComponentControllers;
 
-[Route("api/products/{productId}/gpu")]
+[Route("api/products/{productId}/gpus")]
 [ApiController]
 public class GPUController : ControllerBase
 {
     private readonly IServiceManager _service;
     public GPUController(IServiceManager service) => _service = service;
 
-
+    /// <summary>
+    /// Gets the array of all GPUs 
+    /// </summary>
+    /// <returns>GPUs list</returns>
     [HttpGet]
-    public IActionResult GetGPUsForProduct(Guid productId)
+    [HttpHead]
+    [ServiceFilter(typeof(ValidateMediaTypeAttribute))]
+    public async Task<IActionResult> GetGPUsForProductAsync(Guid productId,
+    [FromQuery] GPUParams gpuParams)
     {
-        var gpus = _service.GPUService.GetGPUs(productId, trackChanges: false);
-        return Ok(gpus);
+        var gpulinkParams = new GPULinkParameters(gpuParams, HttpContext);
+
+        var result = await _service.GPUService.GetGPUsAsync(productId,
+            gpulinkParams, trackChanges: false);
+
+        Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(result.metaData));
+
+
+        return result.linkResponse.HasLinks ? Ok(result.linkResponse.LinkedEntities) : Ok(result.linkResponse.ShapedEntities);
     }
 
+    /// <summary>
+    /// Gets the GPU by Id only
+    /// </summary>
+    /// <returns>GPU</returns>
     [HttpGet("{id:guid}", Name = "GetGPUForProduct")]
-    public IActionResult GetGPUForProduct(Guid productId, Guid id)
+    public async Task<IActionResult> GetGPUForProductAsync(Guid productId, Guid id)
     {
-        var gpu = _service.GPUService.GetGPU(productId, id, trackChanges: false);
+        var gpu = await _service.GPUService.GetGPUAsync(productId, id, trackChanges: false);
         return Ok(gpu);
     }
 
-
+    /// <summary>
+    /// Create the GPU
+    /// </summary>
+    /// <param name="productId"></param>
+    /// <param name="gpuCreate"></param>
+    /// <returns>A newly created GPU</returns>
+    /// <response code="201">Returns the newly created GPU</response>
+    /// <response code="400">If the GPU is null</response>
+    /// <response code="422">If the model is invalid</response>
     [HttpPost]
-    public IActionResult CreateGPUForProduct(Guid productId, [FromBody] GPUCreateDTO gpuCreate)
+    [ServiceFilter(typeof(ValidateMediaTypeAttribute))]
+    public async Task<IActionResult> CreateGPUForProduct(Guid productId, [FromBody] GPUCreateDTO gpuCreate)
     {
         if (gpuCreate is null)
             return BadRequest("CPUCreateDTO object is null");
         if (!ModelState.IsValid)
             return UnprocessableEntity(ModelState);
         var gpuToReturn =
-        _service.GPUService.CreateGPUForProduct(productId, gpuCreate, trackChanges:
-        false);
+        await _service.GPUService.CreateGPUForProductAsync(productId, gpuCreate, trackChanges: false);
         return CreatedAtRoute("GetGPUForProduct", new
         {
-            productId,
-            id =
-        gpuToReturn.Id
+            productId, id = gpuToReturn.Id
         },
         gpuToReturn);
     }
 
 
-
+    /// <summary>
+    /// Delete the Router by Id
+    /// </summary>
+    /// <returns>Delete Router item</returns>
     [HttpDelete("{id:guid}")]
-    public IActionResult DeleteGPUForProduct(Guid productId, Guid id)
+    [Authorize(Roles = "ApiManager")]
+    public async Task<IActionResult> DeleteGPUForProductAsync(Guid productId, Guid id)
     {
-        _service.GPUService.DeleteGPUForProduct(productId, id, trackChanges: false);
+        await _service.GPUService.DeleteGPUForProductAsync(productId, id, trackChanges: false);
 
         return NoContent();
     }
 
+    /// <summary>
+    /// Update the Router by Id
+    /// </summary>
+    /// <returns>Update Router item</returns>
     [HttpPut("{id:guid}")]
-    public IActionResult UpdateGPUForProduct(Guid productId, Guid id,
-        [FromBody] GPUUpdateDTO gpuUpdate)
+    [ServiceFilter(typeof(ValidateMediaTypeAttribute))]
+    [Authorize(Roles = "ApiManager")]
+    public async Task<IActionResult> UpdateGPUForProductAsync(Guid productId, Guid id, [FromBody] GPUUpdateDTO gpuUpdate)
     {
         if (gpuUpdate is null)
             return BadRequest("GPUUpdateDTO object is null");
 
-        _service.GPUService.UpdateGPUForProduct(productId, id, gpuUpdate,
+        await _service.GPUService.UpdateGPUForProductAsync(productId, id, gpuUpdate,
             productTrackChanges: false, gpuTrackChanges: true);
 
         return NoContent();
     }
 
-
+    /// <summary>
+    /// Partially Update the Router by Id
+    /// </summary>
+    /// <returns>Patch Router item</returns>
     [HttpPatch("{id:guid}")]
-    public IActionResult PartiallyUpdateGPUForProduct(Guid productId, Guid id,
-[FromBody] JsonPatchDocument<GPUUpdateDTO> patchDoc)
+    [Authorize(Roles = "ApiManager")]
+    public async Task<IActionResult> PartiallyUpdateGPUForProductAsync(Guid productId, Guid id,
+    [FromBody] JsonPatchDocument<GPUUpdateDTO> patchDoc)
     {
         if (patchDoc is null)
             return BadRequest("patchDoc object sent from client is null.");
-        var result = _service.GPUService.GetGPUForPatch(productId, id,
-        productTrackChanges: false,
-        gpuTrackChanges: true);
+        var result = await _service.GPUService.GetGPUForPatchAsync(productId, id,
+        productTrackChanges: false, gpuTrackChanges: true);
         patchDoc.ApplyTo(result.gpuToPatch, ModelState);
 
         TryValidateModel(result.gpuToPatch);
 
         if (!ModelState.IsValid)
             return UnprocessableEntity(ModelState);
-        _service.GPUService.SaveChangesForPatch(result.gpuToPatch,
-        result.gpuEntity);
+        await _service.GPUService.SaveChangesForPatchAsync(result.gpuToPatch, result.gpuEntity);
         return NoContent();
     }
 }

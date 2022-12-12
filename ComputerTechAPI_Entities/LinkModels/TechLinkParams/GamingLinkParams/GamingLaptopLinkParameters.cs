@@ -1,0 +1,6 @@
+﻿using ComputerTechAPI_DtoAndFeatures.RequestFeatures.TechParams.GamingTechParams;
+using Microsoft.AspNetCore.Http;
+
+namespace ComputerTechAPI_Entities.LinkModels.TechLinkParams.GamingLinkParams;
+
+public record GamingLaptopLinkParameters(GamingLaptopParams gamingLaptopParams, HttpContext Context);

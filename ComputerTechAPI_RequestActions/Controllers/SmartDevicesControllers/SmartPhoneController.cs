@@ -1,42 +1,77 @@
 ﻿using ComputerTechAPI_DtoAndFeatures.DTO.SmartDevicesDTO;
+using ComputerTechAPI_DtoAndFeatures.RequestFeatures.TechParams.SmartDevicesParams;
+using ComputerTechAPI_Entities.LinkModels.TechLinkParams.SmartDevicesLinkParams;
+using ComputerTechAPI_RequestActions.FilteringActions;
 using ComputerTechAPI_TechService.Contracts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
+using System.Text.Json;
 
 namespace ComputerTechAPI_RequestActions.Controllers.SmartDevicesControllers;
 
-[Route("api/products/{productId}/smartphone")]
+[Route("api/products/{productId}/smartphones")]
 [ApiController]
 public class SmartPhoneController : ControllerBase
 {
     private readonly IServiceManager _service;
     public SmartPhoneController(IServiceManager service) => _service = service;
 
-
+    /// <summary>
+    /// Gets the array of all SmartPhones  
+    /// </summary>
+    /// <returns>SmartPhones list</returns>
     [HttpGet]
-    public IActionResult GetSmartPhonesForProduct(Guid productId)
+    [HttpHead]
+    [ServiceFilter(typeof(ValidateMediaTypeAttribute))]
+    [Authorize()]
+    public async Task<IActionResult> GetSmartPhonesForProductAsync(Guid productId,
+      [FromQuery] SmartPhoneParams smartPhonesParams)
     {
-        var smartPhones = _service.SmartPhoneService.GetSmartPhones(productId, trackChanges: false);
-        return Ok(smartPhones);
+        var smartPhoneLinkParams = new SmartPhoneLinkParameters(smartPhonesParams, HttpContext);
+
+        var result = await _service.SmartPhoneService.GetSmartPhonesAsync(productId,
+            smartPhoneLinkParams, trackChanges: false);
+
+        Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(result.metaData));
+
+
+        return result.linkResponse.HasLinks ? Ok(result.linkResponse.LinkedEntities) : Ok(result.linkResponse.ShapedEntities);
     }
 
+    /// <summary>
+    /// Gets the SmartPhone by Id only
+    /// </summary>
+    /// <returns>SmartPhone</returns>
     [HttpGet("{id:guid}", Name = "GetSmartPhoneForProduct")]
-    public IActionResult GetSmartPhoneForProduct(Guid productId, Guid id)
+    [Authorize()]
+    public async Task<IActionResult> GetSmartPhoneForProductAsync(Guid productId, Guid id)
     {
-        var smartPhone = _service.SmartPhoneService.GetSmartPhone(productId, id, trackChanges: false);
+        var smartPhone = await _service.SmartPhoneService.GetSmartPhoneAsync(productId, id, trackChanges: false);
         return Ok(smartPhone);
     }
 
-
+    /// <summary>
+    /// Create the SmartPhone 
+    /// </summary>
+    /// <param name="productId"></param>
+    /// <param name="smartPhoneCreate"></param>
+    /// <returns>A newly created SmartPhone</returns>
+    /// <response code="201">Returns the newly created SmartPhone</response>
+    /// <response code="400">If the SmartPhone is null</response>
+    /// <response code="422">If the model is invalid</response>
     [HttpPost]
-    public IActionResult CreateSmartPhoneForProduct(Guid productId, [FromBody] SmartPhoneCreateDTO smartPhoneCreate)
+    [ServiceFilter(typeof(ValidationFilterAttribute))]
+    [Authorize(Roles = "ApiManager")]
+    public async Task<IActionResult> CreateSmartPhoneForProductAsync(Guid productId, [FromBody] SmartPhoneCreateDTO smartPhoneCreate)
     {
         if (smartPhoneCreate is null)
             return BadRequest("SmartPhoneCreateDTO object is null");
         if (!ModelState.IsValid)
             return UnprocessableEntity(ModelState);
         var smartPhoneToReturn =
-        _service.SmartPhoneService.CreateSmartPhoneForProduct(productId, smartPhoneCreate, trackChanges:
+        await _service.SmartPhoneService.CreateSmartPhoneForProductAsync(productId, smartPhoneCreate, trackChanges:
         false);
         return CreatedAtRoute("GetSmartPhoneForProduct", new
         {
@@ -46,35 +81,50 @@ public class SmartPhoneController : ControllerBase
         smartPhoneToReturn);
     }
 
+    /// <summary>
+    /// Delete the SmartPhone by Id
+    /// </summary>
+    /// <returns>Delete SmartPhone item</returns>
     [HttpDelete("{id:guid}")]
-    public IActionResult DeleteSmartPhoneForProduct(Guid productId, Guid id)
+    [Authorize(Roles = "ApiManager")]
+    public async Task<IActionResult> DeleteSmartPhoneForProductAsync(Guid productId, Guid id)
     {
-        _service.SmartPhoneService.DeleteSmartPhoneForProduct(productId, id, trackChanges: false);
+       await _service.SmartPhoneService.DeleteSmartPhoneForProductAsync(productId, id, trackChanges: false);
 
         return NoContent();
     }
 
+    /// <summary>
+    /// Update the SmartPhone by Id
+    /// </summary>
+    /// <returns>Update SmartPhone item</returns>
     [HttpPut("{id:guid}")]
-    public IActionResult UpdateSmartPhoneForProduct(Guid productId, Guid id,
+    [ServiceFilter(typeof(ValidationFilterAttribute))]
+    [Authorize(Roles = "ApiManager")]
+    public async Task<IActionResult> UpdateSmartPhoneForProductAsync(Guid productId, Guid id,
         [FromBody] SmartPhoneUpdateDTO smartPhoneUpdate)
     {
         if (smartPhoneUpdate is null)
             return BadRequest("SmartPhoneUpdateDTO object is null");
 
-        _service.SmartPhoneService.UpdateSmartPhoneForProduct(productId, id, smartPhoneUpdate,
+       await _service.SmartPhoneService.UpdateSmartPhoneForProductAsync(productId, id, smartPhoneUpdate,
             productTrackChanges: false, smartPhoneTrackChanges: true);
 
         return NoContent();
     }
 
-
+    /// <summary>
+    /// Partially Update the SmartPhone by Id
+    /// </summary>
+    /// <returns>Patch SmartPhone item</returns>
     [HttpPatch("{id:guid}")]
-    public IActionResult PartiallyUpdateSmartPhoneForProduct(Guid productId, Guid id, [FromBody]
+    [Authorize(Roles = "ApiManager")]
+    public async Task<IActionResult> PartiallyUpdateSmartPhoneForProductAsync(Guid productId, Guid id, [FromBody]
     JsonPatchDocument<SmartPhoneUpdateDTO> patchDoc)
     {
         if (patchDoc is null)
             return BadRequest("patchDoc object sent from client is null.");
-        var result = _service.SmartPhoneService.GetSmartPhoneForPatch(productId, id,
+        var result = await _service.SmartPhoneService.GetSmartPhoneForPatchAsync(productId, id,
         productTrackChanges: false,
         smartPhoneTrackChanges: true);
         patchDoc.ApplyTo(result.smartPhoneToPatch, ModelState);
@@ -83,7 +133,7 @@ public class SmartPhoneController : ControllerBase
 
         if (!ModelState.IsValid)
             return UnprocessableEntity(ModelState);
-        _service.SmartPhoneService.SaveChangesForPatch(result.smartPhoneToPatch,
+         await _service.SmartPhoneService.SaveChangesForPatchAsync(result.smartPhoneToPatch,
         result.smartPhoneEntity);
         return NoContent();
     }

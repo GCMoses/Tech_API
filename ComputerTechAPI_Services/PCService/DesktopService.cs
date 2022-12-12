@@ -1,15 +1,18 @@
 ﻿using AutoMapper;
 using ComputerTechAPI_Contracts;
-using ComputerTechAPI_DtoAndFeatures.DTO.PCComponentsDTO;
-using ComputerTechAPI_Entities.ErrorExceptions.PCComponentErrorExceptions;
 using ComputerTechAPI_Entities.ErrorExceptions;
 using ComputerTechAPI_TechService.Contracts.PCService;
 using ComputerTechAPI_DtoAndFeatures.DTO.PCDTO;
 using ComputerTechAPI_Entities.ErrorExceptions.PCErrorExceptions;
-using ComputerTechAPI_DtoAndFeatures.DTO.GamingDTO;
-using ComputerTechAPI_Entities.Tech_Models.Gaming;
 using ComputerTechAPI_Entities.Tech_Models.PC;
-using ComputerTechAPI_Entities.ErrorExceptions.GamingErrorExceptions;
+using ComputerTechAPI_DtoAndFeatures.RequestFeatures.TechParams.PCTechParams;
+using ComputerTechAPI_Contracts.ILinks.INetworkingLinks;
+using ComputerTechAPI_DtoAndFeatures.DTO.NetworkingDTO;
+using ComputerTechAPI_DtoAndFeatures.RequestFeatures;
+using ComputerTechAPI_Entities.LinkModels.TechLinkParams.NetworkingLinkParams;
+using ComputerTechAPI_Entities.Tech_Models;
+using ComputerTechAPI_Contracts.ILinks.IPCLinks;
+using ComputerTechAPI_Entities.LinkModels.TechLinkParams.PCLinkParams;
 
 namespace ComputerTechAPI_Services.PCService;
 
@@ -18,101 +21,112 @@ public class DesktopService : IDesktopService
     private readonly IRepositoryManager _repository;
     private readonly ILogsManager _logger;
     private readonly IMapper _mapper;
+    private readonly IDesktopLinks _desktopLinks;
     public DesktopService(IRepositoryManager repository, ILogsManager
-    logger, IMapper mapper)
+    logger, IMapper mapper, IDesktopLinks desktopLinks)
     {
         _repository = repository;
         _logger = logger;
         _mapper = mapper;
+        _desktopLinks = desktopLinks;
     }
 
-    public IEnumerable<DesktopDTO> GetDesktops(Guid productId, bool trackChanges)
+    public async Task<(LinkResponse linkResponse, MetaData metaData)>
+     GetDesktopsAsync(Guid productId, DesktopLinkParameters linkParameters, bool trackChanges)
     {
-        var product = _repository.Product.GetProduct(productId, trackChanges);
-        if (product is null)
-            throw new ProductNotFoundException(productId);
+        if (!linkParameters.desktopParams.RatingRange)
+            throw new RatingRangeBadRequestException();
 
-        var desktopDb = _repository.Desktop.GetDesktops(productId, trackChanges);
-        var desktopDTO = _mapper.Map<IEnumerable<DesktopDTO>>(desktopDb);
+        await CheckIfProductExists(productId, trackChanges);
+        var desktopsWithMetaData = await _repository.Desktop
+        .GetDesktopsAsync(productId, linkParameters.desktopParams, trackChanges);
+
+        var desktopsDTO = _mapper.Map<IEnumerable<DesktopDTO>>
+            (desktopsWithMetaData);
+        var links = _desktopLinks.TryGenerateLinks(desktopsDTO,
+        linkParameters.desktopParams.Fields, productId, linkParameters.Context);
+
+        return (linkResponse: links, metaData: desktopsWithMetaData.MetaData);
+    }
+
+    public async Task<DesktopDTO> GetDesktopAsync(Guid productId, Guid id, bool trackChanges)
+    {
+        await CheckIfProductExists(productId, trackChanges);
+
+        var desktopDb = await GetDesktopForProductAndCheckIfItExists(productId, id, trackChanges);
+
+        var desktopDTO = _mapper.Map<DesktopDTO>(desktopDb);
         return desktopDTO;
     }
 
-
-    public DesktopDTO GetDesktop(Guid productId, Guid id, bool trackChanges)
+    public async Task<DesktopDTO> CreateDesktopForProductAsync(Guid productId,
+        DesktopCreateDTO desktopCreate, bool trackChanges)
     {
-        var product = _repository.Product.GetProduct(productId, trackChanges);
-        if (product is null)
-            throw new ProductNotFoundException(productId);
+        await CheckIfProductExists(productId, trackChanges);
 
-        var desktopDb = _repository.Desktop.GetDesktop(productId, id, trackChanges);
-        if (desktopDb is null)
-            throw new DesktopNotFoundException(id);
+        var desktopEntity = _mapper.Map<Desktop>(desktopCreate);
 
-        var desktop = _mapper.Map<DesktopDTO>(desktopDb);
-        return desktop;
-    }
-
-
-    public DesktopDTO CreateDesktopForProduct(Guid productId, DesktopCreateDTO desktop, bool trackChanges)
-    {
-        var product = _repository.Product.GetProduct(productId, trackChanges);
-        if (product is null)
-            throw new ProductNotFoundException(productId);
-        var desktopEntity = _mapper.Map<Desktop>(desktop);
         _repository.Desktop.CreateDesktopForProduct(productId, desktopEntity);
-        _repository.Save();
+        await _repository.SaveAsync();
+
         var desktopToReturn = _mapper.Map<DesktopDTO>(desktopEntity);
+
         return desktopToReturn;
     }
 
-
-    public void DeleteDesktopForProduct(Guid productId, Guid id, bool trackChanges)
+    public async Task DeleteDesktopForProductAsync(Guid productId, Guid id, bool trackChanges)
     {
-        var product = _repository.Product.GetProduct(productId, trackChanges);
+        await CheckIfProductExists(productId, trackChanges);
+
+        var desktopDb = await GetDesktopForProductAndCheckIfItExists(productId, id, trackChanges);
+
+        _repository.Desktop.DeleteDesktop(desktopDb);
+        await _repository.SaveAsync();
+    }
+
+    public async Task UpdateDesktopForProductAsync(Guid productId, Guid id, DesktopUpdateDTO
+        desktopUpdate, bool productTrackChanges, bool desktopTrackChanges)
+    {
+        await CheckIfProductExists(productId, productTrackChanges);
+
+        var desktopDb = await GetDesktopForProductAndCheckIfItExists(productId, id, desktopTrackChanges);
+
+        _mapper.Map(desktopUpdate, desktopDb);
+        await _repository.SaveAsync();
+    }
+
+    public async Task<(DesktopUpdateDTO desktopToPatch, Desktop desktopEntity)> GetDesktopForPatchAsync
+        (Guid productId, Guid id, bool productTrackChanges, bool desktopTrackChanges)
+    {
+        await CheckIfProductExists(productId, productTrackChanges);
+
+        var desktopDb = await GetDesktopForProductAndCheckIfItExists(productId, id, desktopTrackChanges);
+
+        var desktopToPatch = _mapper.Map<DesktopUpdateDTO>(desktopDb);
+
+        return (desktopToPatch: desktopToPatch, desktopEntity: desktopDb);
+    }
+
+    public async Task SaveChangesForPatchAsync(DesktopUpdateDTO desktopToPatch, Desktop desktopEntity)
+    {
+        _mapper.Map(desktopToPatch, desktopEntity);
+        await _repository.SaveAsync();
+    }
+
+    private async Task CheckIfProductExists(Guid productId, bool trackChanges)
+    {
+        var product = await _repository.Product.GetProductAsync(productId, trackChanges);
         if (product is null)
             throw new ProductNotFoundException(productId);
-        var desktopForProduct = _repository.Desktop.GetDesktop(productId, id, trackChanges);
-        if (desktopForProduct is null)
+    }
+
+    private async Task<Desktop> GetDesktopForProductAndCheckIfItExists
+        (Guid productId, Guid id, bool trackChanges)
+    {
+        var desktopDb = await _repository.Desktop.GetDesktopAsync(productId, id, trackChanges);
+        if (desktopDb is null)
             throw new DesktopNotFoundException(id);
-        _repository.Desktop.DeleteDesktop(desktopForProduct);
-        _repository.Save();
-    }
 
-
-    public void UpdateDesktopForProduct(Guid productId, Guid id, DesktopUpdateDTO desktopUpdate,
-                                   bool productTrackChanges, bool desktopTrackChanges)
-    {
-        var product = _repository.Product.GetProduct(productId, productTrackChanges);
-        if (product is null)
-            throw new ProductNotFoundException(productId);
-        var desktopEntity = _repository.Desktop.GetDesktop(productId, id,
-        desktopTrackChanges);
-        if (desktopEntity is null)
-            throw new DesktopNotFoundException(id);
-        _mapper.Map(desktopUpdate, desktopEntity);
-        _repository.Save();
-    }
-
-
-    public (DesktopUpdateDTO desktopToPatch, Desktop
-       desktopEntity) GetDesktopForPatch(Guid productId, Guid id,
-       bool productTrackChanges, bool desktopTrackChanges)
-    {
-        var product = _repository.Product.GetProduct(productId, productTrackChanges);
-        if (product is null)
-            throw new ProductNotFoundException(productId);
-        var desktopEntity = _repository.Desktop.GetDesktop(productId, id,
-        desktopTrackChanges);
-        if (desktopEntity is null)
-            throw new DesktopNotFoundException(productId);
-        var desktopToPatch = _mapper.Map<DesktopUpdateDTO>(desktopEntity);
-        return (desktopToPatch, desktopEntity);
-    }
-
-    public void SaveChangesForPatch(DesktopUpdateDTO DesktopToPatch, Desktop
-    desktopEntity)
-    {
-        _mapper.Map(DesktopToPatch, desktopEntity);
-        _repository.Save();
+        return desktopDb;
     }
 }

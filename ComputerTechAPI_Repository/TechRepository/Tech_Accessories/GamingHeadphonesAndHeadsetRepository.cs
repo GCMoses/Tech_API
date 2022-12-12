@@ -1,7 +1,10 @@
 ﻿using ComputerTechAPI_Contracts.ITech.ITech_Accessories;
+using ComputerTechAPI_DtoAndFeatures.RequestFeatures;
+using ComputerTechAPI_DtoAndFeatures.RequestFeatures.TechParams.AccessoriesTechParams;
 using ComputerTechAPI_Entities.Tech_Models.Accessories;
-using ComputerTechAPI_Entities.Tech_Models.Networking;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using Microsoft.EntityFrameworkCore;
+using ComputerTechAPI_Repository.Extensions.AccessoriesExtensions;
+
 
 namespace ComputerTechAPI_Repository.TechRepository.Tech_Accessories;
 
@@ -12,15 +15,26 @@ internal sealed class GamingHeadphonesAndHeadsetRepository : RepositoryBase<Gami
     {
     }
 
+    //Can be used to get large rows 100k-millions data and It's been tried and tested on large scale apps.  
 
-    public IEnumerable<GamingHeadphonesAndHeadset> GetGamingHeadphonesAndHeadsets(Guid productId, bool trackChanges) =>
-        FindByCondition(g => g.ProductId.Equals(productId), trackChanges)
-        .OrderBy(g => g.Name)
-        .ToList();
+    public async Task<PagedList<GamingHeadphonesAndHeadset>> GetGamingHeadphonesAndHeadsetsAsync(Guid productId,
+    GamingHeadphonesAndHeadsetParams gamingHeadphonesAndHeadsetParams, bool trackChanges)
+    {
+        var gamingHeadphonesAndHeadsets = await FindByCondition(g => g.ProductId.Equals(productId), trackChanges)
+        //.FilterGamingHeadphonesAndHeadsets(gamingHeadphonesAndHeadsetParams.MinRating, gamingHeadphonesAndHeadsetParams.MaxRating)
+        .Search(gamingHeadphonesAndHeadsetParams.SearchTerm)
+        //.Sort(gamingHeadphonesAndHeadsetParams.OrderBy)
+        .ToListAsync();
+        var count = await FindByCondition(e => e.ProductId.Equals(productId), trackChanges).CountAsync();
+        return new PagedList<GamingHeadphonesAndHeadset>(gamingHeadphonesAndHeadsets, count,
+        gamingHeadphonesAndHeadsetParams.PageNumber, gamingHeadphonesAndHeadsetParams.PageSize);
+    }
 
-    public GamingHeadphonesAndHeadset GetGamingHeadphonesAndHeadset(Guid productId, Guid id, bool trackChanges) =>
-        FindByCondition(g => g.ProductId.Equals(productId) && g.Id.Equals(id), trackChanges)
-    .SingleOrDefault();
+    public async Task<GamingHeadphonesAndHeadset> GetGamingHeadphonesAndHeadsetAsync(Guid productId, Guid id, bool trackChanges) =>
+        await FindByCondition(g => g.ProductId.Equals(productId) && g.Id.Equals(id), trackChanges)
+        .SingleOrDefaultAsync();
+
+
 
     public void CreateGamingHeadphonesAndHeadsetForProduct(Guid productId, GamingHeadphonesAndHeadset gamingHeadphonesAndHeadset)
     {

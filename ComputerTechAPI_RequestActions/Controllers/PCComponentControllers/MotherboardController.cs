@@ -1,93 +1,139 @@
 ﻿using ComputerTechAPI_DtoAndFeatures.DTO.PCComponentsDTO;
-using ComputerTechAPI_Entities.Tech_Models.PCComponents;
+using ComputerTechAPI_DtoAndFeatures.RequestFeatures.TechParams.PCComponentsTechParams;
+using ComputerTechAPI_Entities.LinkModels.TechLinkParams.PCComponentLinkParams;
+using ComputerTechAPI_RequestActions.FilteringActions;
 using ComputerTechAPI_TechService.Contracts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
+using System.Text.Json;
 
 namespace ComputerTechAPI_RequestActions.Controllers.PCComponentControllers;
 
-[Route("api/products/{productId}/motherboard")]
+[Route("api/products/{productId}/motherboards")]
 [ApiController]
 public class MotherboardController : ControllerBase
 {
     private readonly IServiceManager _service;
     public MotherboardController(IServiceManager service) => _service = service;
 
-
+    /// <summary>
+    /// Gets the array of all Motherboards 
+    /// </summary>
+    /// <returns>Motherboards list</returns>
     [HttpGet]
-    public IActionResult GetMotherboardsForProduct(Guid productId)
+    [HttpHead]
+    [ServiceFilter(typeof(ValidateMediaTypeAttribute))]
+    [Authorize()]   
+    public async Task<IActionResult> GetMotherboardsForProductAsync(Guid productId,
+    [FromQuery] MotherboardParams motherboardParams)
     {
-        var motherboards = _service.MotherboardService.GetMotherboards(productId, trackChanges: false);
-        return Ok(motherboards);
+        var motherboardlinkParams = new MotherboardLinkParameters(motherboardParams, HttpContext);
+
+        var result = await _service.MotherboardService.GetMotherboardsAsync(productId,
+            motherboardlinkParams, trackChanges: false);
+
+        Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(result.metaData));
+
+
+        return result.linkResponse.HasLinks ? Ok(result.linkResponse.LinkedEntities) : Ok(result.linkResponse.ShapedEntities);
     }
 
+    /// <summary>
+    /// Gets the Motherboard by Id only
+    /// </summary>
+    /// <returns>Motherboard</returns>
     [HttpGet("{id:guid}", Name = "GetMotherboardForProduct")]
-    public IActionResult GetMotherboardForProduct(Guid productId, Guid id)
+    [Authorize()]
+    public async Task<IActionResult> GetMotherboardForProductAsync(Guid productId, Guid id)
     {
-        var motherboard = _service.MotherboardService.GetMotherboard(productId, id, trackChanges: false);
+        var motherboard = await _service.MotherboardService.GetMotherboardAsync(productId, id, trackChanges: false);
         return Ok(motherboard);
     }
 
-
+    /// <summary>
+    /// Create the RouteMotherboardr
+    /// </summary>
+    /// <param name="productId"></param>
+    /// <param name="motherboardCreate"></param>
+    /// <returns>A newly created Motherboard</returns>
+    /// <response code="201">Returns the newly created Motherboard</response>
+    /// <response code="400">If the Motherboard is null</response>
+    /// <response code="422">If the model is invalid</response>
     [HttpPost]
-    public IActionResult CreateMotherboardForProduct(Guid productId, [FromBody] MotherboardCreateDTO motherboardCreate)
+    [ServiceFilter(typeof(ValidateMediaTypeAttribute))]
+    [Authorize(Roles = "ApiManager")]
+    public async Task<IActionResult> CreateMotherboardForProductAsync(Guid productId, [FromBody] MotherboardCreateDTO motherboardCreate)
     {
         if (motherboardCreate is null)
             return BadRequest("MotherboardCreateDTO object is null");
         if (!ModelState.IsValid)
             return UnprocessableEntity(ModelState);
         var motherboardToReturn =
-        _service.MotherboardService.CreateMotherboardForProduct(productId, motherboardCreate, trackChanges:
+        await _service.MotherboardService.CreateMotherboardForProductAsync(productId, motherboardCreate, trackChanges:
         false);
         return CreatedAtRoute("GetMotherboardForProduct", new
         {
-            productId,
-            id =
-        motherboardToReturn.Id
+            productId, id = motherboardToReturn.Id
         },
         motherboardToReturn);
     }
 
 
-
+    /// <summary>
+    /// Delete the Motherboard by Id
+    /// </summary>
+    /// <returns>Delete Motherboard item</returns>
     [HttpDelete("{id:guid}")]
-    public IActionResult DeleteMotherboardForProduct(Guid productId, Guid id)
+    [Authorize(Roles = "ApiManager")]
+    public async Task<IActionResult> DeleteMotherboardForProduct(Guid productId, Guid id)
     {
-        _service.MotherboardService.DeleteMotherboardForProduct(productId, id, trackChanges: false);
+        await _service.MotherboardService.DeleteMotherboardForProductAsync(productId, id, trackChanges: false);
 
         return NoContent();
     }
 
+    /// <summary>
+    /// Update the Motherboard by Id
+    /// </summary>
+    /// <returns>Update Motherboard item</returns>
     [HttpPut("{id:guid}")]
-    public IActionResult UpdateMotherboardForProduct(Guid productId, Guid id,
+    [ServiceFilter(typeof(ValidateMediaTypeAttribute))]
+    [Authorize(Roles = "ApiManager")]
+    public async Task<IActionResult> UpdateMotherboardForProductAsync(Guid productId, Guid id,
         [FromBody] MotherboardUpdateDTO motherboardUpdate)
     {
         if (motherboardUpdate is null)
             return BadRequest("MotherboardUpdateDTO object is null");
 
-        _service.MotherboardService.UpdateMotherboardForProduct(productId, id, motherboardUpdate,
+        await _service.MotherboardService.UpdateMotherboardForProductAsync(productId, id, motherboardUpdate,
             productTrackChanges: false, motherboardTrackChanges: true);
 
         return NoContent();
     }
 
-
+    /// <summary>
+    /// Partially Update the Motherboard by Id
+    /// </summary>
+    /// <returns>Patch Motherboard item</returns>
     [HttpPatch("{id:guid}")]
-    public IActionResult PartiallyUpdateMotherboardForProduct(Guid productId, Guid id, [FromBody]
+    [Authorize(Roles = "ApiManager")]
+    public async Task<IActionResult> PartiallyUpdateMotherboardForProductAsync(Guid productId, Guid id, [FromBody]
     JsonPatchDocument<MotherboardUpdateDTO> patchDoc)
     {
         if (patchDoc is null)
             return BadRequest("patchDoc object sent from client is null.");
-        var result = _service.MotherboardService.GetMotherboardForPatch(productId, id,
+        var result = await _service.MotherboardService.GetMotherboardForPatchAsync(productId, id,
         productTrackChanges: false,
-            motherboardTrackChanges: true);
-            patchDoc.ApplyTo(result.motherboardToPatch, ModelState);
+        motherboardTrackChanges: true);
+        patchDoc.ApplyTo(result.motherboardToPatch, ModelState);
 
         TryValidateModel(result.motherboardToPatch);
 
         if (!ModelState.IsValid)
             return UnprocessableEntity(ModelState);
-        _service.MotherboardService.SaveChangesForPatch(result.motherboardToPatch,
+        await _service.MotherboardService.SaveChangesForPatchAsync(result.motherboardToPatch,
         result.motherboardEntity);
         return NoContent();
     }

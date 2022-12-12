@@ -1,43 +1,79 @@
-﻿        using ComputerTechAPI_DtoAndFeatures.DTO.PCDTO;
-using ComputerTechAPI_DtoAndFeatures.DTO.SmartDevicesDTO;
+﻿using ComputerTechAPI_DtoAndFeatures.DTO.SmartDevicesDTO;
+using ComputerTechAPI_DtoAndFeatures.RequestFeatures.TechParams.NetworkingTechParams;
+using ComputerTechAPI_DtoAndFeatures.RequestFeatures.TechParams.SmartDecivesTechParams;
+using ComputerTechAPI_Entities.LinkModels.TechLinkParams.NetworkingLinkParams;
+using ComputerTechAPI_Entities.LinkModels.TechLinkParams.SmartDevicesLinkParams;
+using ComputerTechAPI_RequestActions.FilteringActions;
 using ComputerTechAPI_TechService.Contracts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
+using System.Text.Json;
 
 namespace ComputerTechAPI_RequestActions.Controllers.SmartDevicesControllers;
 
-[Route("api/products/{productId}/drone")]
+[Route("api/products/{productId}/drones")]
 [ApiController]
 public class DroneController : ControllerBase
 {
     private readonly IServiceManager _service;
     public DroneController(IServiceManager service) => _service = service;
 
-
+    /// <summary>
+    /// Gets the array of all Drones  
+    /// </summary>
+    /// <returns>Drones list</returns>
     [HttpGet]
-    public IActionResult GetDronesForProduct(Guid productId)
+    [HttpHead]
+    [ServiceFilter(typeof(ValidateMediaTypeAttribute))]
+    [Authorize()]
+    public async Task<IActionResult> GetDronesForProductAsync(Guid productId,
+      [FromQuery] DroneParams droneParams)
     {
-        var drones = _service.DroneService.GetDrones(productId, trackChanges: false);
-        return Ok(drones);
+        var dronelinkParams = new DroneLinkParameters(droneParams, HttpContext);
+
+        var result = await _service.DroneService.GetDronesAsync(productId,
+            dronelinkParams, trackChanges: false);
+
+        Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(result.metaData));
+
+
+        return result.linkResponse.HasLinks ? Ok(result.linkResponse.LinkedEntities) : Ok(result.linkResponse.ShapedEntities);
     }
 
+    /// <summary>
+    /// Gets the Drone by Id only
+    /// </summary>
+    /// <returns>Drone</returns>
     [HttpGet("{id:guid}", Name = "GetDroneForProduct")]
-    public IActionResult GetDroneForProduct(Guid productId, Guid id)
+    [Authorize()]
+    public async Task<IActionResult> GetDroneForProductAsync(Guid productId, Guid id)
     {
-        var drone = _service.DroneService.GetDrone(productId, id, trackChanges: false);
+        var drone = await _service.DroneService.GetDroneAsync(productId, id, trackChanges: false);
         return Ok(drone);
     }
 
-
+    /// <summary>
+    /// Create the Drone 
+    /// </summary>
+    /// <param name="productId"></param>
+    /// <param name="droneCreate"></param>
+    /// <returns>A newly created Drone</returns>
+    /// <response code="201">Returns the newly created Drone</response>
+    /// <response code="400">If the Drone is null</response>
+    /// <response code="422">If the model is invalid</response>
     [HttpPost]
-    public IActionResult CreateDroneForProduct(Guid productId, [FromBody] DroneCreateDTO droneCreate)
+    [ServiceFilter(typeof(ValidationFilterAttribute))]
+    [Authorize(Roles = "ApiManager")]
+    public async Task<IActionResult> CreateDroneForProductAsync(Guid productId, [FromBody] DroneCreateDTO droneCreate)
     {
         if (droneCreate is null)
             return BadRequest("DroneCreateDTO object is null");
         if (!ModelState.IsValid)
             return UnprocessableEntity(ModelState);
         var droneToReturn =
-        _service.DroneService.CreateDroneForProduct(productId, droneCreate, trackChanges:
+        await _service.DroneService.CreateDroneForProductAsync(productId, droneCreate, trackChanges:
         false);
         return CreatedAtRoute("GetDroneForProduct", new
         {
@@ -47,36 +83,50 @@ public class DroneController : ControllerBase
         droneToReturn);
     }
 
-
+    /// <summary>
+    /// Delete the Drone by Id
+    /// </summary>
+    /// <returns>Delete Drone item</returns>
     [HttpDelete("{id:guid}")]
-    public IActionResult DeleteDroneForProduct(Guid productId, Guid id)
+    [Authorize(Roles = "ApiManager")]
+    public async Task<IActionResult> DeleteDroneForProductAsync(Guid productId, Guid id)
     {
-        _service.DroneService.DeleteDroneForProduct(productId, id, trackChanges: false);
+        await _service.DroneService.DeleteDroneForProductAsync(productId, id, trackChanges: false);
 
         return NoContent();
     }
 
+    /// <summary>
+    /// Update the Drone by Id
+    /// </summary>
+    /// <returns>Update Drone item</returns>
     [HttpPut("{id:guid}")]
-    public IActionResult UpdateDroneForProduct(Guid productId, Guid id,
+    [ServiceFilter(typeof(ValidationFilterAttribute))]
+    [Authorize(Roles = "ApiManager")]
+    public async Task<IActionResult> UpdateDroneForProductAsync(Guid productId, Guid id,
         [FromBody] DroneUpdateDTO droneUpdate)
     {
         if (droneUpdate is null)
             return BadRequest("DroneUpdateDTO object is null");
 
-        _service.DroneService.UpdateDroneForProduct(productId, id, droneUpdate,
+        await _service.DroneService.UpdateDroneForProductAsync(productId, id, droneUpdate,
             productTrackChanges: false, droneTrackChanges: true);
 
         return NoContent();
     }
 
-
+    /// <summary>
+    /// Partially Update the Drone by Id
+    /// </summary>
+    /// <returns>Patch Drone item</returns>
     [HttpPatch("{id:guid}")]
-    public IActionResult PartiallyUpdateDroneForProduct(Guid productId, Guid id, [FromBody]
+    [Authorize(Roles = "ApiManager")]
+    public async Task<IActionResult> PartiallyUpdateDroneForProductAsync(Guid productId, Guid id, [FromBody]
     JsonPatchDocument<DroneUpdateDTO> patchDoc)
     {
         if (patchDoc is null)
             return BadRequest("patchDoc object sent from client is null.");
-        var result = _service.DroneService.GetDroneForPatch(productId, id,
+        var result = await _service.DroneService.GetDroneForPatchAsync(productId, id,
         productTrackChanges: false,
         droneTrackChanges: true);
         patchDoc.ApplyTo(result.droneToPatch, ModelState);
@@ -85,8 +135,8 @@ public class DroneController : ControllerBase
 
         if (!ModelState.IsValid)
             return UnprocessableEntity(ModelState);
-        _service.DroneService.SaveChangesForPatch(result.droneToPatch,
-        result.droneEntity);
+        await _service.DroneService.SaveChangesForPatchAsync(result.droneToPatch,
+       result.droneEntity);
         return NoContent();
     }
 }

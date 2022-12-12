@@ -21,7 +21,7 @@ public class MapInitializer : Profile
 {
     public MapInitializer()
     {
-        //Mapping Model Entities to DTOs
+        CreateMap<UserRegistrationDTO, User>();
         //DTO TO ENTITIES
 
         CreateMap<Product, ProductDTO>();
@@ -53,7 +53,7 @@ public class MapInitializer : Profile
         CreateMap<SmartPhone, SmartPhoneDTO>();
 
 
-        //CreateDTO Entities
+
         //CREATE ENTITIES
         CreateMap<ProductCreateDTO, Product>();
         //Accessories CreateDTO mapping 
@@ -82,7 +82,7 @@ public class MapInitializer : Profile
         //Smart Devices CreateDTO mapping
         CreateMap<DroneCreateDTO, Drone>();
         CreateMap<SmartPhoneCreateDTO, SmartPhone>();
-    
+
         //Update Map
         //UPDATE ENTITIES
         CreateMap<GamingHeadphonesAndHeadsetUpdateDTO, GamingHeadphonesAndHeadset>();
@@ -113,7 +113,7 @@ public class MapInitializer : Profile
 
 
 
-       
+
 
         //ReverseMapping
         //REVERSEMAP UPDATE ENTITIES
@@ -125,12 +125,12 @@ public class MapInitializer : Profile
         CreateMap<GamingKeyboardUpdateDTO, GamingKeyboard>().ReverseMap();
 
         CreateMap<GamingMouseUpdateDTO, GamingMouse>().ReverseMap();
-        ;
+        
         //Gaming Update mapping 
         CreateMap<GamingConsoleUpdateDTO, GamingConsole>().ReverseMap();
-        ;
+        
         CreateMap<GamingDesktopUpdateDTO, GamingDesktop>().ReverseMap();
-        ;
+        
         CreateMap<GamingLaptopUpdateDTO, GamingLaptop>().ReverseMap();
         //Networking UpdateDTO mapping 
         CreateMap<RouterUpdateDTO, Router>().ReverseMap();
@@ -153,7 +153,7 @@ public class MapInitializer : Profile
 
 
         //ReverseMapping
-        
+
     }
 }
 

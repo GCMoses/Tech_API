@@ -9,10 +9,11 @@ using ComputerTechAPI_Contracts.ITech;
 using ComputerTechAPI_Repository.TechRepository;
 using ComputerTechAPI_Repository.TechRepository.Tech_Accessories;
 using ComputerTechAPI_Repository.TechRepository.Tech_Gaming;
+using ComputerTechAPI_Repository.TechRepository.Tech_Networking;
 using ComputerTechAPI_Repository.TechRepository.Tech_PC;
 using ComputerTechAPI_Repository.TechRepository.Tech_PCComponents;
 using ComputerTechAPI_Repository.TechRepository.Tech_SmartDevices;
-using ComputerTechAPI_Repository.TechRepository.Tech_Networking;
+
 
 namespace ComputerTechAPI_Repository;
 
@@ -56,49 +57,49 @@ public sealed class RepositoryManager : IRepositoryManager
             //Accessories
             _gamingHeadphonesAndHeadsetRepository = new Lazy<IGamingHeadphonesAndHeadsetRepository>(() => new
           GamingHeadphonesAndHeadsetRepository(repositoryContext));
-            _gamingKeyboardRepository = new Lazy<IGamingKeyboardRepository>(() => new
-           GamingKeyboardRepository(repositoryContext));
-            _gamingMouseRepository = new Lazy<IGamingMouseRepository>(() => new
-           GamingMouseRepository(repositoryContext));
-            //Gaming
-            _gamingConsoleRepository = new Lazy<IGamingConsoleRepository>(() => new
-          GamingConsoleRepository(repositoryContext));
-            _gamingDesktopRepository = new Lazy<IGamingDesktopRepository>(() => new
-          GamingDesktopRepository(repositoryContext));
-            _gamingLaptopRepository = new Lazy<IGamingLaptopRepository>(() => new
-          GamingLaptopRepository(repositoryContext));
-            //Networking
-            _routerRepository = new Lazy<IRouterRepository>(() => new
-          RouterRepository(repositoryContext));
-            //PC
-            _desktopRepository = new Lazy<IDesktopRepository>(() => new
-          DesktopRepository(repositoryContext));
-            _laptopRepository = new Lazy<ILaptopRepository>(() => new
-          LaptopRepository(repositoryContext));
-            //PC Components
-            _caseRepository = new Lazy<ICaseRepository>(() => new
-         CaseRepository(repositoryContext));
-            _cpuCoolerRepository = new Lazy<ICPUCoolerRepository>(() => new
-         CPUCoolerRepository(repositoryContext));
-            _cpuRepository = new Lazy<ICPURepository>(() => new
-         CPURepository(repositoryContext));
-            _gpuRepository = new Lazy<IGPURepository>(() => new
-         GPURepository(repositoryContext));
-            _hddRepository = new Lazy<IHDDRepository>(() => new
-         HDDRepository(repositoryContext));
-            _motherboardRepository = new Lazy<IMotherboardRepository>(() => new
-         MotherboardRepository(repositoryContext));
-            _ramRepository = new Lazy<IRAMRepository>(() => new
-         RAMRepository(repositoryContext));
-            _psuRepository = new Lazy<IPSURepository>(() => new
-         PSURepository(repositoryContext));
-            _ssdRepository = new Lazy<ISSDRepository>(() => new
-         SSDRepository(repositoryContext));
-            //Smart Devices
-            _droneRepository = new Lazy<IDroneRepository>(() => new
-         DroneRepository(repositoryContext));
-            _smartPhoneRepository = new Lazy<ISmartPhoneRepository>(() => new
-         SmartPhoneRepository(repositoryContext));
+        _gamingKeyboardRepository = new Lazy<IGamingKeyboardRepository>(() => new
+       GamingKeyboardRepository(repositoryContext));
+        _gamingMouseRepository = new Lazy<IGamingMouseRepository>(() => new
+       GamingMouseRepository(repositoryContext));
+        //Gaming
+        _gamingConsoleRepository = new Lazy<IGamingConsoleRepository>(() => new
+      GamingConsoleRepository(repositoryContext));
+        _gamingDesktopRepository = new Lazy<IGamingDesktopRepository>(() => new
+      GamingDesktopRepository(repositoryContext));
+        _gamingLaptopRepository = new Lazy<IGamingLaptopRepository>(() => new
+      GamingLaptopRepository(repositoryContext));
+        //Networking
+        _routerRepository = new Lazy<IRouterRepository>(() => new
+      RouterRepository(repositoryContext));
+        //PC
+        _desktopRepository = new Lazy<IDesktopRepository>(() => new
+      DesktopRepository(repositoryContext));
+        _laptopRepository = new Lazy<ILaptopRepository>(() => new
+      LaptopRepository(repositoryContext));
+        //PC Components
+        _caseRepository = new Lazy<ICaseRepository>(() => new
+     CaseRepository(repositoryContext));
+        _cpuCoolerRepository = new Lazy<ICPUCoolerRepository>(() => new
+     CPUCoolerRepository(repositoryContext));
+        _cpuRepository = new Lazy<ICPURepository>(() => new
+     CPURepository(repositoryContext));
+        _gpuRepository = new Lazy<IGPURepository>(() => new
+     GPURepository(repositoryContext));
+        _hddRepository = new Lazy<IHDDRepository>(() => new
+     HDDRepository(repositoryContext));
+        _motherboardRepository = new Lazy<IMotherboardRepository>(() => new
+     MotherboardRepository(repositoryContext));
+        _ramRepository = new Lazy<IRAMRepository>(() => new
+     RAMRepository(repositoryContext));
+        _psuRepository = new Lazy<IPSURepository>(() => new
+     PSURepository(repositoryContext));
+        _ssdRepository = new Lazy<ISSDRepository>(() => new
+     SSDRepository(repositoryContext));
+        //Smart Devices
+        _droneRepository = new Lazy<IDroneRepository>(() => new
+     DroneRepository(repositoryContext));
+        _smartPhoneRepository = new Lazy<ISmartPhoneRepository>(() => new
+     SmartPhoneRepository(repositoryContext));
     }
     //Accessories
     //Gaming
@@ -149,5 +150,6 @@ public sealed class RepositoryManager : IRepositoryManager
 
     public ISmartPhoneRepository SmartPhone => _smartPhoneRepository.Value;
 
-    public void Save() => _repositoryContext.SaveChanges();
+    public async Task SaveAsync() => await _repositoryContext.SaveChangesAsync();
+
 }

@@ -1,14 +1,14 @@
-﻿using ComputerTechAPI_Entities.Tech_Models.PC;
-using ComputerTechAPI_Entities.Tech_Models.PCComponents;
+﻿using ComputerTechAPI_DtoAndFeatures.RequestFeatures;
+using ComputerTechAPI_DtoAndFeatures.RequestFeatures.TechParams.SmartDecivesTechParams;
 using ComputerTechAPI_Entities.Tech_Models.SmartDevices;
 
 namespace ComputerTechAPI_Contracts.ITech.ITech_SmartDevices;
 
 public interface IDroneRepository
 {
-    IEnumerable<Drone> GetDrones(Guid productId, bool trackChanges);
+    Task<PagedList<Drone>> GetDronesAsync(Guid productId, DroneParams droneParams, bool trackChanges);
 
-    Drone GetDrone(Guid productId, Guid id, bool trackChanges);
+    Task<Drone> GetDroneAsync(Guid productId, Guid id, bool trackChanges);
 
     void CreateDroneForProduct(Guid productId, Drone drone);
 

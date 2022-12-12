@@ -1,12 +1,17 @@
 ﻿using ComputerTechAPI_DtoAndFeatures.DTO.AccessoriesDTO;
-using ComputerTechAPI_Entities.Tech_Models.Accessories;
+using ComputerTechAPI_DtoAndFeatures.RequestFeatures.TechParams.AccessoriesTechParams;
+using ComputerTechAPI_Entities.LinkModels.TechLinkParams.AccessoriesLinkParams;
+using ComputerTechAPI_RequestActions.FilteringActions;
 using ComputerTechAPI_TechService.Contracts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
+using System.Text.Json;
 
 namespace ComputerTechAPI_RequestActions.Controllers.AccessoriesController;
 
-[Route("api/products/{productId}/gamingmouse")]
+[Route("api/products/{productId}/gamingmouses")]
 [ApiController]
 public class GamingMouseController : ControllerBase
 {
@@ -14,83 +19,117 @@ public class GamingMouseController : ControllerBase
     public GamingMouseController(IServiceManager service) => _service = service;
 
 
+    /// <summary>
+    /// Gets the array of all Mouses  
+    /// </summary>
+    /// <returns>Mouses list</returns>
     [HttpGet]
-    public IActionResult GetGamingMouseForProduct(Guid productId)
+    [HttpHead]
+    [ServiceFilter(typeof(ValidateMediaTypeAttribute))]
+    [Authorize()]
+    public async Task<IActionResult> GetGamingMousesForProduct(Guid productId,
+      [FromQuery] GamingMouseParams gamingMouseParams)
     {
-        var gamingMouse = _service.GamingMouseService.GetGamingMouses(productId, trackChanges: false);
-        return Ok(gamingMouse);
+        var gamingMouselinkParams = new GamingMouseLinkParameters(gamingMouseParams, HttpContext);
+
+        var result = await _service.GamingMouseService.GetGamingMousesAsync(productId,
+            gamingMouselinkParams, trackChanges: false);
+
+        Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(result.metaData));
+
+
+        return result.linkResponse.HasLinks ? Ok(result.linkResponse.LinkedEntities) : Ok(result.linkResponse.ShapedEntities);
     }
 
+    /// <summary>
+    /// Gets the Mouse by Id only
+    /// </summary>
+    /// <returns>Mouse</returns>
     [HttpGet("{id:guid}", Name = "GetGamingMouseForProduct")]
-    public IActionResult GetGamingMouseForProduct(Guid productId, Guid id)
+    [Authorize()]
+    public async Task<IActionResult> GetGamingMouseForProduct(Guid productId, Guid id)
     {
-        var gamingMouse = _service.GamingMouseService.GetGamingMouse(productId, id, trackChanges: false);
+        var gamingMouse = await _service.GamingMouseService.GetGamingMouseAsync(productId, id, trackChanges: false);
         return Ok(gamingMouse);
     }
 
-
-
+    /// <summary>
+    /// Create the Mouse 
+    /// </summary>
+    /// <param name="productId"></param>
+    /// <param name="gamingMouse"></param>
+    /// <returns>A newly created Mouse</returns>
+    /// <response code="201">Returns the newly created Mouse</response>
+    /// <response code="400">If the Mouse is null</response>
+    /// <response code="422">If the model is invalid</response>
     [HttpPost]
-    public IActionResult CreateGamingMouseForProduct(Guid productId, [FromBody] GamingMouseCreateDTO gamingMouseCreate)
+    [ServiceFilter(typeof(ValidationFilterAttribute))]
+    [Authorize(Roles = "ApiManager")]
+    public async Task<IActionResult> CreateGamingMouseForProductAsync
+        (Guid productId, [FromBody] GamingMouseCreateDTO gamingMouse)
     {
-        if (gamingMouseCreate is null)
-            return BadRequest("GamingMouseCreateDTO object is null");
-        if (!ModelState.IsValid)
-            return UnprocessableEntity(ModelState);
+        var gamingMouseToReturn = await _service.GamingMouseService.CreateGamingMouseForProductAsync(productId, gamingMouse,
+            trackChanges: false);
 
-        var gamingMouseToReturn =
-        _service.GamingMouseService.CreateGamingMouseForProduct(productId, gamingMouseCreate, trackChanges:
-        false);
-        return CreatedAtRoute("GetGamingMouseForProduct", new
-        {
-            productId,
-            id = gamingMouseToReturn.Id
-        },
-        gamingMouseToReturn);
+        return CreatedAtRoute("GetGamingMouseForProduct", new { productId, id = gamingMouseToReturn.Id },
+            gamingMouseToReturn);
     }
 
 
-
+    /// <summary>
+    /// Delete the Mouse by Id
+    /// </summary>
+    /// <returns>Delete Mouse item</returns>
     [HttpDelete("{id:guid}")]
-    public IActionResult DeleteGamingMouseForProduct(Guid productId, Guid id)
+    [Authorize(Roles = "ApiManager")]
+    public async Task<IActionResult> DeleteMouseForProductAsync(Guid productId, Guid id)
     {
-        _service.GamingMouseService.DeleteGamingMouseForProduct(productId, id, trackChanges:
-        false);
+        await _service.GamingMouseService.DeleteGamingMouseForProductAsync(productId, id, trackChanges: false);
+
         return NoContent();
     }
 
+    /// <summary>
+    /// Update the Mouse by Id
+    /// </summary>
+    /// <returns>Update Mouse item</returns>
     [HttpPut("{id:guid}")]
-    public IActionResult UpdateGamingMouseForProduct(Guid productId, Guid id,
-        [FromBody] GamingMouseUpdateDTO gamingMouseUpdate)
+    [ServiceFilter(typeof(ValidationFilterAttribute))]
+    [Authorize(Roles = "ApiManager")]
+    public async Task<IActionResult> UpdateGamingMouseForProductAsync(Guid productId, Guid id,
+        [FromBody] GamingMouseUpdateDTO gamingMouse)
     {
-        if (gamingMouseUpdate is null)
-            return BadRequest("GamingMouseUpdateDTO object is null");
-
-        _service.GamingMouseService.UpdateGamingMouseForProduct(productId, id, gamingMouseUpdate,
+        await _service.GamingMouseService.UpdateGamingMouseForProductAsync(productId, id, gamingMouse,
             productTrackChanges: false, gamingMouseTrackChanges: true);
 
         return NoContent();
     }
 
 
-
+    /// <summary>
+    /// Partially Update the Mouse by Id
+    /// </summary>
+    /// <returns>Patch Mouse item</returns>
     [HttpPatch("{id:guid}")]
-    public IActionResult PartiallyUpdateGamingMouseForProduct(Guid productId, Guid id, [FromBody] 
-    JsonPatchDocument<GamingMouseUpdateDTO> patchDoc)
+    [Authorize(Roles = "ApiManager")]
+    public async Task<IActionResult> PartiallyUpdateGamingMouseForProductAsync(Guid productId, Guid id,
+        [FromBody] JsonPatchDocument<GamingMouseUpdateDTO> patchDoc)
     {
         if (patchDoc is null)
             return BadRequest("patchDoc object sent from client is null.");
-        var result = _service.GamingMouseService.GetGamingMouseForPatch(productId, id,
-        productTrackChanges: false,
-        gamingMouseTrackChanges: true);
+
+        var result = await _service.GamingMouseService.GetGamingMouseForPatchAsync(productId, id,
+            productTrackChanges: false, gamingMouseTrackChanges: true);
+
         patchDoc.ApplyTo(result.gamingMouseToPatch, ModelState);
 
         TryValidateModel(result.gamingMouseToPatch);
 
         if (!ModelState.IsValid)
             return UnprocessableEntity(ModelState);
-        _service.GamingMouseService.SaveChangesForPatch(result.gamingMouseToPatch,
-        result.gamingMouseEntity);
+
+        await _service.GamingMouseService.SaveChangesForPatchAsync(result.gamingMouseToPatch, result.gamingMouseEntity);
+
         return NoContent();
     }
 }

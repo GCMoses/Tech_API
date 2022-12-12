@@ -1,27 +1,22 @@
-﻿using ComputerTechAPI_DtoAndFeatures.DTO.GamingDTO;
-using ComputerTechAPI_DtoAndFeatures.DTO.PCComponentsDTO;
-using ComputerTechAPI_DtoAndFeatures.DTO.PCDTO;
+﻿using ComputerTechAPI_DtoAndFeatures.DTO.PCDTO;
+using ComputerTechAPI_DtoAndFeatures.RequestFeatures;
+using ComputerTechAPI_Entities.LinkModels.TechLinkParams.PCLinkParams;
+using ComputerTechAPI_Entities.Tech_Models;
 using ComputerTechAPI_Entities.Tech_Models.PC;
-using ComputerTechAPI_Entities.Tech_Models.PCComponents;
 
 namespace ComputerTechAPI_TechService.Contracts.PCService;
 
 public interface IDesktopService
 {
-    IEnumerable<DesktopDTO> GetDesktops(Guid productId, bool trackChanges);
-
-    DesktopDTO GetDesktop(Guid productId, Guid id, bool trackChanges);
-
-    DesktopDTO CreateDesktopForProduct(Guid productId, DesktopCreateDTO desktopCreate, bool trackChanges);
-
-    void DeleteDesktopForProduct(Guid productId, Guid id, bool trackChanges);
-
-
-    void UpdateDesktopForProduct(Guid productId, Guid id, DesktopUpdateDTO desktopUpdate,
-                                   bool productTrackChanges, bool desktopTrackChanges);
-
-    (DesktopUpdateDTO desktopToPatch, Desktop desktopEntity) GetDesktopForPatch(
-Guid productId, Guid id, bool productTrackChanges, bool desktopTrackChanges);
-    void SaveChangesForPatch(DesktopUpdateDTO desktopToPatch, Desktop
-    desktopEntity);
+    Task<(LinkResponse linkResponse, MetaData metaData)> GetDesktopsAsync(Guid productId,
+         DesktopLinkParameters linkParameters, bool trackChanges);
+    Task<DesktopDTO> GetDesktopAsync(Guid productId, Guid id, bool trackChanges);
+    Task<DesktopDTO> CreateDesktopForProductAsync(Guid productId,
+       DesktopCreateDTO desktopCreate, bool trackChanges);
+    Task DeleteDesktopForProductAsync(Guid productId, Guid id, bool trackChanges);
+    Task UpdateDesktopForProductAsync(Guid productId, Guid id,
+        DesktopUpdateDTO desktopUpdate, bool productTrackChanges, bool desktopTrackChanges);
+    Task<(DesktopUpdateDTO desktopToPatch, Desktop desktopEntity)> GetDesktopForPatchAsync(
+        Guid productId, Guid id, bool productTrackChanges, bool desktopTrackChanges);
+    Task SaveChangesForPatchAsync(DesktopUpdateDTO desktopToPatch, Desktop desktopEntity);
 }

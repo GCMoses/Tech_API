@@ -15,15 +15,13 @@ public class CSVOutputFormatter : TextOutputFormatter
     }
     protected override bool CanWriteType(Type? type)
     {
-        if (typeof(ProductDTO).IsAssignableFrom(type) ||
-       typeof(IEnumerable<ProductDTO>).IsAssignableFrom(type))
+        if (typeof(ProductDTO).IsAssignableFrom(type) || typeof(IEnumerable<ProductDTO>).IsAssignableFrom(type))
         {
             return base.CanWriteType(type);
         }
         return false;
     }
-    public override async Task WriteResponseBodyAsync(OutputFormatterWriteContext
-   context, Encoding selectedEncoding)
+    public override async Task WriteResponseBodyAsync(OutputFormatterWriteContext context, Encoding selectedEncoding)
     {
         var response = context.HttpContext.Response;
         var buffer = new StringBuilder();
@@ -36,7 +34,7 @@ public class CSVOutputFormatter : TextOutputFormatter
         }
         else
         {
-            FormatCSV(buffer, (ProductDTO)context.Object);
+            FormatCSV(buffer, context.Object as ProductDTO);
         }
         await response.WriteAsync(buffer.ToString());
     }

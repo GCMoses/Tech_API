@@ -15,8 +15,8 @@ public interface IRepositoryManager
     //Accessories
     IGamingHeadphonesAndHeadsetRepository GamingHeadphonesAndHeadset { get; }
     IGamingKeyboardRepository GamingKeyboard { get; }
-    IGamingMouseRepository GamingMouse{ get; }
-    //Gaming
+    IGamingMouseRepository GamingMouse { get; }
+    ////Gaming
     IGamingConsoleRepository GamingConsole { get; }
     IGamingDesktopRepository GamingDesktop { get; }
     IGamingLaptopRepository GamingLaptop { get; }
@@ -38,5 +38,6 @@ public interface IRepositoryManager
     //SmartDevices
     IDroneRepository Drone { get; }
     ISmartPhoneRepository SmartPhone { get; }
-    void Save();
+    Task SaveAsync();
+
 }

@@ -1,7 +1,10 @@
 ﻿using ComputerTechAPI_Contracts.ITech.ITech_SmartDevices;
-using ComputerTechAPI_Entities.Tech_Models.PCComponents;
+using ComputerTechAPI_DtoAndFeatures.RequestFeatures.TechParams.SmartDecivesTechParams;
+using ComputerTechAPI_DtoAndFeatures.RequestFeatures;
+using ComputerTechAPI_DtoAndFeatures.RequestFeatures.TechParams.SmartDevicesParams;
 using ComputerTechAPI_Entities.Tech_Models.SmartDevices;
-using System.Text;
+using ComputerTechAPI_Repository.Extensions.SmartDevicesExtensions;
+using Microsoft.EntityFrameworkCore;
 
 namespace ComputerTechAPI_Repository.TechRepository.Tech_SmartDevices;
 
@@ -12,15 +15,23 @@ public class SmartPhoneRepository : RepositoryBase<SmartPhone>, ISmartPhoneRepos
     {
     }
 
-    public IEnumerable<SmartPhone> GetSmartPhones(Guid productId, bool trackChanges) =>
-       FindByCondition(s => s.ProductId.Equals(productId), trackChanges)
-      .OrderBy(s => s.Name)
-      .ToList();
+    public async Task<PagedList<SmartPhone>> GetSmartPhonesAsync(Guid productId,
+             SmartPhoneParams smartPhoneParams, bool trackChanges)
+    {
+        var smartPhone = await FindByCondition(p => p.ProductId.Equals(productId), trackChanges)
+        //.FilterSmartPhones(smartPhoneParams.MinRating, smartPhoneParams.MaxRating)
+        .Search(smartPhoneParams.SearchTerm)
+        //.Sort(smartPhoneParams.OrderBy)
+        .ToListAsync();
+        var count = await FindByCondition(p => p.ProductId.Equals(productId), trackChanges).CountAsync();
+        return new PagedList<SmartPhone>(smartPhone, count,
+        smartPhoneParams.PageNumber, smartPhoneParams.PageSize);
+    }
 
 
-    public SmartPhone GetSmartPhone(Guid productId, Guid id, bool trackChanges) =>
-        FindByCondition(s => s.ProductId.Equals(productId) && s.Id.Equals(id), trackChanges)
-        .SingleOrDefault();
+    public async Task<SmartPhone> GetSmartPhoneAsync(Guid productId, Guid id, bool trackChanges) =>
+        await FindByCondition(s => s.ProductId.Equals(productId) && s.Id.Equals(id), trackChanges)
+        .SingleOrDefaultAsync();
 
     public void CreateSmartPhoneForProduct(Guid productId, SmartPhone smartPhone)
     {
@@ -30,4 +41,6 @@ public class SmartPhoneRepository : RepositoryBase<SmartPhone>, ISmartPhoneRepos
 
 
     public void DeleteSmartPhone(SmartPhone smartPhone) => Delete(smartPhone);
+
+
 }

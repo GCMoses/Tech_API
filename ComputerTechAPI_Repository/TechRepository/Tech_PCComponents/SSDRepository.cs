@@ -1,5 +1,9 @@
 ﻿using ComputerTechAPI_Contracts.ITech.ITech_PCComponents;
+using ComputerTechAPI_DtoAndFeatures.RequestFeatures;
+using ComputerTechAPI_DtoAndFeatures.RequestFeatures.TechParams.PCComponentsTechParams;
 using ComputerTechAPI_Entities.Tech_Models.PCComponents;
+using ComputerTechAPI_Repository.Extensions.PCComponentExtensions;
+using Microsoft.EntityFrameworkCore;
 
 namespace ComputerTechAPI_Repository.TechRepository.Tech_PCComponents;
 
@@ -10,15 +14,22 @@ public class SSDRepository : RepositoryBase<SSD>, ISSDRepository
     {
     }
 
-    public IEnumerable<SSD> GetSSDs(Guid productId, bool trackChanges) =>
-       FindByCondition(g => g.ProductId.Equals(productId), trackChanges)
-      .OrderBy(g => g.Name)
-      .ToList();
+    public async Task<PagedList<SSD>> GetSSDsAsync(Guid productId,
+              SSDParams ssdParams, bool trackChanges)
+    {
+        var ssd = await FindByCondition(p => p.ProductId.Equals(productId), trackChanges)
+        //.FilterSSDs(ssdParams.MinRating, ssdParams.MaxRating)
+        .Search(ssdParams.SearchTerm)
+        //.Sort(ssdParams.OrderBy)
+        .ToListAsync();
+        var count = await FindByCondition(p => p.ProductId.Equals(productId), trackChanges).CountAsync();
+        return new PagedList<SSD>(ssd, count,
+        ssdParams.PageNumber, ssdParams.PageSize);
+    }
 
-
-    public SSD GetSSD(Guid productId, Guid id, bool trackChanges) =>
-        FindByCondition(c => c.ProductId.Equals(productId) && c.Id.Equals(id), trackChanges)
-        .SingleOrDefault();
+    public async Task<SSD> GetSSDAsync(Guid productId, Guid id, bool trackChanges) =>
+        await FindByCondition(p => p.ProductId.Equals(productId) && p.Id.Equals(id), trackChanges)
+        .SingleOrDefaultAsync();
 
 
     public void CreateSSDForProduct(Guid productId, SSD ssd)

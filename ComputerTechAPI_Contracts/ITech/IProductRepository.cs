@@ -4,11 +4,11 @@ namespace ComputerTechAPI_Contracts.ITech;
 
 public interface IProductRepository
 {
-    IEnumerable<Product> GetAllProducts(bool trackChanges);
-    Product GetProduct(Guid productId, bool trackChanges);
+    Task<IEnumerable<Product>> GetAllProductsAsync(bool trackChanges);
+    Task<Product> GetProductAsync(Guid productId, bool trackChanges);
 
     void CreateProduct(Product product);
-    IEnumerable<Product> GetByIds(IEnumerable<Guid> ids, bool trackChanges);
+    Task<IEnumerable<Product>> GetByIdsAsync(IEnumerable<Guid> ids, bool trackChanges);
 
     void DeleteProduct(Product product);
 }

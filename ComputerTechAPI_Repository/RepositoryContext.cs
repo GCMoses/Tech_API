@@ -9,12 +9,12 @@ using ComputerTechAPI_Repository.DataConfiguration.GamingDataConfiguration;
 using ComputerTechAPI_Repository.DataConfiguration;
 using ComputerTechAPI_Repository.DataConfiguration.ComponentDataConfiguration;
 using ComputerTechAPI_Repository.DataConfiguration.PCDataConfiguration;
-
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace ComputerTechAPI_Repository;
 
-public class RepositoryContext : DbContext
+public class RepositoryContext : IdentityDbContext<User>
 {
     public RepositoryContext(DbContextOptions options)
         : base(options)
@@ -23,6 +23,8 @@ public class RepositoryContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
+
         modelBuilder.ApplyConfiguration(new GamingHeadphonesAndHeadsetDataConfiguration());
         modelBuilder.ApplyConfiguration(new GamingKeyboardDataConfiguration());
         modelBuilder.ApplyConfiguration(new GamingMouseDataConfiguration());
@@ -44,6 +46,9 @@ public class RepositoryContext : DbContext
         modelBuilder.ApplyConfiguration(new DroneDataConfiguration());
         modelBuilder.ApplyConfiguration(new SmartPhoneDataConfiguration());
         modelBuilder.ApplyConfiguration(new ProductConfiguration());
+
+        modelBuilder.ApplyConfiguration(new RoleConfiguration());
+
     }
 
     public DbSet<GamingHeadphonesAndHeadset>? GamingHeadphonesAndHeadsets { get; set; }

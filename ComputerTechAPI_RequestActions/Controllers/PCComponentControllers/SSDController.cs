@@ -1,42 +1,77 @@
 ﻿using ComputerTechAPI_DtoAndFeatures.DTO.PCComponentsDTO;
+using ComputerTechAPI_DtoAndFeatures.RequestFeatures.TechParams.PCComponentsTechParams;
+using ComputerTechAPI_Entities.LinkModels.TechLinkParams.PCComponentLinkParams;
+using ComputerTechAPI_RequestActions.FilteringActions;
 using ComputerTechAPI_TechService.Contracts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
+using System.Text.Json;
 
 namespace ComputerTechAPI_RequestActions.Controllers.PCComponentControllers;
 
-[Route("api/products/{productId}/ssd")]
+[Route("api/products/{productId}/ssds")]
 [ApiController]
 public class SSDController : ControllerBase
 {
     private readonly IServiceManager _service;
     public SSDController(IServiceManager service) => _service = service;
 
-
+    /// <summary>
+    /// Gets the array of all SSDs 
+    /// </summary>
+    /// <returns>SSDs list</returns>
     [HttpGet]
-    public IActionResult GetSSDsForProduct(Guid productId)
+    [HttpHead]
+    [ServiceFilter(typeof(ValidateMediaTypeAttribute))]
+    [Authorize()]
+    public async Task<IActionResult> GetSSDsForProductAsync(Guid productId,
+     [FromQuery] SSDParams ssdParams)
     {
-        var ssds = _service.SSDService.GetSSDs(productId, trackChanges: false);
-        return Ok(ssds);
+        var ssdlinkParams = new SSDLinkParameters(ssdParams, HttpContext);
+
+        var result = await _service.SSDService.GetSSDsAsync(productId,
+            ssdlinkParams, trackChanges: false);
+
+        Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(result.metaData));
+
+
+        return result.linkResponse.HasLinks ? Ok(result.linkResponse.LinkedEntities) : Ok(result.linkResponse.ShapedEntities);
     }
 
+    /// <summary>
+    /// Gets the SSD by Id only
+    /// </summary>
+    /// <returns>SSD</returns>
     [HttpGet("{id:guid}", Name = "GetSSDForProduct")]
-    public IActionResult GetSSDForProduct(Guid productId, Guid id)
+    [Authorize()]
+    public async Task<IActionResult> GetSSDForProductAsync(Guid productId, Guid id)
     {
-        var ssd = _service.SSDService.GetSSD(productId, id, trackChanges: false);
+        var ssd = await _service.SSDService.GetSSDAsync(productId, id, trackChanges: false);
         return Ok(ssd);
     }
 
-
+    /// <summary>
+    /// Create the SSD
+    /// </summary>
+    /// <param name="productId"></param>
+    /// <param name="ssdCreate"></param>
+    /// <returns>A newly created SSD</returns>
+    /// <response code="201">Returns the newly created SSD</response>
+    /// <response code="400">If the SSD is null</response>
+    /// <response code="422">If the model is invalid</response>
     [HttpPost]
-    public IActionResult CreateSSDForProduct(Guid productId, [FromBody] SSDCreateDTO ssdCreate)
+    [ServiceFilter(typeof(ValidationFilterAttribute))]
+    [Authorize(Roles = "ApiManager")]
+    public async Task<IActionResult> CreateSSDForProductAsync(Guid productId, [FromBody] SSDCreateDTO ssdCreate)
     {
         if (ssdCreate is null)
             return BadRequest("SSDCreateDTO object is null");
         if (!ModelState.IsValid)
             return UnprocessableEntity(ModelState);
         var ssdToReturn =
-        _service.SSDService.CreateSSDForProduct(productId, ssdCreate, trackChanges:
+        await _service.SSDService.CreateSSDForProductAsync(productId, ssdCreate, trackChanges:
         false);
         return CreatedAtRoute("GetSSDForProduct", new
         {
@@ -47,36 +82,50 @@ public class SSDController : ControllerBase
         ssdToReturn);
     }
 
-
+    /// <summary>
+    /// Delete the SSD by Id
+    /// </summary>
+    /// <returns>Delete SSD item</returns>
     [HttpDelete("{id:guid}")]
-    public IActionResult DeleteSSDForProduct(Guid productId, Guid id)
+    [Authorize(Roles = "ApiManager")]
+    public async Task<IActionResult> DeleteSSDForProductAsync(Guid productId, Guid id)
     {
-        _service.SSDService.DeleteSSDForProduct(productId, id, trackChanges: false);
+        await _service.SSDService.DeleteSSDForProductAsync(productId, id, trackChanges: false);
 
         return NoContent();
     }
 
+    /// <summary>
+    /// Update the SSD by Id
+    /// </summary>
+    /// <returns>Update SSD item</returns>
     [HttpPut("{id:guid}")]
-    public IActionResult UpdateSSDForProduct(Guid productId, Guid id,
+    [ServiceFilter(typeof(ValidationFilterAttribute))]
+    [Authorize(Roles = "ApiManager")]
+    public async Task<IActionResult> UpdateSSDForProductAsync(Guid productId, Guid id,
         [FromBody] SSDUpdateDTO ssdUpdate)
     {
         if (ssdUpdate is null)
             return BadRequest("SSDUpdateDTO object is null");
 
-        _service.SSDService.UpdateSSDForProduct(productId, id, ssdUpdate,
+        await _service.SSDService.UpdateSSDForProductAsync(productId, id, ssdUpdate,
             productTrackChanges: false, ssdTrackChanges: true);
 
         return NoContent();
     }
 
-
+    /// <summary>
+    /// Partially Update the SSD by Id
+    /// </summary>
+    /// <returns>Patch SSD item</returns>
     [HttpPatch("{id:guid}")]
-    public IActionResult PartiallyUpdateSSDForProduct(Guid productId, Guid id, [FromBody]
+    [Authorize(Roles = "ApiManager")]
+    public async Task<IActionResult> PartiallyUpdateSSDForProductAsync(Guid productId, Guid id, [FromBody]
     JsonPatchDocument<SSDUpdateDTO> patchDoc)
     {
         if (patchDoc is null)
             return BadRequest("patchDoc object sent from client is null.");
-        var result = _service.SSDService.GetSSDForPatch(productId, id,
+        var result = await _service.SSDService.GetSSDForPatchAsync(productId, id,
         productTrackChanges: false,
         ssdTrackChanges: true);
         patchDoc.ApplyTo(result.ssdToPatch, ModelState);
@@ -85,7 +134,7 @@ public class SSDController : ControllerBase
 
         if (!ModelState.IsValid)
             return UnprocessableEntity(ModelState);
-        _service.SSDService.SaveChangesForPatch(result.ssdToPatch,
+         await _service.SSDService.SaveChangesForPatchAsync(result.ssdToPatch,
         result.ssdEntity);
         return NoContent();
     }

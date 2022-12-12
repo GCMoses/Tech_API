@@ -1,12 +1,14 @@
-﻿using ComputerTechAPI_Entities.Tech_Models.PCComponents;
+﻿using ComputerTechAPI_DtoAndFeatures.RequestFeatures;
+using ComputerTechAPI_DtoAndFeatures.RequestFeatures.TechParams.PCComponentsTechParams;
+using ComputerTechAPI_Entities.Tech_Models.PCComponents;
 
 namespace ComputerTechAPI_Contracts.ITech.ITech_PCComponents;
 
 public interface IRAMRepository
 {
-    IEnumerable<RAM> GetRAMs(Guid productId, bool trackChanges);
+    Task<PagedList<RAM>> GetRAMsAsync(Guid productId, RAMParams ramParams, bool trackChanges);
 
-    RAM GetRAM(Guid productId, Guid id, bool trackChanges);
+    Task<RAM> GetRAMAsync(Guid productId, Guid id, bool trackChanges);
 
     void CreateRAMForProduct(Guid productId, RAM ram);
 

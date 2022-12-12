@@ -1,12 +1,15 @@
-﻿using ComputerTechAPI_Entities.Tech_Models.Accessories;
+﻿using ComputerTechAPI_DtoAndFeatures.RequestFeatures;
+using ComputerTechAPI_DtoAndFeatures.RequestFeatures.TechParams.AccessoriesTechParams;
+using ComputerTechAPI_Entities.Tech_Models.Accessories;
 
 namespace ComputerTechAPI_Contracts.ITech.ITech_Accessories;
 
 public interface IGamingKeyboardRepository
 {
-    IEnumerable<GamingKeyboard> GetGamingKeyboards(Guid productId, bool trackChanges);
+    Task<PagedList<GamingKeyboard>> GetGamingKeyboardsAsync(Guid productId,
+         GamingKeyboardParams gamingKeyboardParams, bool trackChanges);
 
-    GamingKeyboard GetGamingKeyboard(Guid productId, Guid id, bool trackChanges);
+    Task<GamingKeyboard> GetGamingKeyboardAsync(Guid productId, Guid id, bool trackChanges);
 
     void CreateGamingKeyboardForProduct(Guid productId, GamingKeyboard gamingKeyboard);
 

@@ -5,6 +5,9 @@ using ComputerTechAPI_Entities.ErrorExceptions.PCErrorExceptions;
 using ComputerTechAPI_Entities.ErrorExceptions;
 using ComputerTechAPI_TechService.Contracts.PCService;
 using ComputerTechAPI_Entities.Tech_Models.PC;
+using ComputerTechAPI_Contracts.ILinks.IPCLinks;
+using ComputerTechAPI_DtoAndFeatures.RequestFeatures;
+using ComputerTechAPI_Entities.LinkModels.TechLinkParams.PCLinkParams;
 using ComputerTechAPI_Entities.Tech_Models;
 
 namespace ComputerTechAPI_Services.PCService;
@@ -14,101 +17,112 @@ public class LaptopService : ILaptopService
     private readonly IRepositoryManager _repository;
     private readonly ILogsManager _logger;
     private readonly IMapper _mapper;
+    private readonly ILaptopLinks _laptopLinks;
     public LaptopService(IRepositoryManager repository, ILogsManager
-    logger, IMapper mapper)
+    logger, IMapper mapper, ILaptopLinks laptopLinks)
     {
         _repository = repository;
         _logger = logger;
         _mapper = mapper;
+        _laptopLinks = laptopLinks;
     }
 
-    public IEnumerable<LaptopDTO> GetLaptops(Guid productId, bool trackChanges)
+    public async Task<(LinkResponse linkResponse, MetaData metaData)>
+     GetLaptopsAsync(Guid productId, LaptopLinkParameters linkParameters, bool trackChanges)
     {
-        var product = _repository.Product.GetProduct(productId, trackChanges);
-        if (product is null)
-            throw new ProductNotFoundException(productId);
+        if (!linkParameters.laptopParams.RatingRange)
+            throw new RatingRangeBadRequestException();
 
-        var laptopDb = _repository.Laptop.GetLaptops(productId, trackChanges);
-        var laptopDTO = _mapper.Map<IEnumerable<LaptopDTO>>(laptopDb);
+        await CheckIfProductExists(productId, trackChanges);
+        var laptopsWithMetaData = await _repository.Laptop
+        .GetLaptopsAsync(productId, linkParameters.laptopParams, trackChanges);
+
+        var laptopsDTO = _mapper.Map<IEnumerable<LaptopDTO>>
+            (laptopsWithMetaData);
+        var links = _laptopLinks.TryGenerateLinks(laptopsDTO,
+        linkParameters.laptopParams.Fields, productId, linkParameters.Context);
+
+        return (linkResponse: links, metaData: laptopsWithMetaData.MetaData);
+    }
+    public async Task<LaptopDTO> GetLaptopAsync(Guid productId, Guid id, bool trackChanges)
+    {
+        await CheckIfProductExists(productId, trackChanges);
+
+        var laptopDb = await GetLaptopForProductAndCheckIfItExists(productId, id, trackChanges);
+
+        var laptopDTO = _mapper.Map<LaptopDTO>(laptopDb);
         return laptopDTO;
     }
 
-
-    public LaptopDTO GetLaptop(Guid productId, Guid id, bool trackChanges)
+    public async Task<LaptopDTO> CreateLaptopForProductAsync(Guid productId,
+        LaptopCreateDTO laptopCreate, bool trackChanges)
     {
-        var product = _repository.Product.GetProduct(productId, trackChanges);
-        if (product is null)
-            throw new ProductNotFoundException(productId);
+        await CheckIfProductExists(productId, trackChanges);
 
-        var laptopDb = _repository.Laptop.GetLaptop(productId, id, trackChanges);
-        if (laptopDb is null)
-            throw new LaptopNotFoundException(id);
+        var laptopEntity = _mapper.Map<Laptop>(laptopCreate);
 
-        var laptop = _mapper.Map<LaptopDTO>(laptopDb);
-        return laptop;
-    }
+        _repository.Laptop.CreateLaptopForProduct(productId, laptopEntity);
+        await _repository.SaveAsync();
 
-    public LaptopDTO CreateLaptopForProduct(Guid productId, LaptopCreateDTO laptop, bool trackChanges)
-    {
-        var product = _repository.Product.GetProduct(productId, trackChanges);
-        if (product is null)
-            throw new ProductNotFoundException(productId);
-    var laptopEntity = _mapper.Map<Laptop>(laptop);
-    _repository.Laptop.CreateLaptopForProduct(productId, laptopEntity);
-        _repository.Save();
         var laptopToReturn = _mapper.Map<LaptopDTO>(laptopEntity);
+
         return laptopToReturn;
     }
 
-
-    public void DeleteLaptopForProduct(Guid productId, Guid id, bool trackChanges)
+    public async Task DeleteLaptopForProductAsync(Guid productId, Guid id, bool trackChanges)
     {
-        var product = _repository.Product.GetProduct(productId, trackChanges);
-        if (product is null)
-            throw new ProductNotFoundException(productId);
-        var laptopForProduct = _repository.Laptop.GetLaptop(productId, id, trackChanges);
-        if (laptopForProduct is null)
-            throw new LaptopNotFoundException(id);
-        _repository.Laptop.DeleteLaptop(laptopForProduct);
-        _repository.Save();
+        await CheckIfProductExists(productId, trackChanges);
+
+        var laptopDb = await GetLaptopForProductAndCheckIfItExists(productId, id, trackChanges);
+
+        _repository.Laptop.DeleteLaptop(laptopDb);
+        await _repository.SaveAsync();
     }
 
-
-    public void UpdateLaptopForProduct(Guid productId, Guid id, LaptopUpdateDTO laptopUpdate,
-                                   bool productTrackChanges, bool laptopTrackChanges)
+    public async Task UpdateLaptopForProductAsync(Guid productId, Guid id, LaptopUpdateDTO
+        laptopUpdate, bool productTrackChanges, bool laptopTrackChanges)
     {
-        var product = _repository.Product.GetProduct(productId, productTrackChanges);
-        if (product is null)
-            throw new ProductNotFoundException(productId);
-        var laptopEntity = _repository.Laptop.GetLaptop(productId, id,
-        laptopTrackChanges);
-        if (laptopEntity is null)
-            throw new LaptopNotFoundException(id);
-        _mapper.Map(laptopUpdate, laptopEntity);
-        _repository.Save();
+        await CheckIfProductExists(productId, productTrackChanges);
+
+        var laptopDb = await GetLaptopForProductAndCheckIfItExists(productId, id, laptopTrackChanges);
+
+        _mapper.Map(laptopUpdate, laptopDb);
+        await _repository.SaveAsync();
     }
 
-
-    public (LaptopUpdateDTO laptopToPatch, Laptop
-        laptopEntity) GetLaptopForPatch(Guid productId, Guid id,
-        bool productTrackChanges, bool laptopTrackChanges)
+    public async Task<(LaptopUpdateDTO laptopToPatch, Laptop laptopEntity)> GetLaptopForPatchAsync
+        (Guid productId, Guid id, bool productTrackChanges, bool laptopTrackChanges)
     {
-        var product = _repository.Product.GetProduct(productId, productTrackChanges);
-        if (product is null)
-            throw new ProductNotFoundException(productId);
-        var laptopEntity = _repository.Laptop.GetLaptop(productId, id,
-        laptopTrackChanges);
-        if (laptopEntity is null)
-            throw new LaptopNotFoundException(productId);
-        var laptopToPatch = _mapper.Map<LaptopUpdateDTO>(laptopEntity);
-        return (laptopToPatch, laptopEntity);
+        await CheckIfProductExists(productId, productTrackChanges);
+
+        var laptopDb = await GetLaptopForProductAndCheckIfItExists(productId, id, laptopTrackChanges);
+
+        var laptopToPatch = _mapper.Map<LaptopUpdateDTO>(laptopDb);
+
+        return (laptopToPatch: laptopToPatch, laptopEntity: laptopDb);
     }
 
-    public void SaveChangesForPatch(LaptopUpdateDTO laptopToPatch, Laptop
-    laptopEntity)
+    public async Task SaveChangesForPatchAsync(LaptopUpdateDTO laptopToPatch, Laptop laptopEntity)
     {
         _mapper.Map(laptopToPatch, laptopEntity);
-        _repository.Save();
+        await _repository.SaveAsync();
+    }
+
+    private async Task CheckIfProductExists(Guid productId, bool trackChanges)
+    {
+        var product = await _repository.Product.GetProductAsync(productId, trackChanges);
+        if (product is null)
+            throw new ProductNotFoundException(productId);
+    }
+
+    private async Task<Laptop> GetLaptopForProductAndCheckIfItExists
+        (Guid productId, Guid id, bool trackChanges)
+    {
+        var laptopDb = await _repository.Laptop.GetLaptopAsync(productId, id, trackChanges);
+        if (laptopDb is null)
+            throw new LaptopNotFoundException(id);
+
+        return laptopDb;
     }
 
 }

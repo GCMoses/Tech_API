@@ -1,36 +1,70 @@
-﻿using ComputerTechAPI_DtoAndFeatures.DTO.NetworkingDTO;
-using ComputerTechAPI_DtoAndFeatures.DTO.PCComponentsDTO;
-using ComputerTechAPI_Entities.Tech_Models.PCComponents;
+﻿using ComputerTechAPI_DtoAndFeatures.DTO.PCComponentsDTO;
+using ComputerTechAPI_DtoAndFeatures.RequestFeatures.TechParams.PCComponentsTechParams;
+using ComputerTechAPI_Entities.LinkModels.TechLinkParams.PCComponentLinkParams;
+using ComputerTechAPI_RequestActions.FilteringActions;
 using ComputerTechAPI_TechService.Contracts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
+using System.Text.Json;
 
 namespace ComputerTechAPI_RequestActions.Controllers.PCComponentControllers;
 
-[Route("api/products/{productId}/pccase")]
+[Route("api/products/{productId}/pccases")]
 [ApiController]
-public class LaptopController : ControllerBase
+public class CaseController : ControllerBase
 {
     private readonly IServiceManager _service;
-    public LaptopController(IServiceManager service) => _service = service;
+    public CaseController(IServiceManager service) => _service = service;
 
-
+    /// <summary>
+    /// Gets the array of all Cases 
+    /// </summary>
+    /// <returns>Cases list</returns>
     [HttpGet]
-    public IActionResult GetCasesForProduct(Guid productId)
+    [HttpHead]
+    [ServiceFilter(typeof(ValidateMediaTypeAttribute))]
+    [Authorize()]
+    public async Task<IActionResult> GetCasesForProductAsync(Guid productId,
+    [FromQuery] CaseParams pcCaseParams)
     {
-        var pcCases = _service.CaseService.GetCases(productId, trackChanges: false);
-        return Ok(pcCases);
+        var pcCaselinkParams = new CaseLinkParameters(pcCaseParams, HttpContext);
+
+        var result = await _service.CaseService.GetCasesAsync(productId,
+            pcCaselinkParams, trackChanges: false);
+
+        Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(result.metaData));
+
+
+        return result.linkResponse.HasLinks ? Ok(result.linkResponse.LinkedEntities) : Ok(result.linkResponse.ShapedEntities);
     }
 
+    /// <summary>
+    /// Gets the Case by Id only
+    /// </summary>
+    /// <returns>Case</returns>
     [HttpGet("{id:guid}", Name = "GetCaseForProduct")]
-    public IActionResult GetCaseForProduct(Guid productId, Guid id)
+    [Authorize()]
+    public async Task<IActionResult> GetCaseForProductAsync(Guid productId, Guid id)
     {
-        var pcCase = _service.CaseService.GetCase(productId, id, trackChanges: false);
+        var pcCase = await _service.CaseService.GetCaseAsync(productId, id, trackChanges: false);
         return Ok(pcCase);
     }
 
+    /// <summary>
+    /// Create the Case
+    /// </summary>
+    /// <param name="productId"></param>
+    /// <param name="pcCaseCreate"></param>
+    /// <returns>A newly created Case</returns>
+    /// <response code="201">Returns the newly created Case</response>
+    /// <response code="400">If the Case is null</response>
+    /// <response code="422">If the model is invalid</response>
     [HttpPost]
-    public IActionResult CreateCaseForProduct(Guid productId, [FromBody] CaseCreateDTO pcCaseCreate)
+    [ServiceFilter(typeof(ValidationFilterAttribute))]
+    [Authorize(Roles = "ApiManager")]
+    public async Task<IActionResult> CreateCaseForProductAsync(Guid productId, [FromBody] CaseCreateDTO pcCaseCreate)
     {
         if (pcCaseCreate is null)
             return BadRequest("CaseCreateDTO object is null");
@@ -38,48 +72,59 @@ public class LaptopController : ControllerBase
             return UnprocessableEntity(ModelState);
 
         var pcCaseToReturn =
-        _service.CaseService.CreateCaseForProduct(productId, pcCaseCreate, trackChanges:
+         await _service.CaseService.CreateCaseForProductAsync(productId, pcCaseCreate, trackChanges:
         false);
         return CreatedAtRoute("GetCaseForProduct", new
         {
-            productId,
-            id =
-        pcCaseToReturn.Id
+            productId, id = pcCaseToReturn.Id
         },
         pcCaseToReturn);
     }
 
-
+    /// <summary>
+    /// Delete the Case by Id
+    /// </summary>
+    /// <returns>Delete Case item</returns>
     [HttpDelete("{id:guid}")]
-    public IActionResult DeleteCaseForProduct(Guid productId, Guid id)
+    [Authorize(Roles = "ApiManager")]
+    public async Task<IActionResult> DeleteCaseForProductAsync(Guid productId, Guid id)
     {
-        _service.CaseService.DeleteCaseForProduct(productId, id, trackChanges: false);
+        await _service.CaseService.DeleteCaseForProductAsync(productId, id, trackChanges: false);
 
         return NoContent();
     }
 
-
+    /// <summary>
+    /// Update the Case by Id
+    /// </summary>
+    /// <returns>Update Case item</returns>
     [HttpPut("{id:guid}")]
-    public IActionResult UpdateCaseForProduct(Guid productId, Guid id,
+    [ServiceFilter(typeof(ValidationFilterAttribute))]
+    [Authorize(Roles = "ApiManager")]
+    public async Task<IActionResult> UpdateCaseForProductAsync(Guid productId, Guid id,
         [FromBody] CaseUpdateDTO pcCaseUpdate)
     {
         if (pcCaseUpdate is null)
             return BadRequest("CaseUpdateDTO object is null");
 
-        _service.CaseService.UpdateCaseForProduct(productId, id, pcCaseUpdate,
+        await _service.CaseService.UpdateCaseForProductAsync(productId, id, pcCaseUpdate,
             productTrackChanges: false, pcCaseTrackChanges: true);
 
         return NoContent();
     }
 
-
+    /// <summary>
+    /// Partially Update the Case by Id
+    /// </summary>
+    /// <returns>Patch Case item</returns>
     [HttpPatch("{id:guid}")]
-    public IActionResult PartiallyUpdateCaseForProduct(Guid productId, Guid id,
-[FromBody] JsonPatchDocument<CaseUpdateDTO> patchDoc)
+    [Authorize(Roles = "ApiManager")]
+    public async Task<IActionResult> PartiallyUpdateCaseForProductAsync(Guid productId, Guid id,
+    [FromBody] JsonPatchDocument<CaseUpdateDTO> patchDoc)
     {
         if (patchDoc is null)
             return BadRequest("patchDoc object sent from client is null.");
-        var result = _service.CaseService.GetCaseForPatch(productId, id,
+        var result = await _service.CaseService.GetCaseForPatchAsync(productId, id,
         productTrackChanges: false,
         pcCaseTrackChanges: true);
         patchDoc.ApplyTo(result.pcCaseToPatch, ModelState);
@@ -88,7 +133,7 @@ public class LaptopController : ControllerBase
 
         if (!ModelState.IsValid)
             return UnprocessableEntity(ModelState);
-        _service.CaseService.SaveChangesForPatch(result.pcCaseToPatch,
+        await _service.CaseService.SaveChangesForPatchAsync(result.pcCaseToPatch,
         result.pcCaseEntity);
         return NoContent();
     }

@@ -1,5 +1,9 @@
 ﻿using ComputerTechAPI_Contracts.ITech.ITech_PCComponents;
+using ComputerTechAPI_DtoAndFeatures.RequestFeatures;
+using ComputerTechAPI_DtoAndFeatures.RequestFeatures.TechParams.PCComponentsTechParams;
 using ComputerTechAPI_Entities.Tech_Models.PCComponents;
+using ComputerTechAPI_Repository.Extensions.PCComponentExtensions;
+using Microsoft.EntityFrameworkCore;
 
 namespace ComputerTechAPI_Repository.TechRepository.Tech_PCComponents;
 
@@ -9,15 +13,22 @@ public class MotherboardRepository : RepositoryBase<Motherboard>, IMotherboardRe
     : base(repositoryContext)
     {
     }
-    public IEnumerable<Motherboard> GetMotherboards(Guid productId, bool trackChanges) =>
-       FindByCondition(c => c.ProductId.Equals(productId), trackChanges)
-      .OrderBy(c => c.Name)
-      .ToList();
+    public async Task<PagedList<Motherboard>> GetMotherboardsAsync(Guid productId,
+               MotherboardParams motherboardParams, bool trackChanges)
+    {
+        var motherboard = await FindByCondition(p => p.ProductId.Equals(productId), trackChanges)
+        //.FilterMotherboards(motherboardParams.MinRating, motherboardParams.MaxRating)
+        .Search(motherboardParams.SearchTerm)
+        //.Sort(motherboardParams.OrderBy)
+        .ToListAsync();
+        var count = await FindByCondition(p => p.ProductId.Equals(productId), trackChanges).CountAsync();
+        return new PagedList<Motherboard>(motherboard, count,
+        motherboardParams.PageNumber, motherboardParams.PageSize);
+    }
 
-
-    public Motherboard GetMotherboard(Guid productId, Guid id, bool trackChanges) =>
-        FindByCondition(c => c.ProductId.Equals(productId) && c.Id.Equals(id), trackChanges)
-        .SingleOrDefault();
+    public async Task<Motherboard> GetMotherboardAsync(Guid productId, Guid id, bool trackChanges) =>
+        await FindByCondition(p => p.ProductId.Equals(productId) && p.Id.Equals(id), trackChanges)
+        .SingleOrDefaultAsync();
 
     public void CreateMotherboardForProduct(Guid productId, Motherboard motherboard)
     {

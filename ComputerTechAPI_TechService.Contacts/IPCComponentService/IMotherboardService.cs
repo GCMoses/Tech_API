@@ -1,25 +1,23 @@
 ﻿using ComputerTechAPI_DtoAndFeatures.DTO.PCComponentsDTO;
+using ComputerTechAPI_DtoAndFeatures.RequestFeatures;
+using ComputerTechAPI_Entities.LinkModels.TechLinkParams.PCComponentLinkParams;
+using ComputerTechAPI_Entities.Tech_Models;
 using ComputerTechAPI_Entities.Tech_Models.PCComponents;
+using System.Threading.Tasks;
 
 namespace ComputerTechAPI_TechService.Contracts.IPCComponentService;
 
 public interface IMotherboardService
 {
-    IEnumerable<MotherboardDTO> GetMotherboards(Guid productId, bool trackChanges);
-
-    MotherboardDTO GetMotherboard(Guid productId, Guid id, bool trackChanges);
-
-    MotherboardDTO CreateMotherboardForProduct(Guid productId, MotherboardCreateDTO motherboardCreate, bool trackChanges);
-
-    void DeleteMotherboardForProduct(Guid productId, Guid id, bool trackChanges);
-
-
-    void UpdateMotherboardForProduct(Guid productId, Guid id, MotherboardUpdateDTO motherboardUpdate,
-                                 bool productTrackChanges, bool motherboardTrackChanges);
-
-
-    (MotherboardUpdateDTO motherboardToPatch, Motherboard motherboardEntity) GetMotherboardForPatch(
-Guid productId, Guid id, bool productTrackChanges, bool motherboardTrackChanges);
-    void SaveChangesForPatch(MotherboardUpdateDTO motherboardToPatch, Motherboard
-    motherboardEntity);
+    Task<(LinkResponse linkResponse, MetaData metaData)> GetMotherboardsAsync(Guid productId,
+        MotherboardLinkParameters linkParameters, bool trackChanges);
+    Task<MotherboardDTO> GetMotherboardAsync(Guid productId, Guid id, bool trackChanges);
+    Task<MotherboardDTO> CreateMotherboardForProductAsync(Guid productId,
+       MotherboardCreateDTO motherboardCreate, bool trackChanges);
+    Task DeleteMotherboardForProductAsync(Guid productId, Guid id, bool trackChanges);
+    Task UpdateMotherboardForProductAsync(Guid productId, Guid id,
+        MotherboardUpdateDTO motherboardUpdate, bool productTrackChanges, bool motherboardTrackChanges);
+    Task<(MotherboardUpdateDTO motherboardToPatch, Motherboard motherboardEntity)> GetMotherboardForPatchAsync(
+        Guid productId, Guid id, bool productTrackChanges, bool motherboardTrackChanges);
+    Task SaveChangesForPatchAsync(MotherboardUpdateDTO motherboardToPatch, Motherboard motherboardEntity);
 }

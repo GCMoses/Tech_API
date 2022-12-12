@@ -36,4 +36,6 @@ public interface IServiceManager
     //SmartDevices
     IDroneService DroneService { get; }
     ISmartPhoneService SmartPhoneService { get; }
+    //Auth
+    IAuthenticationService AuthenticationService { get; }
 }

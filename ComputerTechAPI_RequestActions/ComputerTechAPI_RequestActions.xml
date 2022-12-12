@@ -1,0 +1,895 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ComputerTechAPI_RequestActions</name>
+    </assembly>
+    <members>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.AccessoriesController.GamingHeadphonesAndHeadsetController.GetGamingHeadphonesAndHeadsetsForProductAsync(System.Guid,ComputerTechAPI_DtoAndFeatures.RequestFeatures.TechParams.AccessoriesTechParams.GamingHeadphonesAndHeadsetParams)">
+            <summary>
+            Gets the list of all GamingHeadphonesAndHeadsets
+            </summary>
+            <returns>The GamingHeadphonesAndHeadsets list</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.AccessoriesController.GamingHeadphonesAndHeadsetController.GetGamingHeadphonesAndHeadsetForProductAsync(System.Guid,System.Guid)">
+            <summary>
+            Gets the Headset by Id only
+            </summary>
+            <returns>Headset</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.AccessoriesController.GamingHeadphonesAndHeadsetController.CreateGamingHeadphonesAndHeadsetForProductAsync(System.Guid,ComputerTechAPI_DtoAndFeatures.DTO.AccessoriesDTO.GamingHeadphonesAndHeadsetCreateDTO)">
+            <summary>
+            Create the gaming headset 
+            </summary>
+            <param name="productId"></param>
+            <param name="gamingHeadphonesAndHeadset"></param>
+            <returns>A newly created Headset</returns>
+            <response code="201">Returns the newly created item</response>
+            <response code="400">If the item is null</response>
+            <response code="422">If the model is invalid</response>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.AccessoriesController.GamingHeadphonesAndHeadsetController.DeleteGamingHeadphonesAndHeadsetForProductAsync(System.Guid,System.Guid)">
+            <summary>
+            Delete the headset by Id
+            </summary>
+            <returns>Delete headset item</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.AccessoriesController.GamingHeadphonesAndHeadsetController.UpdateGamingHeadphonesAndHeadsetForProductAsync(System.Guid,System.Guid,ComputerTechAPI_DtoAndFeatures.DTO.AccessoriesDTO.GamingHeadphonesAndHeadsetUpdateDTO)">
+            <summary>
+            Update the headset item
+            </summary>
+            <returns>Delete headset item</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.AccessoriesController.GamingHeadphonesAndHeadsetController.PartiallyUpdateGamingHeadphonesAndHeadsetForProductAsync(System.Guid,System.Guid,Microsoft.AspNetCore.JsonPatch.JsonPatchDocument{ComputerTechAPI_DtoAndFeatures.DTO.AccessoriesDTO.GamingHeadphonesAndHeadsetUpdateDTO})">
+            <summary>
+            Partially Update the headset by Id
+            </summary>
+            <returns>Patch headset item</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.AccessoriesController.GamingKeyboardController.GetGamingKeyboardsForProductAsync(System.Guid,ComputerTechAPI_DtoAndFeatures.RequestFeatures.TechParams.AccessoriesTechParams.GamingKeyboardParams)">
+            <summary>
+            Gets the array of all Keyboards
+            </summary>
+            <returns>Keyboards list</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.AccessoriesController.GamingKeyboardController.GetGamingKeyboardForProductAsync(System.Guid,System.Guid)">
+            <summary>
+            Gets the Keyboard by Id only
+            </summary>
+            <returns>Keyboard </returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.AccessoriesController.GamingKeyboardController.CreateGamingKeyboardForProductAsync(System.Guid,ComputerTechAPI_DtoAndFeatures.DTO.AccessoriesDTO.GamingKeyboardCreateDTO)">
+            <summary>
+            Create the Keyboard 
+            </summary>
+            <param name="productId"></param>
+            <param name="gamingKeyboard"></param>
+            <returns>A newly created Keyboard</returns>
+            <response code="201">Returns the newly created Keyboard</response>
+            <response code="400">If the Keyboard is null</response>
+            <response code="422">If the model is invalid</response>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.AccessoriesController.GamingKeyboardController.DeleteKeyboardForProductAsync(System.Guid,System.Guid)">
+            <summary>
+            Delete the Keyboard by Id
+            </summary>
+            <returns>Delete Keyboard item</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.AccessoriesController.GamingKeyboardController.UpdateGamingKeyboardForProductAsync(System.Guid,System.Guid,ComputerTechAPI_DtoAndFeatures.DTO.AccessoriesDTO.GamingKeyboardUpdateDTO)">
+            <summary>
+            Update the Keyboard by Id
+            </summary>
+            <returns>Update Keyboard item</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.AccessoriesController.GamingKeyboardController.PartiallyUpdateGamingKeyboardForProductAsync(System.Guid,System.Guid,Microsoft.AspNetCore.JsonPatch.JsonPatchDocument{ComputerTechAPI_DtoAndFeatures.DTO.AccessoriesDTO.GamingKeyboardUpdateDTO})">
+            <summary>
+            Partially Update the Keyboard by Id
+            </summary>
+            <returns>Patch Keyboard item</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.AccessoriesController.GamingMouseController.GetGamingMousesForProduct(System.Guid,ComputerTechAPI_DtoAndFeatures.RequestFeatures.TechParams.AccessoriesTechParams.GamingMouseParams)">
+            <summary>
+            Gets the array of all Mouses  
+            </summary>
+            <returns>Mouses list</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.AccessoriesController.GamingMouseController.GetGamingMouseForProduct(System.Guid,System.Guid)">
+            <summary>
+            Gets the Mouse by Id only
+            </summary>
+            <returns>Mouse</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.AccessoriesController.GamingMouseController.CreateGamingMouseForProductAsync(System.Guid,ComputerTechAPI_DtoAndFeatures.DTO.AccessoriesDTO.GamingMouseCreateDTO)">
+            <summary>
+            Create the Mouse 
+            </summary>
+            <param name="productId"></param>
+            <param name="gamingMouse"></param>
+            <returns>A newly created Mouse</returns>
+            <response code="201">Returns the newly created Mouse</response>
+            <response code="400">If the Mouse is null</response>
+            <response code="422">If the model is invalid</response>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.AccessoriesController.GamingMouseController.DeleteMouseForProductAsync(System.Guid,System.Guid)">
+            <summary>
+            Delete the Mouse by Id
+            </summary>
+            <returns>Delete Mouse item</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.AccessoriesController.GamingMouseController.UpdateGamingMouseForProductAsync(System.Guid,System.Guid,ComputerTechAPI_DtoAndFeatures.DTO.AccessoriesDTO.GamingMouseUpdateDTO)">
+            <summary>
+            Update the Mouse by Id
+            </summary>
+            <returns>Update Mouse item</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.AccessoriesController.GamingMouseController.PartiallyUpdateGamingMouseForProductAsync(System.Guid,System.Guid,Microsoft.AspNetCore.JsonPatch.JsonPatchDocument{ComputerTechAPI_DtoAndFeatures.DTO.AccessoriesDTO.GamingMouseUpdateDTO})">
+            <summary>
+            Partially Update the Mouse by Id
+            </summary>
+            <returns>Patch Mouse item</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.AuthenticationController.RegisterUser(ComputerTechAPI_DtoAndFeatures.DTO.UserRegistrationDTO)">
+            <summary>
+            User Registrer 
+            </summary>
+            <param name="userRegistrationDTO"></param>
+            <returns>A user is Registered, Access Token and Refresh Token</returns>
+            <response code="201">User is registered</response>
+            <response code="400">If the user is null</response>
+            <response code="422">If the model is invalid</response>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.AuthenticationController.Authenticate(ComputerTechAPI_DtoAndFeatures.DTO.UserAuthenticationDTO)">
+            <summary>
+            User Login 
+            </summary>
+            <param name="user"></param>
+            <returns>A user is Authenticated, Access Token and Refresh Token</returns>
+            <response code="200">Log in user</response>
+            <response code="400">If the user is null</response>
+            <response code="422">If the model is invalid</response>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.GamingController.GamingConsoleController.GetGamingConsolesForProductAsync(System.Guid,ComputerTechAPI_DtoAndFeatures.RequestFeatures.TechParams.GamingTechParams.GamingConsoleParams)">
+            <summary>
+            Gets the array of all Consoles  
+            </summary>
+            <returns>Consoles list</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.GamingController.GamingConsoleController.GetGamingConsoleForProductAsync(System.Guid,System.Guid)">
+            <summary>
+            Gets the Console by Id only
+            </summary>
+            <returns>Console</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.GamingController.GamingConsoleController.CreateGamingConsoleForProductAsync(System.Guid,ComputerTechAPI_DtoAndFeatures.DTO.GamingDTO.GamingConsoleCreateDTO)">
+            <summary>
+            Create the Console 
+            </summary>
+            <param name="productId"></param>
+            <param name = "gamingConsole"></param>
+            <returns>A newly created Desktop</returns>
+            <response code="201">Returns the newly created Desktop</response>
+            <response code="400">If the Desktop is null</response>
+            <response code="422">If the model is invalid</response>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.GamingController.GamingConsoleController.DeleteGamingConsoleForProductAsync(System.Guid,System.Guid)">
+            <summary>
+            Delete the Console by Id
+            </summary>
+            <returns>Delete Console item</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.GamingController.GamingConsoleController.UpdateGamingConsoleForProductAsync(System.Guid,System.Guid,ComputerTechAPI_DtoAndFeatures.DTO.GamingDTO.GamingConsoleUpdateDTO)">
+            <summary>
+            Update the Console by Id
+            </summary>
+            <returns>Update Console item</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.GamingController.GamingConsoleController.PartiallyUpdateGamingConsoleForProductAsync(System.Guid,System.Guid,Microsoft.AspNetCore.JsonPatch.JsonPatchDocument{ComputerTechAPI_DtoAndFeatures.DTO.GamingDTO.GamingConsoleUpdateDTO})">
+            <summary>
+            Partially Update the Console by Id
+            </summary>
+            <returns>Patch Console item</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.GamingController.GamingDesktopController.GetGamingDesktopsForProduct(System.Guid,ComputerTechAPI_DtoAndFeatures.RequestFeatures.TechParams.GamingTechParams.GamingDesktopParams)">
+            <summary>
+            Gets the array of all Gaming Desktops  
+            </summary>
+            <returns>Gaming Desktops list</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.GamingController.GamingDesktopController.GetGamingDesktopForProductAsync(System.Guid,System.Guid)">
+            <summary>
+            Gets the Gaming Desktop by Id only
+            </summary>
+            <returns>Gaming Desktop</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.GamingController.GamingDesktopController.CreateGamingDesktopForProduct(System.Guid,ComputerTechAPI_DtoAndFeatures.DTO.GamingDTO.GamingDesktopCreateDTO)">
+            <summary>
+            Create the Gaming Desktop 
+            </summary>
+            <param name="productId"></param>
+            <param name="gamingDesktop"></param>
+            <returns>A newly created Gaming Desktop</returns>
+            <response code="201">Returns the newly created Gaming Desktop</response>
+            <response code="400">If the Gaming Desktop is null</response>
+            <response code="422">If the model is invalid</response>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.GamingController.GamingDesktopController.DeleteDesktopForProduct(System.Guid,System.Guid)">
+            <summary>
+            Delete the Gaming Desktop by Id
+            </summary>
+            <returns>Delete Gaming Desktop item</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.GamingController.GamingDesktopController.UpdateGamingDesktopForProductAsync(System.Guid,System.Guid,ComputerTechAPI_DtoAndFeatures.DTO.GamingDTO.GamingDesktopUpdateDTO)">
+            <summary>
+            Update the Gaming Desktop by Id
+            </summary>
+            <returns>Update Gaming Desktop item</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.GamingController.GamingDesktopController.PartiallyUpdateGamingDesktopForProduct(System.Guid,System.Guid,Microsoft.AspNetCore.JsonPatch.JsonPatchDocument{ComputerTechAPI_DtoAndFeatures.DTO.GamingDTO.GamingDesktopUpdateDTO})">
+            <summary>
+            Partially Update the Gaming Desktop by Id
+            </summary>
+            <returns>Patch Gaming Desktop item</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.GamingController.GamingLaptopController.GetGamingLaptopsForProduct(System.Guid,ComputerTechAPI_DtoAndFeatures.RequestFeatures.TechParams.GamingTechParams.GamingLaptopParams)">
+            <summary>
+            Gets the array of all Gaming Laptops 
+            </summary>
+            <returns>Gaming Laptops list</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.GamingController.GamingLaptopController.GetGamingLaptopForProduct(System.Guid,System.Guid)">
+            <summary>
+            Gets the Gaming Laptop by Id only
+            </summary>
+            <returns>Gaming Laptop</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.GamingController.GamingLaptopController.CreateGamingLaptopForProduct(System.Guid,ComputerTechAPI_DtoAndFeatures.DTO.GamingDTO.GamingLaptopCreateDTO)">
+            <summary>
+            Create the Gaming Laptop 
+            </summary>
+            <param name="productId"></param>
+            <param name="gamingLaptop"></param>
+            <returns>A newly created Gaming Laptop</returns>
+            <response code="201">Returns the newly created Gaming Laptop</response>
+            <response code="400">If the Gaming Laptop is null</response>
+            <response code="422">If the model is invalid</response>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.GamingController.GamingLaptopController.DeleteLaptopForProduct(System.Guid,System.Guid)">
+            <summary>
+            Delete the Gaming Laptop by Id
+            </summary>
+            <returns>Delete Gaming Laptop item</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.GamingController.GamingLaptopController.UpdateGamingLaptopForProductAsync(System.Guid,System.Guid,ComputerTechAPI_DtoAndFeatures.DTO.GamingDTO.GamingLaptopUpdateDTO)">
+            <summary>
+            Update the Gaming Laptop by Id
+            </summary>
+            <returns>Update Gaming Laptop item</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.GamingController.GamingLaptopController.PartiallyUpdateGamingLaptopForProduct(System.Guid,System.Guid,Microsoft.AspNetCore.JsonPatch.JsonPatchDocument{ComputerTechAPI_DtoAndFeatures.DTO.GamingDTO.GamingLaptopUpdateDTO})">
+            <summary>
+            Partially Update the Gaming Laptop by Id
+            </summary>
+            <returns>Patch Gaming Laptop item</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.NetworkingControllers.RouterController.GetRoutersForProductAsync(System.Guid,ComputerTechAPI_DtoAndFeatures.RequestFeatures.TechParams.NetworkingTechParams.RouterParams)">
+            <summary>
+            Gets the array of all Routers 
+            </summary>
+            <returns>Routers list</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.NetworkingControllers.RouterController.GetRouterForProductAsync(System.Guid,System.Guid)">
+            <summary>
+            Gets the Router by Id only
+            </summary>
+            <returns>Router</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.NetworkingControllers.RouterController.CreateRouterForProductAsync(System.Guid,ComputerTechAPI_DtoAndFeatures.DTO.NetworkingDTO.RouterCreateDTO)">
+            <summary>
+            Create the Router
+            </summary>
+            <param name="productId"></param>
+            <param name="router"></param>
+            <returns>A newly created Router</returns>
+            <response code="201">Returns the newly created Router</response>
+            <response code="400">If the Router is null</response>
+            <response code="422">If the model is invalid</response>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.NetworkingControllers.RouterController.DeleteRouterForProductAsync(System.Guid,System.Guid)">
+            <summary>
+            Delete the Router by Id
+            </summary>
+            <returns>Delete Router item</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.NetworkingControllers.RouterController.UpdateRouterForProductAsync(System.Guid,System.Guid,ComputerTechAPI_DtoAndFeatures.DTO.NetworkingDTO.RouterUpdateDTO)">
+            <summary>
+            Update the Router by Id
+            </summary>
+            <returns>Update Router item</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.NetworkingControllers.RouterController.PartiallyUpdateRouterForProductAsync(System.Guid,System.Guid,Microsoft.AspNetCore.JsonPatch.JsonPatchDocument{ComputerTechAPI_DtoAndFeatures.DTO.NetworkingDTO.RouterUpdateDTO})">
+            <summary>
+            Partially Update the Router by Id
+            </summary>
+            <returns>Patch Router item</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.PCComponentControllers.CaseController.GetCasesForProductAsync(System.Guid,ComputerTechAPI_DtoAndFeatures.RequestFeatures.TechParams.PCComponentsTechParams.CaseParams)">
+            <summary>
+            Gets the array of all Cases 
+            </summary>
+            <returns>Cases list</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.PCComponentControllers.CaseController.GetCaseForProductAsync(System.Guid,System.Guid)">
+            <summary>
+            Gets the Case by Id only
+            </summary>
+            <returns>Case</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.PCComponentControllers.CaseController.CreateCaseForProductAsync(System.Guid,ComputerTechAPI_DtoAndFeatures.DTO.PCComponentsDTO.CaseCreateDTO)">
+            <summary>
+            Create the Case
+            </summary>
+            <param name="productId"></param>
+            <param name="pcCaseCreate"></param>
+            <returns>A newly created Case</returns>
+            <response code="201">Returns the newly created Case</response>
+            <response code="400">If the Case is null</response>
+            <response code="422">If the model is invalid</response>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.PCComponentControllers.CaseController.DeleteCaseForProductAsync(System.Guid,System.Guid)">
+            <summary>
+            Delete the Case by Id
+            </summary>
+            <returns>Delete Case item</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.PCComponentControllers.CaseController.UpdateCaseForProductAsync(System.Guid,System.Guid,ComputerTechAPI_DtoAndFeatures.DTO.PCComponentsDTO.CaseUpdateDTO)">
+            <summary>
+            Update the Case by Id
+            </summary>
+            <returns>Update Case item</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.PCComponentControllers.CaseController.PartiallyUpdateCaseForProductAsync(System.Guid,System.Guid,Microsoft.AspNetCore.JsonPatch.JsonPatchDocument{ComputerTechAPI_DtoAndFeatures.DTO.PCComponentsDTO.CaseUpdateDTO})">
+            <summary>
+            Partially Update the Case by Id
+            </summary>
+            <returns>Patch Case item</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.PCComponentControllers.CPUController.GetCPUsForProductAsync(System.Guid,ComputerTechAPI_DtoAndFeatures.RequestFeatures.TechParams.PCComponentsTechParams.CPUParams)">
+            <summary>
+            Gets the array of all CPUs 
+            </summary>
+            <returns>CPUs list</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.PCComponentControllers.CPUController.GetCPUForProductAsync(System.Guid,System.Guid)">
+            <summary>
+            Gets the CPU by Id only
+            </summary>
+            <returns>CPU</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.PCComponentControllers.CPUController.CreateCPUForProductAsync(System.Guid,ComputerTechAPI_DtoAndFeatures.DTO.PCComponentsDTO.CPUCreateDTO)">
+            <summary>
+            Create the CPU
+            </summary>
+            <param name="productId"></param>
+            <param name="cpuCreate"></param>
+            <returns>A newly created CPU</returns>
+            <response code="201">Returns the newly created CPU</response>
+            <response code="400">If the CPU is null</response>
+            <response code="422">If the model is invalid</response>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.PCComponentControllers.CPUController.DeleteCPUForProductAsync(System.Guid,System.Guid)">
+            <summary>
+            Delete the CPU by Id
+            </summary>
+            <returns>Delete CPU item</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.PCComponentControllers.CPUController.UpdateCPUForProductAsync(System.Guid,System.Guid,ComputerTechAPI_DtoAndFeatures.DTO.PCComponentsDTO.CPUUpdateDTO)">
+            <summary>
+            Update the CPU by Id
+            </summary>
+            <returns>Update CPU item</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.PCComponentControllers.CPUController.PartiallyUpdateCPUForProductAsync(System.Guid,System.Guid,Microsoft.AspNetCore.JsonPatch.JsonPatchDocument{ComputerTechAPI_DtoAndFeatures.DTO.PCComponentsDTO.CPUUpdateDTO})">
+            <summary>
+            Partially Update the CPU by Id
+            </summary>
+            <returns>Patch CPU item</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.PCComponentControllers.CPUCoolerController.GetCPUCoolersForProductAsync(System.Guid,ComputerTechAPI_DtoAndFeatures.RequestFeatures.TechParams.PCComponentsTechParams.CPUCoolerParams)">
+            <summary>
+            Gets the array of all CPUCoolers 
+            </summary>
+            <returns>CPUCoolers list</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.PCComponentControllers.CPUCoolerController.GetCPUCoolerForProductAsync(System.Guid,System.Guid)">
+            <summary>
+            Gets the CPUCooler by Id only
+            </summary>
+            <returns>CPUCooler</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.PCComponentControllers.CPUCoolerController.CreateCPUCoolerForProductAsync(System.Guid,ComputerTechAPI_DtoAndFeatures.DTO.PCComponentsDTO.CPUCoolerCreateDTO)">
+            <summary>
+            Create the CPUCooler
+            </summary>
+            <param name="productId"></param>
+            <param name="cpuCoolerCreate"></param>
+            <returns>A newly created CPUCooler</returns>
+            <response code="201">Returns the newly created CPUCooler</response>
+            <response code="400">If the CPUCooler is null</response>
+            <response code="422">If the model is invalid</response>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.PCComponentControllers.CPUCoolerController.DeleteCPUCoolerForProductAsync(System.Guid,System.Guid)">
+            <summary>
+            Delete the CPUCooler by Id
+            </summary>
+            <returns>Delete CPUCooler item</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.PCComponentControllers.CPUCoolerController.UpdateCPUCoolerForProductAsync(System.Guid,System.Guid,ComputerTechAPI_DtoAndFeatures.DTO.PCComponentsDTO.CPUCoolerUpdateDTO)">
+            <summary>
+            Update the CPUCooler by Id
+            </summary>
+            <returns>Update CPUCooler item</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.PCComponentControllers.CPUCoolerController.PartiallyUpdateCPUCoolerForProductAsync(System.Guid,System.Guid,Microsoft.AspNetCore.JsonPatch.JsonPatchDocument{ComputerTechAPI_DtoAndFeatures.DTO.PCComponentsDTO.CPUCoolerUpdateDTO})">
+            <summary>
+            Partially Update the CPUCooler by Id
+            </summary>
+            <returns>Patch CPUCooler item</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.PCComponentControllers.GPUController.GetGPUsForProductAsync(System.Guid,ComputerTechAPI_DtoAndFeatures.RequestFeatures.TechParams.PCComponentsTechParams.GPUParams)">
+            <summary>
+            Gets the array of all GPUs 
+            </summary>
+            <returns>GPUs list</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.PCComponentControllers.GPUController.GetGPUForProductAsync(System.Guid,System.Guid)">
+            <summary>
+            Gets the GPU by Id only
+            </summary>
+            <returns>GPU</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.PCComponentControllers.GPUController.CreateGPUForProduct(System.Guid,ComputerTechAPI_DtoAndFeatures.DTO.PCComponentsDTO.GPUCreateDTO)">
+            <summary>
+            Create the GPU
+            </summary>
+            <param name="productId"></param>
+            <param name="gpuCreate"></param>
+            <returns>A newly created GPU</returns>
+            <response code="201">Returns the newly created GPU</response>
+            <response code="400">If the GPU is null</response>
+            <response code="422">If the model is invalid</response>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.PCComponentControllers.GPUController.DeleteGPUForProductAsync(System.Guid,System.Guid)">
+            <summary>
+            Delete the Router by Id
+            </summary>
+            <returns>Delete Router item</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.PCComponentControllers.GPUController.UpdateGPUForProductAsync(System.Guid,System.Guid,ComputerTechAPI_DtoAndFeatures.DTO.PCComponentsDTO.GPUUpdateDTO)">
+            <summary>
+            Update the Router by Id
+            </summary>
+            <returns>Update Router item</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.PCComponentControllers.GPUController.PartiallyUpdateGPUForProductAsync(System.Guid,System.Guid,Microsoft.AspNetCore.JsonPatch.JsonPatchDocument{ComputerTechAPI_DtoAndFeatures.DTO.PCComponentsDTO.GPUUpdateDTO})">
+            <summary>
+            Partially Update the Router by Id
+            </summary>
+            <returns>Patch Router item</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.PCComponentControllers.HDDController.GetHDDsForProductAsync(System.Guid,ComputerTechAPI_DtoAndFeatures.RequestFeatures.TechParams.PCComponentsTechParams.HDDParams)">
+            <summary>
+            Gets the array of all HDDs 
+            </summary>
+            <returns>HDDs list</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.PCComponentControllers.HDDController.GetHDDForProductAsync(System.Guid,System.Guid)">
+            <summary>
+            Gets the HDD by Id only
+            </summary>
+            <returns>HDD</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.PCComponentControllers.HDDController.CreateHDDForProductAsync(System.Guid,ComputerTechAPI_DtoAndFeatures.DTO.PCComponentsDTO.HDDCreateDTO)">
+            <summary>
+            Create the HDD
+            </summary>
+            <param name="productId"></param>
+            <param name="hddCreate"></param>
+            <returns>A newly created HDD</returns>
+            <response code="201">Returns the newly created HDD</response>
+            <response code="400">If the HDD is null</response>
+            <response code="422">If the model is invalid</response>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.PCComponentControllers.HDDController.DeleteHDDForProduct(System.Guid,System.Guid)">
+            <summary>
+            Delete the HDD by Id
+            </summary>
+            <returns>Delete HDD item</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.PCComponentControllers.HDDController.UpdateHDDForProductAsync(System.Guid,System.Guid,ComputerTechAPI_DtoAndFeatures.DTO.PCComponentsDTO.HDDUpdateDTO)">
+            <summary>
+            Update the HDD by Id
+            </summary>
+            <returns>Update HDD item</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.PCComponentControllers.HDDController.PartiallyUpdateHDDForProductAsync(System.Guid,System.Guid,Microsoft.AspNetCore.JsonPatch.JsonPatchDocument{ComputerTechAPI_DtoAndFeatures.DTO.PCComponentsDTO.HDDUpdateDTO})">
+            <summary>
+            Partially Update the HDD by Id
+            </summary>
+            <returns>Patch HDD item</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.PCComponentControllers.MotherboardController.GetMotherboardsForProductAsync(System.Guid,ComputerTechAPI_DtoAndFeatures.RequestFeatures.TechParams.PCComponentsTechParams.MotherboardParams)">
+            <summary>
+            Gets the array of all Motherboards 
+            </summary>
+            <returns>Motherboards list</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.PCComponentControllers.MotherboardController.GetMotherboardForProductAsync(System.Guid,System.Guid)">
+            <summary>
+            Gets the Motherboard by Id only
+            </summary>
+            <returns>Motherboard</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.PCComponentControllers.MotherboardController.CreateMotherboardForProductAsync(System.Guid,ComputerTechAPI_DtoAndFeatures.DTO.PCComponentsDTO.MotherboardCreateDTO)">
+            <summary>
+            Create the RouteMotherboardr
+            </summary>
+            <param name="productId"></param>
+            <param name="motherboardCreate"></param>
+            <returns>A newly created Motherboard</returns>
+            <response code="201">Returns the newly created Motherboard</response>
+            <response code="400">If the Motherboard is null</response>
+            <response code="422">If the model is invalid</response>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.PCComponentControllers.MotherboardController.DeleteMotherboardForProduct(System.Guid,System.Guid)">
+            <summary>
+            Delete the Motherboard by Id
+            </summary>
+            <returns>Delete Motherboard item</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.PCComponentControllers.MotherboardController.UpdateMotherboardForProductAsync(System.Guid,System.Guid,ComputerTechAPI_DtoAndFeatures.DTO.PCComponentsDTO.MotherboardUpdateDTO)">
+            <summary>
+            Update the Motherboard by Id
+            </summary>
+            <returns>Update Motherboard item</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.PCComponentControllers.MotherboardController.PartiallyUpdateMotherboardForProductAsync(System.Guid,System.Guid,Microsoft.AspNetCore.JsonPatch.JsonPatchDocument{ComputerTechAPI_DtoAndFeatures.DTO.PCComponentsDTO.MotherboardUpdateDTO})">
+            <summary>
+            Partially Update the Motherboard by Id
+            </summary>
+            <returns>Patch Motherboard item</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.PCComponentControllers.PSUController.GetPSUsForProductAsync(System.Guid,ComputerTechAPI_DtoAndFeatures.RequestFeatures.TechParams.PCComponentsTechParams.PSUParams)">
+            <summary>
+            Gets the array of all PSUs 
+            </summary>
+            <returns>PSUs list</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.PCComponentControllers.PSUController.GetPSUForProductAsync(System.Guid,System.Guid)">
+            <summary>
+            Gets the PSU by Id only
+            </summary>
+            <returns>PSU</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.PCComponentControllers.PSUController.CreatePSUForProductAsync(System.Guid,ComputerTechAPI_DtoAndFeatures.DTO.PCComponentsDTO.PSUCreateDTO)">
+            <summary>
+            Create the PSU
+            </summary>
+            <param name="productId"></param>
+            <param name="psuCreate"></param>
+            <returns>A newly created PSU</returns>
+            <response code="201">Returns the newly created PSU</response>
+            <response code="400">If the PSU is null</response>
+            <response code="422">If the model is invalid</response>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.PCComponentControllers.PSUController.DeletePSUForProductAsync(System.Guid,System.Guid)">
+            <summary>
+            Delete the PSU by Id
+            </summary>
+            <returns>Delete PSU item</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.PCComponentControllers.PSUController.UpdatePSUForProductAsync(System.Guid,System.Guid,ComputerTechAPI_DtoAndFeatures.DTO.PCComponentsDTO.PSUUpdateDTO)">
+            <summary>
+            Update the PSU by Id
+            </summary>
+            <returns>Update PSU item</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.PCComponentControllers.PSUController.PartiallyUpdatePSUForProductAsync(System.Guid,System.Guid,Microsoft.AspNetCore.JsonPatch.JsonPatchDocument{ComputerTechAPI_DtoAndFeatures.DTO.PCComponentsDTO.PSUUpdateDTO})">
+            <summary>
+            Partially Update the PSU by Id
+            </summary>
+            <returns>Patch PSU item</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.PCComponentControllers.RAMController.GetRAMsForProductAsync(System.Guid,ComputerTechAPI_DtoAndFeatures.RequestFeatures.TechParams.PCComponentsTechParams.RAMParams)">
+            <summary>
+            Gets the array of all RAMs 
+            </summary>
+            <returns>RAMs list</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.PCComponentControllers.RAMController.GetRAMForProductAsync(System.Guid,System.Guid)">
+            <summary>
+            Gets the RAM by Id only
+            </summary>
+            <returns>RAM</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.PCComponentControllers.RAMController.CreateRAMForProductAsync(System.Guid,ComputerTechAPI_DtoAndFeatures.DTO.PCComponentsDTO.RAMCreateDTO)">
+            <summary>
+            Create the RAM
+            </summary>
+            <param name="productId"></param>
+            <param name="ramCreate"></param>
+            <returns>A newly created RAM</returns>
+            <response code="201">Returns the newly created RAM</response>
+            <response code="400">If the RAM is null</response>
+            <response code="422">If the model is invalid</response>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.PCComponentControllers.RAMController.DeleteRAMForProductAsync(System.Guid,System.Guid)">
+            <summary>
+            Delete the RAM by Id
+            </summary>
+            <returns>Delete RAM item</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.PCComponentControllers.RAMController.UpdateRAMForProductAsync(System.Guid,System.Guid,ComputerTechAPI_DtoAndFeatures.DTO.PCComponentsDTO.RAMUpdateDTO)">
+            <summary>
+            Update the RAM by Id
+            </summary>
+            <returns>Update RAM item</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.PCComponentControllers.RAMController.PartiallyUpdateRAMForProductAsync(System.Guid,System.Guid,Microsoft.AspNetCore.JsonPatch.JsonPatchDocument{ComputerTechAPI_DtoAndFeatures.DTO.PCComponentsDTO.RAMUpdateDTO})">
+            <summary>
+            Partially Update the RAM by Id
+            </summary>
+            <returns>Patch RAM item</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.PCComponentControllers.SSDController.GetSSDsForProductAsync(System.Guid,ComputerTechAPI_DtoAndFeatures.RequestFeatures.TechParams.PCComponentsTechParams.SSDParams)">
+            <summary>
+            Gets the array of all SSDs 
+            </summary>
+            <returns>SSDs list</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.PCComponentControllers.SSDController.GetSSDForProductAsync(System.Guid,System.Guid)">
+            <summary>
+            Gets the SSD by Id only
+            </summary>
+            <returns>SSD</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.PCComponentControllers.SSDController.CreateSSDForProductAsync(System.Guid,ComputerTechAPI_DtoAndFeatures.DTO.PCComponentsDTO.SSDCreateDTO)">
+            <summary>
+            Create the SSD
+            </summary>
+            <param name="productId"></param>
+            <param name="ssdCreate"></param>
+            <returns>A newly created SSD</returns>
+            <response code="201">Returns the newly created SSD</response>
+            <response code="400">If the SSD is null</response>
+            <response code="422">If the model is invalid</response>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.PCComponentControllers.SSDController.DeleteSSDForProductAsync(System.Guid,System.Guid)">
+            <summary>
+            Delete the SSD by Id
+            </summary>
+            <returns>Delete SSD item</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.PCComponentControllers.SSDController.UpdateSSDForProductAsync(System.Guid,System.Guid,ComputerTechAPI_DtoAndFeatures.DTO.PCComponentsDTO.SSDUpdateDTO)">
+            <summary>
+            Update the SSD by Id
+            </summary>
+            <returns>Update SSD item</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.PCComponentControllers.SSDController.PartiallyUpdateSSDForProductAsync(System.Guid,System.Guid,Microsoft.AspNetCore.JsonPatch.JsonPatchDocument{ComputerTechAPI_DtoAndFeatures.DTO.PCComponentsDTO.SSDUpdateDTO})">
+            <summary>
+            Partially Update the SSD by Id
+            </summary>
+            <returns>Patch SSD item</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.PCControllers.DesktopController.GetDesktopsForProductAsync(System.Guid,ComputerTechAPI_DtoAndFeatures.RequestFeatures.TechParams.PCTechParams.DesktopParams)">
+            <summary>
+            Gets the array of all Desktops  
+            </summary>
+            <returns>Desktops list</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.PCControllers.DesktopController.GetDesktopForProductAsync(System.Guid,System.Guid)">
+            <summary>
+            Gets the Desktop by Id only
+            </summary>
+            <returns>Desktop</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.PCControllers.DesktopController.CreateDesktopForProduct(System.Guid,ComputerTechAPI_DtoAndFeatures.DTO.PCDTO.DesktopCreateDTO)">
+            <summary>
+            Create the Desktop 
+            </summary>
+            <param name="productId"></param>
+            <param name="desktop"></param>
+            <returns>A newly created Desktop</returns>
+            <response code="201">Returns the newly created Desktop</response>
+            <response code="400">If the Desktop is null</response>
+            <response code="422">If the model is invalid</response>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.PCControllers.DesktopController.DeleteDesktopForProductAsync(System.Guid,System.Guid)">
+            <summary>
+            Delete the Desktop by Id
+            </summary>
+            <returns>Delete Desktop item</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.PCControllers.DesktopController.UpdateDesktopForForProductAsync(System.Guid,System.Guid,ComputerTechAPI_DtoAndFeatures.DTO.PCDTO.DesktopUpdateDTO)">
+            <summary>
+            Update the Desktop by Id
+            </summary>
+            <returns>Update Desktop item</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.PCControllers.DesktopController.PartiallyUpdateDesktopForProductAsync(System.Guid,System.Guid,Microsoft.AspNetCore.JsonPatch.JsonPatchDocument{ComputerTechAPI_DtoAndFeatures.DTO.PCDTO.DesktopUpdateDTO})">
+            <summary>
+            Partially Update the Desktop by Id
+            </summary>
+            <returns>Patch Desktop item</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.PCControllers.LaptopController.GetLaptopsForProductAsync(System.Guid,ComputerTechAPI_DtoAndFeatures.RequestFeatures.TechParams.PCTechParams.LaptopParams)">
+            <summary>
+            Gets the array of all Laptops  
+            </summary>
+            <returns>Laptops list</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.PCControllers.LaptopController.GetLaptopForProductAsync(System.Guid,System.Guid)">
+            <summary>
+            Gets the Laptop by Id only
+            </summary>
+            <returns>Laptop</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.PCControllers.LaptopController.CreateLaptopForProductAsync(System.Guid,ComputerTechAPI_DtoAndFeatures.DTO.PCDTO.LaptopCreateDTO)">
+            <summary>
+            Create the Laptop 
+            </summary>
+            <param name="productId"></param>
+            <param name="laptop"></param>
+            <returns>A newly created Laptop</returns>
+            <response code="201">Returns the newly created Laptop</response>
+            <response code="400">If the Laptop is null</response>
+            <response code="422">If the model is invalid</response>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.PCControllers.LaptopController.DeleteLaptopForProductAsync(System.Guid,System.Guid)">
+            <summary>
+            Delete the Laptop by Id
+            </summary>
+            <returns>Delete Laptop item</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.PCControllers.LaptopController.UpdateLaptopForForProductAsync(System.Guid,System.Guid,ComputerTechAPI_DtoAndFeatures.DTO.PCDTO.LaptopUpdateDTO)">
+            <summary>
+            Update the Laptop by Id
+            </summary>
+            <returns>Update Laptop item</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.PCControllers.LaptopController.PartiallyUpdateLaptopForProductAsync(System.Guid,System.Guid,Microsoft.AspNetCore.JsonPatch.JsonPatchDocument{ComputerTechAPI_DtoAndFeatures.DTO.PCDTO.LaptopUpdateDTO})">
+            <summary>
+            Partially Update the Laptop by Id
+            </summary>
+            <returns>Patch Laptop item</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.ProductsController.GetProducts">
+            <summary>
+            Gets the list of all product categories
+            </summary>
+            <returns>The products list</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.ProductsController.GetProduct(System.Guid)">
+            <summary>
+            Gets the product categories by id only
+            </summary>
+            <returns>The product by id</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.ProductsController.GetProductCollection(System.Collections.Generic.IEnumerable{System.Guid})">
+            <summary>
+            Gets the product collection by ids 
+            </summary>
+            <response code="200">Returns the Product Collection</response>
+            <returns>The product by ids collection</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.ProductsController.CreateProductAsync(ComputerTechAPI_DtoAndFeatures.DTO.ProductCreateDTO)">
+            <summary>
+            Create the product categories
+            </summary>
+            <param name="productCreate"></param>
+            <returns>A newly created product</returns>
+            <response code="201">Returns the newly created item</response>
+            <response code="400">If the item is null</response>
+            <response code="422">If the model is invalid</response>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.ProductsController.CreateProductCollection(System.Collections.Generic.IEnumerable{ComputerTechAPI_DtoAndFeatures.DTO.ProductCreateDTO})">
+            <summary>
+            Create the product collection of categories
+            </summary>
+            <returns>Created product collection of categories</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.ProductsController.DeleteProduct(System.Guid)">
+            <summary>
+            Delete the product category
+            </summary>
+            <returns>Delete product category</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.ProductsController.UpdateProduct(System.Guid,ComputerTechAPI_DtoAndFeatures.DTO.ProductUpdateDTO)">
+            <summary>
+            Update the product categories
+            </summary>
+            <returns>Updated product category</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.SmartDevicesControllers.DroneController.GetDronesForProductAsync(System.Guid,ComputerTechAPI_DtoAndFeatures.RequestFeatures.TechParams.SmartDecivesTechParams.DroneParams)">
+            <summary>
+            Gets the array of all Drones  
+            </summary>
+            <returns>Drones list</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.SmartDevicesControllers.DroneController.GetDroneForProductAsync(System.Guid,System.Guid)">
+            <summary>
+            Gets the Drone by Id only
+            </summary>
+            <returns>Drone</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.SmartDevicesControllers.DroneController.CreateDroneForProductAsync(System.Guid,ComputerTechAPI_DtoAndFeatures.DTO.SmartDevicesDTO.DroneCreateDTO)">
+            <summary>
+            Create the Drone 
+            </summary>
+            <param name="productId"></param>
+            <param name="droneCreate"></param>
+            <returns>A newly created Drone</returns>
+            <response code="201">Returns the newly created Drone</response>
+            <response code="400">If the Drone is null</response>
+            <response code="422">If the model is invalid</response>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.SmartDevicesControllers.DroneController.DeleteDroneForProductAsync(System.Guid,System.Guid)">
+            <summary>
+            Delete the Drone by Id
+            </summary>
+            <returns>Delete Drone item</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.SmartDevicesControllers.DroneController.UpdateDroneForProductAsync(System.Guid,System.Guid,ComputerTechAPI_DtoAndFeatures.DTO.SmartDevicesDTO.DroneUpdateDTO)">
+            <summary>
+            Update the Drone by Id
+            </summary>
+            <returns>Update Drone item</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.SmartDevicesControllers.DroneController.PartiallyUpdateDroneForProductAsync(System.Guid,System.Guid,Microsoft.AspNetCore.JsonPatch.JsonPatchDocument{ComputerTechAPI_DtoAndFeatures.DTO.SmartDevicesDTO.DroneUpdateDTO})">
+            <summary>
+            Partially Update the Drone by Id
+            </summary>
+            <returns>Patch Drone item</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.SmartDevicesControllers.SmartPhoneController.GetSmartPhonesForProductAsync(System.Guid,ComputerTechAPI_DtoAndFeatures.RequestFeatures.TechParams.SmartDevicesParams.SmartPhoneParams)">
+            <summary>
+            Gets the array of all SmartPhones  
+            </summary>
+            <returns>SmartPhones list</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.SmartDevicesControllers.SmartPhoneController.GetSmartPhoneForProductAsync(System.Guid,System.Guid)">
+            <summary>
+            Gets the SmartPhone by Id only
+            </summary>
+            <returns>SmartPhone</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.SmartDevicesControllers.SmartPhoneController.CreateSmartPhoneForProductAsync(System.Guid,ComputerTechAPI_DtoAndFeatures.DTO.SmartDevicesDTO.SmartPhoneCreateDTO)">
+            <summary>
+            Create the SmartPhone 
+            </summary>
+            <param name="productId"></param>
+            <param name="smartPhoneCreate"></param>
+            <returns>A newly created SmartPhone</returns>
+            <response code="201">Returns the newly created SmartPhone</response>
+            <response code="400">If the SmartPhone is null</response>
+            <response code="422">If the model is invalid</response>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.SmartDevicesControllers.SmartPhoneController.DeleteSmartPhoneForProductAsync(System.Guid,System.Guid)">
+            <summary>
+            Delete the SmartPhone by Id
+            </summary>
+            <returns>Delete SmartPhone item</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.SmartDevicesControllers.SmartPhoneController.UpdateSmartPhoneForProductAsync(System.Guid,System.Guid,ComputerTechAPI_DtoAndFeatures.DTO.SmartDevicesDTO.SmartPhoneUpdateDTO)">
+            <summary>
+            Update the SmartPhone by Id
+            </summary>
+            <returns>Update SmartPhone item</returns>
+        </member>
+        <member name="M:ComputerTechAPI_RequestActions.Controllers.SmartDevicesControllers.SmartPhoneController.PartiallyUpdateSmartPhoneForProductAsync(System.Guid,System.Guid,Microsoft.AspNetCore.JsonPatch.JsonPatchDocument{ComputerTechAPI_DtoAndFeatures.DTO.SmartDevicesDTO.SmartPhoneUpdateDTO})">
+            <summary>
+            Partially Update the SmartPhone by Id
+            </summary>
+            <returns>Patch SmartPhone item</returns>
+        </member>
+    </members>
+</doc>

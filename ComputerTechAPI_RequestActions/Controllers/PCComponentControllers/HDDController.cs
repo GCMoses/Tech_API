@@ -1,83 +1,130 @@
 ﻿using ComputerTechAPI_DtoAndFeatures.DTO.PCComponentsDTO;
+using ComputerTechAPI_DtoAndFeatures.RequestFeatures.TechParams.PCComponentsTechParams;
+using ComputerTechAPI_Entities.LinkModels.TechLinkParams.PCComponentLinkParams;
+using ComputerTechAPI_RequestActions.FilteringActions;
 using ComputerTechAPI_TechService.Contracts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
+using System.Text.Json;
 
 namespace ComputerTechAPI_RequestActions.Controllers.PCComponentControllers;
 
-[Route("api/products/{productId}/hdd")]
+[Route("api/products/{productId}/hdds")]
 [ApiController]
 public class HDDController : ControllerBase
 {
     private readonly IServiceManager _service;
     public HDDController(IServiceManager service) => _service = service;
 
-
+    /// <summary>
+    /// Gets the array of all HDDs 
+    /// </summary>
+    /// <returns>HDDs list</returns>
     [HttpGet]
-    public IActionResult GetHDDsForProduct(Guid productId)
+    [HttpHead]
+    [ServiceFilter(typeof(ValidateMediaTypeAttribute))]
+    [Authorize()]
+    public async Task<IActionResult> GetHDDsForProductAsync(Guid productId,
+   [FromQuery] HDDParams hddParams)
     {
-        var hdds = _service.HDDService.GetHDDs(productId, trackChanges: false);
-        return Ok(hdds);
+        var hddlinkParams = new HDDLinkParameters(hddParams, HttpContext);
+
+        var result = await _service.HDDService.GetHDDsAsync(productId,
+            hddlinkParams, trackChanges: false);
+
+        Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(result.metaData));
+
+
+        return result.linkResponse.HasLinks ? Ok(result.linkResponse.LinkedEntities) : Ok(result.linkResponse.ShapedEntities);
     }
 
+    /// <summary>
+    /// Gets the HDD by Id only
+    /// </summary>
+    /// <returns>HDD</returns>
     [HttpGet("{id:guid}", Name = "GetHDDForProduct")]
-    public IActionResult GetHDDForProduct(Guid productId, Guid id)
+    [Authorize()]
+    public async Task<IActionResult> GetHDDForProductAsync(Guid productId, Guid id)
     {
-        var hdd = _service.HDDService.GetHDD(productId, id, trackChanges: false);
+        var hdd = await _service.HDDService.GetHDDAsync(productId, id, trackChanges: false);
         return Ok(hdd);
     }
 
-
+    /// <summary>
+    /// Create the HDD
+    /// </summary>
+    /// <param name="productId"></param>
+    /// <param name="hddCreate"></param>
+    /// <returns>A newly created HDD</returns>
+    /// <response code="201">Returns the newly created HDD</response>
+    /// <response code="400">If the HDD is null</response>
+    /// <response code="422">If the model is invalid</response>
     [HttpPost]
-    public IActionResult CreateHDDForProduct(Guid productId, [FromBody] HDDCreateDTO hddCreate)
+    [ServiceFilter(typeof(ValidateMediaTypeAttribute))]
+    [Authorize(Roles = "ApiManager")]
+    public async Task<IActionResult> CreateHDDForProductAsync(Guid productId, [FromBody] HDDCreateDTO hddCreate)
     {
         if (hddCreate is null)
             return BadRequest("HDDCreateDTO object is null");
         if (!ModelState.IsValid)
             return UnprocessableEntity(ModelState);
         var hddToReturn =
-        _service.HDDService.CreateHDDForProduct(productId, hddCreate, trackChanges:
+        await _service.HDDService.CreateHDDForProductAsync(productId, hddCreate, trackChanges:
         false);
         return CreatedAtRoute("GetHDDForProduct", new
         {
-            productId,
-            id =
-        hddToReturn.Id
+            productId, id = hddToReturn.Id
         },
         hddToReturn);
     }
 
 
-
+    /// <summary>
+    /// Delete the HDD by Id
+    /// </summary>
+    /// <returns>Delete HDD item</returns>
     [HttpDelete("{id:guid}")]
-    public IActionResult DeleteHDDForProduct(Guid productId, Guid id)
+    [Authorize(Roles = "ApiManager")]
+    public async Task<IActionResult> DeleteHDDForProduct(Guid productId, Guid id)
     {
-        _service.HDDService.DeleteHDDForProduct(productId, id, trackChanges: false);
+        await _service.HDDService.DeleteHDDForProductAsync(productId, id, trackChanges: false);
 
         return NoContent();
     }
 
+    /// <summary>
+    /// Update the HDD by Id
+    /// </summary>
+    /// <returns>Update HDD item</returns>
     [HttpPut("{id:guid}")]
-    public IActionResult UpdateHDDForProduct(Guid productId, Guid id,
+    [ServiceFilter(typeof(ValidateMediaTypeAttribute))]
+    [Authorize(Roles = "ApiManager")]
+    public async Task<IActionResult> UpdateHDDForProductAsync(Guid productId, Guid id,
         [FromBody] HDDUpdateDTO hddUpdate)
     {
         if (hddUpdate is null)
             return BadRequest("HDDUpdateDTO object is null");
 
-        _service.HDDService.UpdateHDDForProduct(productId, id, hddUpdate,
+        await _service.HDDService.UpdateHDDForProductAsync(productId, id, hddUpdate,
             productTrackChanges: false, hddTrackChanges: true);
 
         return NoContent();
     }
 
-
+    /// <summary>
+    /// Partially Update the HDD by Id
+    /// </summary>
+    /// <returns>Patch HDD item</returns>
     [HttpPatch("{id:guid}")]
-    public IActionResult PartiallyUpdateHDDForProduct(Guid productId, Guid id,[FromBody] 
+    [Authorize(Roles = "ApiManager")]
+    public async Task<IActionResult> PartiallyUpdateHDDForProductAsync(Guid productId, Guid id,[FromBody] 
     JsonPatchDocument<HDDUpdateDTO> patchDoc)
     {
         if (patchDoc is null)
             return BadRequest("patchDoc object sent from client is null.");
-        var result = _service.HDDService.GetHDDForPatch(productId, id,
+        var result = await _service.HDDService.GetHDDForPatchAsync(productId, id,
         productTrackChanges: false,
         hddTrackChanges: true);
         patchDoc.ApplyTo(result.hddToPatch, ModelState);
@@ -86,7 +133,7 @@ public class HDDController : ControllerBase
 
         if (!ModelState.IsValid)
             return UnprocessableEntity(ModelState);
-        _service.HDDService.SaveChangesForPatch(result.hddToPatch,
+        await _service.HDDService.SaveChangesForPatchAsync(result.hddToPatch,
         result.hddEntity);
         return NoContent();
     }

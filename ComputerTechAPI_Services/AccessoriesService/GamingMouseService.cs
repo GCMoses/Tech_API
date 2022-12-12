@@ -5,6 +5,10 @@ using ComputerTechAPI_Entities.ErrorExceptions;
 using ComputerTechAPI_TechService.Contracts.IAccessoriesService;
 using AutoMapper;
 using ComputerTechAPI_Entities.Tech_Models.Accessories;
+using ComputerTechAPI_DtoAndFeatures.RequestFeatures;
+using ComputerTechAPI_Entities.Tech_Models;
+using ComputerTechAPI_Contracts.ILinks.IAccessoriesLinks;
+using ComputerTechAPI_Entities.LinkModels.TechLinkParams.AccessoriesLinkParams;
 
 namespace ComputerTechAPI_Services.AccessoriesService;
 
@@ -13,104 +17,113 @@ public class GamingMouseService : IGamingMouseService
     private readonly IRepositoryManager _repository;
     private readonly ILogsManager _logger;
     private readonly IMapper _mapper;
+    private readonly IGamingMouseLinks _gamingMouseLinks;
     public GamingMouseService(IRepositoryManager repository, ILogsManager
-    logger, IMapper mapper)
+    logger, IMapper mapper, IGamingMouseLinks gamingMouseLinks)
     {
         _repository = repository;
         _logger = logger;
         _mapper = mapper;
+        _gamingMouseLinks = gamingMouseLinks;
     }
 
-    public IEnumerable<GamingMouseDTO> GetGamingMouses(Guid productId, bool trackChanges)
+    public async Task<(LinkResponse linkResponse, MetaData metaData)>
+     GetGamingMousesAsync(Guid productId, GamingMouseLinkParameters linkParameters, bool trackChanges)
     {
-        var product = _repository.Product.GetProduct(productId, trackChanges);
-        if (product is null)
-            throw new ProductNotFoundException(productId);
+        if (!linkParameters.gamingMouseParams.RatingRange)
+            throw new RatingRangeBadRequestException();
 
-        var gamingMouseDb = _repository.GamingMouse.GetGamingMouses(productId, trackChanges);
-        var gamingMouseDTO = _mapper.Map<IEnumerable<GamingMouseDTO>>(gamingMouseDb);
-        return gamingMouseDTO;
+        await CheckIfProductExists(productId, trackChanges);
+        var gamingMousesWithMetaData = await _repository.GamingMouse
+        .GetGamingMousesAsync(productId, linkParameters.gamingMouseParams, trackChanges);
+
+        var gamingMousesDTO = _mapper.Map<IEnumerable<GamingMouseDTO>>
+            (gamingMousesWithMetaData);
+        var links = _gamingMouseLinks.TryGenerateLinks(gamingMousesDTO,
+        linkParameters.gamingMouseParams.Fields, productId, linkParameters.Context);
+
+        return (linkResponse: links, metaData: gamingMousesWithMetaData.MetaData);
     }
 
 
-    public GamingMouseDTO GetGamingMouse(Guid productId, Guid id, bool trackChanges)
+    public async Task<GamingMouseDTO> GetGamingMouseAsync(Guid productId, Guid id, bool trackChanges)
     {
-        var product = _repository.Product.GetProduct(productId, trackChanges);
-        if (product is null)
-            throw new ProductNotFoundException(productId);
+        await CheckIfProductExists(productId, trackChanges);
 
-        var gamingMouseDb = _repository.GamingMouse.GetGamingMouse(productId, id, trackChanges);
-        if (gamingMouseDb is null)
-            throw new GamingMouseNotFoundException(id);
+        var gamingMouseDb = await GetGamingMouseForProductAndCheckIfItExists(productId, id, trackChanges);
 
         var gamingMouse = _mapper.Map<GamingMouseDTO>(gamingMouseDb);
         return gamingMouse;
     }
 
-
-    
-
-    public GamingMouseDTO CreateGamingMouseForProduct(Guid productId, GamingMouseCreateDTO gamingMouseCreate, bool trackChanges)
+    public async Task<GamingMouseDTO> CreateGamingMouseForProductAsync(Guid productId,
+        GamingMouseCreateDTO gamingMouseCreate, bool trackChanges)
     {
-        var product = _repository.Product.GetProduct(productId, trackChanges);
-        if (product is null)
-            throw new ProductNotFoundException(productId);
+        await CheckIfProductExists(productId, trackChanges);
+
         var gamingMouseEntity = _mapper.Map<GamingMouse>(gamingMouseCreate);
+
         _repository.GamingMouse.CreateGamingMouseForProduct(productId, gamingMouseEntity);
-        _repository.Save();
+        await _repository.SaveAsync();
+
         var gamingMouseToReturn = _mapper.Map<GamingMouseDTO>(gamingMouseEntity);
+
         return gamingMouseToReturn;
     }
 
-
-    public void DeleteGamingMouseForProduct(Guid productId, Guid id, bool trackChanges)
+    public async Task DeleteGamingMouseForProductAsync(Guid productId, Guid id, bool trackChanges)
     {
-        var product = _repository.Product.GetProduct(productId, trackChanges);
-        if (product is null)
-            throw new ProductNotFoundException(productId);
-        var gamingMouseForProduct = _repository.GamingMouse.GetGamingMouse(productId, id, trackChanges);
-        if (gamingMouseForProduct is null)
-            throw new GamingMouseNotFoundException(id);
-        _repository.GamingMouse.DeleteGamingMouse(gamingMouseForProduct);
-        _repository.Save();
+        await CheckIfProductExists(productId, trackChanges);
+
+        var gamingMouseDb = await GetGamingMouseForProductAndCheckIfItExists(productId, id, trackChanges);
+
+        _repository.GamingMouse.DeleteGamingMouse(gamingMouseDb);
+        await _repository.SaveAsync();
     }
 
-
-    public void UpdateGamingMouseForProduct(Guid productId, Guid id, GamingMouseUpdateDTO gamingMouseUpdate,
-                                        bool productTrackChanges, bool gamingMouseTrackChanges)
+    public async Task UpdateGamingMouseForProductAsync(Guid productId, Guid id, GamingMouseUpdateDTO
+        gamingMouseUpdate, bool productTrackChanges, bool gamingMouseTrackChanges)
     {
-        var product = _repository.Product.GetProduct(productId, productTrackChanges);
-        if (product is null)
-            throw new ProductNotFoundException(productId);
-        var gamingMouseEntity = _repository.GamingMouse.GetGamingMouse(productId, id,
-        gamingMouseTrackChanges);
-        if (gamingMouseEntity is null)
-            throw new GamingMouseNotFoundException(id);
-        _mapper.Map(gamingMouseUpdate, gamingMouseEntity);
-        _repository.Save();
+        await CheckIfProductExists(productId, productTrackChanges);
+
+        var gamingMouseDb = await GetGamingMouseForProductAndCheckIfItExists(productId, id, gamingMouseTrackChanges);
+
+        _mapper.Map(gamingMouseUpdate, gamingMouseDb);
+        await _repository.SaveAsync();
     }
 
-
-
-    public (GamingMouseUpdateDTO gamingMouseToPatch, GamingMouse
-        gamingMouseEntity) GetGamingMouseForPatch(Guid productId, Guid id,
-        bool productTrackChanges, bool gamingMouseTrackChanges)
+    public async Task<(GamingMouseUpdateDTO gamingMouseToPatch, GamingMouse gamingMouseEntity)> GetGamingMouseForPatchAsync
+        (Guid productId, Guid id, bool productTrackChanges, bool gamingMouseTrackChanges)
     {
-        var product = _repository.Product.GetProduct(productId, productTrackChanges);
-        if (product is null)
-            throw new ProductNotFoundException(productId);
-        var gamingMouseEntity = _repository.GamingMouse.GetGamingMouse(productId, id,
-        gamingMouseTrackChanges);
-        if (gamingMouseEntity is null)
-            throw new GamingMouseNotFoundException(productId);
-        var gamingMouseToPatch = _mapper.Map<GamingMouseUpdateDTO>(gamingMouseEntity);
-        return (gamingMouseToPatch, gamingMouseEntity);
+        await CheckIfProductExists(productId, productTrackChanges);
+
+        var gamingMouseDb = await GetGamingMouseForProductAndCheckIfItExists(productId, id, gamingMouseTrackChanges);
+
+        var gamingMouseToPatch = _mapper.Map<GamingMouseUpdateDTO>(gamingMouseDb);
+
+        return (gamingMouseToPatch: gamingMouseToPatch, gamingMouseEntity: gamingMouseDb);
     }
 
-    public void SaveChangesForPatch(GamingMouseUpdateDTO gamingMouseToPatch, GamingMouse
-    gamingMouseEntity)
+    public async Task SaveChangesForPatchAsync(GamingMouseUpdateDTO gamingMouseToPatch, GamingMouse gamingMouseEntity)
     {
         _mapper.Map(gamingMouseToPatch, gamingMouseEntity);
-        _repository.Save();
+        await _repository.SaveAsync();
+    }
+
+    private async Task CheckIfProductExists(Guid productId, bool trackChanges)
+    {
+        var product = await _repository.Product.GetProductAsync(productId, trackChanges);
+        if (product is null)
+            throw new ProductNotFoundException(productId);
+    }
+
+    private async Task<GamingMouse> GetGamingMouseForProductAndCheckIfItExists
+        (Guid productId, Guid id, bool trackChanges)
+    {
+        var gamingMouseDb = await _repository.GamingMouse.GetGamingMouseAsync(productId, id, trackChanges);
+        if (gamingMouseDb is null)
+            throw new GamingMouseNotFoundException(id);
+
+        return gamingMouseDb;
     }
 }

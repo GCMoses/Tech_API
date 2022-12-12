@@ -1776,6 +1776,234 @@ namespace ComputerTechDataAPI.Migrations
                         });
                 });
 
+            modelBuilder.Entity("ComputerTechAPI_Entities.Tech_Models.User", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("RefreshToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("RefreshTokenExpiryTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedEmail")
+                        .HasDatabaseName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasDatabaseName("UserNameIndex")
+                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameIndex")
+                        .HasFilter("[NormalizedName] IS NOT NULL");
+
+                    b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "bd5e9cdc-fdf5-45a3-9ac9-6c93f8d31a3d",
+                            ConcurrencyStamp = "18e522ce-6dcb-4c9a-8aac-bb68127cfadd",
+                            Name = "ApiManager",
+                            NormalizedName = "APIMANAGER"
+                        },
+                        new
+                        {
+                            Id = "ff0f3c7f-500b-41ff-b761-b875622a9f8c",
+                            ConcurrencyStamp = "f15ca887-f0db-4ea7-bb96-ed3fa3f0d987",
+                            Name = "User",
+                            NormalizedName = "USER"
+                        });
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RoleId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetRoleClaims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserClaims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+                {
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ProviderKey")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ProviderDisplayName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("LoginProvider", "ProviderKey");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserLogins", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("RoleId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetUserRoles", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("UserId", "LoginProvider", "Name");
+
+                    b.ToTable("AspNetUserTokens", (string)null);
+                });
+
             modelBuilder.Entity("ComputerTechAPI_Entities.Tech_Models.Accessories.GamingHeadphonesAndHeadset", b =>
                 {
                     b.HasOne("ComputerTechAPI_Entities.Tech_Models.Product", "Product")
@@ -1790,7 +2018,7 @@ namespace ComputerTechDataAPI.Migrations
             modelBuilder.Entity("ComputerTechAPI_Entities.Tech_Models.Accessories.GamingKeyboard", b =>
                 {
                     b.HasOne("ComputerTechAPI_Entities.Tech_Models.Product", "Product")
-                        .WithMany("GamingKeyboards")
+                        .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1801,7 +2029,7 @@ namespace ComputerTechDataAPI.Migrations
             modelBuilder.Entity("ComputerTechAPI_Entities.Tech_Models.Accessories.GamingMouse", b =>
                 {
                     b.HasOne("ComputerTechAPI_Entities.Tech_Models.Product", "Product")
-                        .WithMany("GamingMouses")
+                        .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1812,7 +2040,7 @@ namespace ComputerTechDataAPI.Migrations
             modelBuilder.Entity("ComputerTechAPI_Entities.Tech_Models.Gaming.GamingConsole", b =>
                 {
                     b.HasOne("ComputerTechAPI_Entities.Tech_Models.Product", "Product")
-                        .WithMany("GamingConsoles")
+                        .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1823,7 +2051,7 @@ namespace ComputerTechDataAPI.Migrations
             modelBuilder.Entity("ComputerTechAPI_Entities.Tech_Models.Gaming.GamingDesktop", b =>
                 {
                     b.HasOne("ComputerTechAPI_Entities.Tech_Models.Product", "Product")
-                        .WithMany("GamingDesktops")
+                        .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1834,7 +2062,7 @@ namespace ComputerTechDataAPI.Migrations
             modelBuilder.Entity("ComputerTechAPI_Entities.Tech_Models.Gaming.GamingLaptop", b =>
                 {
                     b.HasOne("ComputerTechAPI_Entities.Tech_Models.Product", "Product")
-                        .WithMany("GamingLaptops")
+                        .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1845,7 +2073,7 @@ namespace ComputerTechDataAPI.Migrations
             modelBuilder.Entity("ComputerTechAPI_Entities.Tech_Models.Networking.Router", b =>
                 {
                     b.HasOne("ComputerTechAPI_Entities.Tech_Models.Product", "Product")
-                        .WithMany("Routers")
+                        .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1856,7 +2084,7 @@ namespace ComputerTechDataAPI.Migrations
             modelBuilder.Entity("ComputerTechAPI_Entities.Tech_Models.PC.Desktop", b =>
                 {
                     b.HasOne("ComputerTechAPI_Entities.Tech_Models.Product", "Product")
-                        .WithMany("Desktops")
+                        .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1867,7 +2095,7 @@ namespace ComputerTechDataAPI.Migrations
             modelBuilder.Entity("ComputerTechAPI_Entities.Tech_Models.PC.Laptop", b =>
                 {
                     b.HasOne("ComputerTechAPI_Entities.Tech_Models.Product", "Product")
-                        .WithMany("Laptops")
+                        .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1878,7 +2106,7 @@ namespace ComputerTechDataAPI.Migrations
             modelBuilder.Entity("ComputerTechAPI_Entities.Tech_Models.PCComponents.Case", b =>
                 {
                     b.HasOne("ComputerTechAPI_Entities.Tech_Models.Product", "Product")
-                        .WithMany("Cases")
+                        .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1889,7 +2117,7 @@ namespace ComputerTechDataAPI.Migrations
             modelBuilder.Entity("ComputerTechAPI_Entities.Tech_Models.PCComponents.CPU", b =>
                 {
                     b.HasOne("ComputerTechAPI_Entities.Tech_Models.Product", "Product")
-                        .WithMany("CPUs")
+                        .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1900,7 +2128,7 @@ namespace ComputerTechDataAPI.Migrations
             modelBuilder.Entity("ComputerTechAPI_Entities.Tech_Models.PCComponents.CPUCooler", b =>
                 {
                     b.HasOne("ComputerTechAPI_Entities.Tech_Models.Product", "Product")
-                        .WithMany("CPUCoolers")
+                        .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1911,7 +2139,7 @@ namespace ComputerTechDataAPI.Migrations
             modelBuilder.Entity("ComputerTechAPI_Entities.Tech_Models.PCComponents.GPU", b =>
                 {
                     b.HasOne("ComputerTechAPI_Entities.Tech_Models.Product", "Product")
-                        .WithMany("GPUs")
+                        .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1922,7 +2150,7 @@ namespace ComputerTechDataAPI.Migrations
             modelBuilder.Entity("ComputerTechAPI_Entities.Tech_Models.PCComponents.HDD", b =>
                 {
                     b.HasOne("ComputerTechAPI_Entities.Tech_Models.Product", "Product")
-                        .WithMany("HDDs")
+                        .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1933,7 +2161,7 @@ namespace ComputerTechDataAPI.Migrations
             modelBuilder.Entity("ComputerTechAPI_Entities.Tech_Models.PCComponents.Motherboard", b =>
                 {
                     b.HasOne("ComputerTechAPI_Entities.Tech_Models.Product", "Product")
-                        .WithMany("Motherboards")
+                        .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1944,7 +2172,7 @@ namespace ComputerTechDataAPI.Migrations
             modelBuilder.Entity("ComputerTechAPI_Entities.Tech_Models.PCComponents.PSU", b =>
                 {
                     b.HasOne("ComputerTechAPI_Entities.Tech_Models.Product", "Product")
-                        .WithMany("PSUs")
+                        .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1955,7 +2183,7 @@ namespace ComputerTechDataAPI.Migrations
             modelBuilder.Entity("ComputerTechAPI_Entities.Tech_Models.PCComponents.RAM", b =>
                 {
                     b.HasOne("ComputerTechAPI_Entities.Tech_Models.Product", "Product")
-                        .WithMany("RAMs")
+                        .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1966,7 +2194,7 @@ namespace ComputerTechDataAPI.Migrations
             modelBuilder.Entity("ComputerTechAPI_Entities.Tech_Models.PCComponents.SSD", b =>
                 {
                     b.HasOne("ComputerTechAPI_Entities.Tech_Models.Product", "Product")
-                        .WithMany("SSDs")
+                        .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1977,7 +2205,7 @@ namespace ComputerTechDataAPI.Migrations
             modelBuilder.Entity("ComputerTechAPI_Entities.Tech_Models.SmartDevices.Drone", b =>
                 {
                     b.HasOne("ComputerTechAPI_Entities.Tech_Models.Product", "Product")
-                        .WithMany("Drones")
+                        .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1988,7 +2216,7 @@ namespace ComputerTechDataAPI.Migrations
             modelBuilder.Entity("ComputerTechAPI_Entities.Tech_Models.SmartDevices.SmartPhone", b =>
                 {
                     b.HasOne("ComputerTechAPI_Entities.Tech_Models.Product", "Product")
-                        .WithMany("SmartPhones")
+                        .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1996,47 +2224,60 @@ namespace ComputerTechDataAPI.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+                {
+                    b.HasOne("ComputerTechAPI_Entities.Tech_Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+                {
+                    b.HasOne("ComputerTechAPI_Entities.Tech_Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ComputerTechAPI_Entities.Tech_Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+                {
+                    b.HasOne("ComputerTechAPI_Entities.Tech_Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("ComputerTechAPI_Entities.Tech_Models.Product", b =>
                 {
-                    b.Navigation("CPUCoolers");
-
-                    b.Navigation("CPUs");
-
-                    b.Navigation("Cases");
-
-                    b.Navigation("Desktops");
-
-                    b.Navigation("Drones");
-
-                    b.Navigation("GPUs");
-
-                    b.Navigation("GamingConsoles");
-
-                    b.Navigation("GamingDesktops");
-
                     b.Navigation("GamingHeadphonesAndHeadsets");
-
-                    b.Navigation("GamingKeyboards");
-
-                    b.Navigation("GamingLaptops");
-
-                    b.Navigation("GamingMouses");
-
-                    b.Navigation("HDDs");
-
-                    b.Navigation("Laptops");
-
-                    b.Navigation("Motherboards");
-
-                    b.Navigation("PSUs");
-
-                    b.Navigation("RAMs");
-
-                    b.Navigation("Routers");
-
-                    b.Navigation("SSDs");
-
-                    b.Navigation("SmartPhones");
                 });
 #pragma warning restore 612, 618
         }

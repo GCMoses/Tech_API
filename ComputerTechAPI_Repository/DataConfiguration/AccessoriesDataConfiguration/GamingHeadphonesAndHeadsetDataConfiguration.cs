@@ -10,7 +10,7 @@ public class GamingHeadphonesAndHeadsetDataConfiguration : IEntityTypeConfigurat
     {
         builder.HasData
         (
-        new GamingHeadphonesAndHeadset
+        new GamingHeadphonesAndHeadset  
         {
             Id = new Guid("7e9c815e-d538-4118-adfb-c419734e5ec6"),
             Name = "EPOS I Sennheiser GAME ONE Gaming Headset, Open Acoustic, Noise-canceling mic, Flip-To-Mute",

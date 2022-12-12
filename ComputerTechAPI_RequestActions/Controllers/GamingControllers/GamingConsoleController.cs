@@ -1,92 +1,132 @@
-﻿using ComputerTechAPI_DtoAndFeatures.DTO.AccessoriesDTO;
-using ComputerTechAPI_DtoAndFeatures.DTO.GamingDTO;
+﻿using ComputerTechAPI_DtoAndFeatures.DTO.GamingDTO;
+using ComputerTechAPI_DtoAndFeatures.RequestFeatures.TechParams.GamingTechParams;
+using ComputerTechAPI_Entities.LinkModels.TechLinkParams.GamingLinkParams;
+using ComputerTechAPI_RequestActions.FilteringActions;
 using ComputerTechAPI_TechService.Contracts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
+using System.Text.Json;
 
 namespace ComputerTechAPI_RequestActions.Controllers.GamingController;
 
-[Route("api/products/{productId}/gamingconsole")]
+[Route("api/products/{productId}/gamingconsoles")]
 [ApiController]
 public class GamingConsoleController : ControllerBase
 {
     private readonly IServiceManager _service;
     public GamingConsoleController(IServiceManager service) => _service = service;
 
-
+    /// <summary>
+    /// Gets the array of all Consoles  
+    /// </summary>
+    /// <returns>Consoles list</returns>
     [HttpGet]
-    public IActionResult GetGamingConsolesForProduct(Guid productId)
+    [HttpHead]
+    [ServiceFilter(typeof(ValidateMediaTypeAttribute))]
+    [Authorize()]
+    public async Task<IActionResult> GetGamingConsolesForProductAsync(Guid productId,
+     [FromQuery] GamingConsoleParams gamingConsoleParams)
     {
-        var gamingConsoles = _service.GamingConsoleService.GetGamingConsoles(productId, trackChanges: false);
-        return Ok(gamingConsoles);
+        var gamingConsolelinkParams = new GamingConsoleLinkParameters(gamingConsoleParams, HttpContext);
+
+        var result = await _service.GamingConsoleService.GetGamingConsolesAsync(productId,
+            gamingConsolelinkParams, trackChanges: false);
+
+        Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(result.metaData));
+
+
+        return result.linkResponse.HasLinks ? Ok(result.linkResponse.LinkedEntities) : Ok(result.linkResponse.ShapedEntities);
     }
 
+    /// <summary>
+    /// Gets the Console by Id only
+    /// </summary>
+    /// <returns>Console</returns>
     [HttpGet("{id:guid}", Name = "GetGamingConsoleForProduct")]
-    public IActionResult GetGamingConsoleForProduct(Guid productId, Guid id)
+    [Authorize()]
+    public async Task<IActionResult> GetGamingConsoleForProductAsync(Guid productId, Guid id)
     {
-        var gamingConsole = _service.GamingConsoleService.GetGamingConsole(productId, id, trackChanges: false);
+        var gamingConsole = await _service.GamingConsoleService.GetGamingConsoleAsync(productId, id, trackChanges: false);
         return Ok(gamingConsole);
     }
 
-
+    /// <summary>
+    /// Create the Console 
+    /// </summary>
+    /// <param name="productId"></param>
+    /// <param name = "gamingConsole"></param>
+    /// <returns>A newly created Desktop</returns>
+    /// <response code="201">Returns the newly created Desktop</response>
+    /// <response code="400">If the Desktop is null</response>
+    /// <response code="422">If the model is invalid</response>
     [HttpPost]
-    public IActionResult CreateGamingConsoleForProduct(Guid productId, [FromBody] GamingConsoleCreateDTO gamingConsoleCreate)
+    [ServiceFilter(typeof(ValidationFilterAttribute))]
+    [Authorize(Roles = "ApiManager")]
+    public async Task<IActionResult> CreateGamingConsoleForProductAsync
+        (Guid productId, [FromBody] GamingConsoleCreateDTO gamingConsole)
     {
-        if (gamingConsoleCreate is null)
-            return BadRequest("GamingConsoleCreateDTO object is null");
-        if (!ModelState.IsValid)
-            return UnprocessableEntity(ModelState);
-    
-        var gamingConsoleToReturn =
-        _service.GamingConsoleService.CreateGamingConsoleForProduct(productId, gamingConsoleCreate, trackChanges:
-        false);
-        return CreatedAtRoute("GetGamingConsoleForProduct", new
-        {
-            productId,
-            id = gamingConsoleToReturn.Id
-        },
-        gamingConsoleToReturn);
+        var gamingConsoleToReturn = await _service.GamingConsoleService.CreateGamingConsoleForProductAsync(productId, gamingConsole,
+            trackChanges: false);
+
+        return CreatedAtRoute("GetGamingConsoleForProduct", new { productId, id = gamingConsoleToReturn.Id },
+            gamingConsoleToReturn);
     }
 
+    /// <summary>
+    /// Delete the Console by Id
+    /// </summary>
+    /// <returns>Delete Console item</returns>
     [HttpDelete("{id:guid}")]
-    public IActionResult DeleteGamingConsoleForProduct(Guid productId, Guid id)
+    [Authorize(Roles = "ApiManager")]
+    public async Task<IActionResult> DeleteGamingConsoleForProductAsync(Guid productId, Guid id)
     {
-        _service.GamingConsoleService.DeleteGamingConsoleForProduct(productId, id, trackChanges: false);
+        await _service.GamingConsoleService.DeleteGamingConsoleForProductAsync(productId, id, trackChanges: false);
 
         return NoContent();
     }
 
+    /// <summary>
+    /// Update the Console by Id
+    /// </summary>
+    /// <returns>Update Console item</returns>
     [HttpPut("{id:guid}")]
-    public IActionResult UpdateGamingConsoleForProduct(Guid productId, Guid id,
-        [FromBody] GamingConsoleUpdateDTO gamingConsoleUpdate)
+    [ServiceFilter(typeof(ValidationFilterAttribute))]
+    [Authorize(Roles = "ApiManager")]
+    public async Task<IActionResult> UpdateGamingConsoleForProductAsync(Guid productId, Guid id,
+        [FromBody] GamingConsoleUpdateDTO gamingConsole)
     {
-        if (gamingConsoleUpdate is null)
-            return BadRequest("GamingConsoleUpdateDTO object is null");
-
-        _service.GamingConsoleService.UpdateGamingConsoleForProduct(productId, id, gamingConsoleUpdate,
+        await _service.GamingConsoleService.UpdateGamingConsoleForProductAsync(productId, id, gamingConsole,
             productTrackChanges: false, gamingConsoleTrackChanges: true);
 
         return NoContent();
     }
 
-
+    /// <summary>
+    /// Partially Update the Console by Id
+    /// </summary>
+    /// <returns>Patch Console item</returns>
     [HttpPatch("{id:guid}")]
-    public IActionResult PartiallyUpdateGamingConsoleForProduct(Guid productId, Guid id,
-[FromBody] JsonPatchDocument<GamingConsoleUpdateDTO> patchDoc)
+    [Authorize(Roles = "ApiManager")]
+    public async Task<IActionResult> PartiallyUpdateGamingConsoleForProductAsync(Guid productId, Guid id,
+        [FromBody] JsonPatchDocument<GamingConsoleUpdateDTO> patchDoc)
     {
         if (patchDoc is null)
             return BadRequest("patchDoc object sent from client is null.");
-        var result = _service.GamingConsoleService.GetGamingConsoleForPatch(productId, id,
-        productTrackChanges: false,
-        gamingConsoleTrackChanges: true);
+
+        var result = await _service.GamingConsoleService.GetGamingConsoleForPatchAsync(productId, id,
+            productTrackChanges: false, gamingConsoleTrackChanges: true);
+
         patchDoc.ApplyTo(result.gamingConsoleToPatch, ModelState);
 
         TryValidateModel(result.gamingConsoleToPatch);
 
         if (!ModelState.IsValid)
             return UnprocessableEntity(ModelState);
-        _service.GamingConsoleService.SaveChangesForPatch(result.gamingConsoleToPatch,
-        result.gamingConsoleEntity);
+
+        await _service.GamingConsoleService.SaveChangesForPatchAsync(result.gamingConsoleToPatch, result.gamingConsoleEntity);
+
         return NoContent();
     }
 }

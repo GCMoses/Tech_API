@@ -2,3 +2,6 @@
 
 # CS8604: Possible null reference argument.
 dotnet_diagnostic.CS8604.severity = none
+
+# IDE0022: Use block body for methods
+dotnet_diagnostic.IDE0022.severity = silent
