@@ -64,7 +64,7 @@ public class GamingHeadphonesAndHeadsetController : ControllerBase
     /// <response code="422">If the model is invalid</response>
     [HttpPost]
     [ServiceFilter(typeof(ValidationFilterAttribute))]
-    [Authorize(Roles = "ApiManager")]
+    [Authorize(Roles = "Administrator")]
     public async Task<IActionResult> CreateGamingHeadphonesAndHeadsetForProductAsync
         (Guid productId, [FromBody] GamingHeadphonesAndHeadsetCreateDTO gamingHeadphonesAndHeadset)
     {
@@ -81,7 +81,7 @@ public class GamingHeadphonesAndHeadsetController : ControllerBase
     /// </summary>
     /// <returns>Delete headset item</returns>
     [HttpDelete("{id:guid}")]
-    [Authorize(Roles = "ApiManager")]
+    [Authorize(Roles = "Administrator")]
     public async Task<IActionResult> DeleteGamingHeadphonesAndHeadsetForProductAsync(Guid productId, Guid id)
     {
         await _service.GamingHeadphonesAndHeadsetService.DeleteGamingHeadphonesAndHeadsetForProductAsync(productId, id, trackChanges: false);
@@ -96,7 +96,7 @@ public class GamingHeadphonesAndHeadsetController : ControllerBase
     /// <returns>Delete headset item</returns>
     [HttpPut("{id:guid}")]
     [ServiceFilter(typeof(ValidationFilterAttribute))]
-    [Authorize(Roles = "ApiManager")]
+    [Authorize(Roles = "Administrator")]
     public async Task<IActionResult> UpdateGamingHeadphonesAndHeadsetForProductAsync(Guid productId, Guid id,
         [FromBody] GamingHeadphonesAndHeadsetUpdateDTO gamingHeadphonesAndHeadset)
     {
@@ -111,7 +111,7 @@ public class GamingHeadphonesAndHeadsetController : ControllerBase
     /// </summary>
     /// <returns>Patch headset item</returns>
     [HttpPatch("{id:guid}")]
-    [Authorize(Roles = "ApiManager")]
+    [Authorize(Roles = "Administrator")]
     public async Task<IActionResult> PartiallyUpdateGamingHeadphonesAndHeadsetForProductAsync(Guid productId, Guid id,
         [FromBody] JsonPatchDocument<GamingHeadphonesAndHeadsetUpdateDTO> patchDoc)
     {
