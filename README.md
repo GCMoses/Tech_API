@@ -1,10 +1,9 @@
-# Tech_API
-Made an API  with the business logic of a PC Store that has  PC Accessories, Parts PC builds and fully build Gaming PC's, Laptops &  Gaming Consoles...
+Hey there,
 
-First enabled logging into the API to help with troublehooting.
-All the logic has been added. 
-Logic was seeded into the database.
-Created A Repository interface and classes for the services of the logic(similar to a UnitOfWork).
+I just wanted to share with you the DataAPI that I've been working on. It's all about tech products, and I really put a lot of effort into making it top-notch. I used the Onion architecture to make sure it's well-structured and scalable, and I included some other features to make it super secure. For example, I used GUID values for link IDs to make sure no one can duplicate them and access sensitive data.
 
-Using onion architecture to keep my code layered well. 
+I also made sure to include async programming throughout the service layer and controllers so the API can handle multiple requests at once without any issues. Plus, I implemented JWT authentication to control who can access the API and what data they can see.
 
+I'm happy to say that the API supports both XML and JSON link formatters, so clients can choose the one that works best for them. I also added some other useful features like throttling and search/filtering to make it even more valuable to clients.
+
+Oh, and I made sure to document everything using Swagger, and I included error models to handle any unexpected server responses. All in all, I'm really proud of the DataAPI and I think it's a strong asset
