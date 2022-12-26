@@ -1886,8 +1886,8 @@ namespace ComputerTechDataAPI.Migrations
                         {
                             Id = "bd5e9cdc-fdf5-45a3-9ac9-6c93f8d31a3d",
                             ConcurrencyStamp = "18e522ce-6dcb-4c9a-8aac-bb68127cfadd",
-                            Name = "ApiManager",
-                            NormalizedName = "APIMANAGER"
+                            Name = "Administrator",
+                            NormalizedName = "ADMINSTRATOR"
                         },
                         new
                         {
