@@ -16,7 +16,7 @@ namespace ComputerTechDataAPI.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "a0e52416-9ec8-4c2e-8a6b-3a9908a4ff9b", "f6a98ae5-0d79-4c0d-992e-bdc081ceda38", "ApiManager", "APIMANAGER" });
+                values: new object[] { "a0e52416-9ec8-4c2e-8a6b-3a9908a4ff9b", "f6a98ae5-0d79-4c0d-992e-bdc081ceda38", "Administrator", "ADMINISTRATOR" });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
