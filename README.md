@@ -6,4 +6,4 @@ I also made sure to include async programming throughout the service layer and c
 
 I'm happy to say that the API supports both XML and JSON link formatters, so clients can choose the one that works best for them. I also added some other useful features like throttling and search/filtering to make it even more valuable to clients.
 
-Oh, and I made sure to document everything using Swagger, and I included error models to handle any unexpected server responses. All in all, I'm really proud of the DataAPI and I think it's a strong asset
+Oh, and I made sure to document everything using Swagger, and I included error models to handle any unexpected server responses. All in all, I'm really proud of the DataAPI and I still feel ASP.NET Core web API is my strongest asset.
